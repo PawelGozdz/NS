@@ -1,0 +1,32 @@
+# Ignore node_modules directory
+node_modules
+
+# Ignore git related files
+.git
+.gitignore
+
+# Ignore Docker related files
+Dockerfile
+docker-compose.yaml
+.dockerignore
+
+# Ignore development files
+*.env
+*.dev.env
+
+# Ignore editor files
+*.swp
+*.swo
+*.swn
+.idea/
+.vscode/
+
+# Ignore log files
+*.log
+
+# Ignore test related files
+test/
+coverage/
+
+# Custom
+

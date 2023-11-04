@@ -1,0 +1,9 @@
+# Directories
+
+jest/
+infra/
+ci-templates/
+
+# Files
+
+.eslintrc

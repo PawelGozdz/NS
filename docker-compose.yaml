@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  api-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    working_dir: /srv
+    user: node
+    volumes:
+      - ./:/srv
+    ports:
+      - '9230:9229'
+      - 3001:3000
+    command: npm run start:debug
+    env_file:
+      - .env
+    networks:
+      - huniit_network
+
+networks:
+  huniit_network:
+    driver: bridge
