@@ -1,29 +1,30 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "noImplicitAny": false,
-    "esModuleInterop": true,
-    "strictNullChecks": true,
-    "strictBindCallApply": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "alwaysStrict": true,
-    "resolveJsonModule": true,
-    "strictPropertyInitialization": false,
-    "typeRoots": ["./node_modules/@types", "./src/index.d.ts"],
-    "paths": {
-      "@core/*": ["src/core/*"]
-    }
-  }
+	"compilerOptions": {
+		"module": "commonjs",
+		"declaration": true,
+		"removeComments": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"allowSyntheticDefaultImports": true,
+		"target": "ES2021",
+		"sourceMap": true,
+		"outDir": "./dist",
+		"baseUrl": "./",
+		"incremental": true,
+		"skipLibCheck": true,
+		"noImplicitAny": false,
+		"esModuleInterop": true,
+		"strictNullChecks": true,
+		"strictBindCallApply": true,
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": true,
+		"alwaysStrict": true,
+		"resolveJsonModule": true,
+		"strictPropertyInitialization": false,
+		"typeRoots": ["./node_modules/@types", "./src/index.d.ts"],
+		"paths": {
+			"@core/*": ["src/core/*"],
+			"@config/*": ["src/config/*"]
+		}
+	}
 }
