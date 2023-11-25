@@ -2,7 +2,8 @@
 # BUILD FOR LOCAL DEVELOPMENT
 ###################
 
-FROM node:20.7.0-alpine AS development
+ARG NODE_VERSION
+FROM node:${NODE_VERSION} AS development
 WORKDIR /app
 
 # Copy dependency manifests first to leverage Docker cache
@@ -21,7 +22,7 @@ CMD ["npm", "run", "start:dev"]
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:20.7.0-alpine AS build
+FROM node:${NODE_VERSION} AS build
 WORKDIR /app
 
 # Copy necessary files for installing dependencies and build
@@ -43,7 +44,7 @@ USER node
 # PRODUCTION
 ###################
 
-FROM node:20.7.0-alpine AS production
+FROM node:${NODE_VERSION} AS production
 ARG target_app
 
 USER node

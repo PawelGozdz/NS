@@ -29,4 +29,6 @@ test/
 coverage/
 
 # Custom
+dist/
+volumes/
 

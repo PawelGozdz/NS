@@ -1,21 +1,49 @@
 version: '3.8'
+name: huniit
 
 services:
+  backend-database:
+    image: postgres:14
+    container_name: backend_database
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./volumes/backend-database:/var/lib/postgresql/data
+    ports:
+      - 5430:${DATABASE_PORT}
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${DATABASE_USER} -d $${DATABASE_NAME} > /dev/null || exit 1']
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    networks:
+      - huniit_network
+
   api-service:
+    container_name: api-service
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: Dockerfile
       target: development
+      args:
+        - NODE_VERSION=${NODE_VERSION}
     working_dir: /srv
-    user: node
     volumes:
       - ./:/srv
+    depends_on:
+      - backend-database
     ports:
-      - '9230:9229'
-      - 3001:3000
+      - 9229:${DEBUG_PORT}
+      - 3000:${PORT}
     command: npm run start:debug
-    env_file:
-      - .env
     networks:
       - huniit_network
 

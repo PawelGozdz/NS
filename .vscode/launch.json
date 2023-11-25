@@ -6,7 +6,7 @@
 			"type": "node",
 			"request": "attach",
 			"restart": true,
-			"port": 9230,
+			"port": 9229,
 			"remoteRoot": "/srv"
 		}
 	]
