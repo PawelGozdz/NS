@@ -7,40 +7,49 @@
 	"license": "UNLICENSED",
 	"scripts": {
 		"build": "nest build",
-		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"libs/**/*.ts\"",
 		"start": "nest start",
 		"start:dev": "nest start --watch",
 		"start:debug": "nest start --debug 0.0.0.0:9229 --watch",
 		"start:prod": "node dist/main",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-		"test": "jest",
+		"test": "jest --config jest/jest.unit.config.js",
 		"test:watch": "jest --watch",
 		"test:cov": "jest --coverage",
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 		"test:e2e": "jest --config ./test/jest-e2e.json"
 	},
 	"dependencies": {
+		"@nestjs-architects/typed-cqrs": "^1.1.2-alpha.0",
 		"@nestjs/common": "^10.0.0",
 		"@nestjs/config": "^3.1.1",
 		"@nestjs/core": "^10.0.0",
+		"@nestjs/cqrs": "^10.2.6",
 		"@nestjs/platform-express": "^10.0.0",
 		"@nestjs/swagger": "^7.1.14",
+		"class-transformer": "^0.5.1",
+		"class-validator": "^0.14.0",
+		"dayjs": "^1.11.10",
+		"dotenv": "^16.3.1",
 		"lodash": "^4.17.21",
-		"morgan": "^1.10.0",
+		"nanoid": "^5.0.3",
+		"nest-commander": "^3.12.2",
 		"nestjs-cls": "^3.6.0",
 		"nestjs-pino": "^3.5.0",
+		"objection": "^3.1.2",
 		"pino": "^8.16.1",
 		"pino-pretty": "^10.2.3",
 		"reflect-metadata": "^0.1.13",
 		"rxjs": "^7.8.1",
 		"uuid": "^9.0.1",
-		"winston": "^3.11.0",
 		"zod": "^3.22.4"
 	},
 	"devDependencies": {
+		"@golevelup/ts-jest": "^0.4.0",
 		"@nestjs/cli": "^10.0.0",
 		"@nestjs/schematics": "^10.0.0",
 		"@nestjs/testing": "^10.0.0",
+		"@side/jest-runtime": "^1.1.0",
 		"@swc/core": "^1.3.95",
 		"@swc/jest": "^0.2.29",
 		"@types/express": "^4.17.17",
@@ -49,7 +58,7 @@
 		"@types/morgan": "^1.9.9",
 		"@types/node": "^20.3.1",
 		"@types/supertest": "^2.0.12",
-		"@types/winston": "^2.4.4",
+		"@types/uuid": "^9.0.7",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
 		"eslint": "^8.42.0",
@@ -71,7 +80,7 @@
 			"json",
 			"ts"
 		],
-		"rootDir": "src",
+		"rootDir": ".",
 		"testRegex": ".*\\.spec\\.ts$",
 		"transform": {
 			"^.+\\.(t|j)s$": "ts-jest"
@@ -79,7 +88,16 @@
 		"collectCoverageFrom": [
 			"**/*.(t|j)s"
 		],
-		"coverageDirectory": "../coverage",
-		"testEnvironment": "node"
+		"coverageDirectory": "./coverage",
+		"testEnvironment": "node",
+		"roots": [
+			"<rootDir>/src/",
+			"<rootDir>/libs/"
+		],
+		"moduleNameMapper": {
+			"^@libs/cli/cli(|/.*)$": "<rootDir>/libs/cli/src/$1",
+			"^@libs/logger/logger(|/.*)$": "<rootDir>/libs/logger/src/$1",
+			"^@libs/env/env(|/.*)$": "<rootDir>/libs/env/src/$1"
+		}
 	}
 }

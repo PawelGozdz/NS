@@ -15,5 +15,43 @@
 		],
 		"builder": "swc",
 		"typeCheck": true
+	},
+	"projects": {
+		"ddd": {
+			"type": "library",
+			"root": "libs/ddd",
+			"entryFile": "index",
+			"sourceRoot": "libs/ddd/src",
+			"compilerOptions": {
+				"tsConfigPath": "libs/ddd/tsconfig.lib.json"
+			}
+		},
+		"testing": {
+			"type": "library",
+			"root": "libs/testing",
+			"entryFile": "index",
+			"sourceRoot": "libs/testing/src",
+			"compilerOptions": {
+				"tsConfigPath": "libs/testing/tsconfig.lib.json"
+			}
+		},
+		"cqrs": {
+			"type": "library",
+			"root": "libs/cqrs",
+			"entryFile": "index",
+			"sourceRoot": "libs/cqrs/src",
+			"compilerOptions": {
+				"tsConfigPath": "libs/cqrs/tsconfig.lib.json"
+			}
+		},
+		"common": {
+			"type": "library",
+			"root": "libs/common",
+			"entryFile": "index",
+			"sourceRoot": "libs/common/src",
+			"compilerOptions": {
+				"tsConfigPath": "libs/common/tsconfig.lib.json"
+			}
+		}
 	}
 }

@@ -6,7 +6,7 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"allowSyntheticDefaultImports": true,
-		"target": "ES2021",
+		"target": "ES2022",
 		"sourceMap": true,
 		"outDir": "./dist",
 		"baseUrl": "./",
@@ -23,8 +23,17 @@
 		"strictPropertyInitialization": false,
 		"typeRoots": ["./node_modules/@types", "./src/index.d.ts"],
 		"paths": {
-			"@core/*": ["src/core/*"],
-			"@config/*": ["src/config/*"]
+			"@app": ["src"],
+			"@app/*": ["src/*"],
+			"@libs/ddd": ["libs/ddd/src"],
+			"@libs/ddd/*": ["libs/ddd/src/*"],
+			"@libs/cqrs": ["libs/cqrs/src"],
+			"@libs/cqrs/*": ["libs/cqrs/src/*"],
+			"@config/*": ["config/*"],
+			"@libs/testing": ["libs/testing/src"],
+			"@libs/testing/*": ["libs/testing/src/*"],
+			"@libs/common": ["libs/common/src"],
+			"@libs/common/*": ["libs/common/src/*"]
 		}
 	}
 }

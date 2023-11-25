@@ -1,7 +1,10 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { Logger } from 'nestjs-pino';
-import { EnvService } from './core/modules/environment/domain/env.service';
+import { AppModule } from './app.module';
+import { EnvService } from './core/modules/environment/environment.service';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, { bufferLogs: true });
