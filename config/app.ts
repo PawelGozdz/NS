@@ -1,4 +1,9 @@
+import dotenv from 'dotenv';
+import { join } from 'path';
 import { z } from 'zod';
+dotenv.config({
+	path: join(__dirname, '../', '.env'),
+});
 
 export enum Environment {
 	PRODUCTION = 'production',
@@ -22,6 +27,9 @@ const envSchema = z.object({
 	DATABASE_PORT: z.coerce.number().positive().max(9999),
 	DATABASE_USER: z.string(),
 	DATABASE_PASSWORD: z.string(),
+	DATABASE_LOGGING: z.coerce.boolean().default(false),
+	DATABASE_HOST: z.string(),
+	DATABASE_SCHEMA: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;

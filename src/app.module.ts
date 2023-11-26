@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { ApiGatewayModule } from './api-gateway';
 import { EnvModule } from './core/modules/environment/environmental.module';
+import { DatabaseModule } from './database/database.module';
 
 const providers = [];
 
@@ -16,6 +17,7 @@ const providers = [];
 			isGlobal: true,
 			validate: (env) => config,
 		}),
+		DatabaseModule,
 		ApiGatewayModule,
 		EnvModule,
 		CqrsModule,

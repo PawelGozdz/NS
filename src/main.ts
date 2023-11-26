@@ -1,10 +1,12 @@
-const dotenv = require('dotenv');
-dotenv.config();
-
 import { globalPrefix, globalVersioning } from '@config/app';
 import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import dotenv from 'dotenv';
 import { Logger } from 'nestjs-pino';
+import { join } from 'path';
+dotenv.config({
+	path: join(__dirname, '../', '.env'),
+});
 
 import { AppModule } from './app.module';
 import { EnvService } from './core/modules/environment/environment.service';
