@@ -2,6 +2,7 @@ import { LoggingInterceptor } from '@libs/common';
 import { CqrsModule } from '@libs/cqrs';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { UserController } from './user.controller';
 
 const interceptors = [
 	{
@@ -11,7 +12,7 @@ const interceptors = [
 ];
 
 const providers = [];
-const controllers = [];
+const controllers = [UserController];
 
 @Module({
 	imports: [CqrsModule],

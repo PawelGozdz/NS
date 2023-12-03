@@ -1,35 +1,45 @@
 import { RequestMethod } from '@nestjs/common';
-import config from './app';
 import { Request } from 'express';
 import { Params } from 'nestjs-pino';
+import config, { Environment } from './app';
+
+const isProduction = config.NODE_ENV === Environment.PRODUCTION;
 
 const options: Params = {
 	pinoHttp: {
-		autoLogging: {
-			ignore: (req) => (req as Request).originalUrl === '/',
-		},
-		formatters: {
-			log(object) {
-				// Add corelationId to the object
-				return object;
-			},
-		},
-		serializers: {
-			res: (response) => {
-				// remove unwanted properties from response
-				return response;
-			},
-		},
-		transport: {
-			targets: [
-				{
-					target: 'pino-pretty',
-					level: 'info',
-					options: {
-						colorize: true,
-						translateTime: 'yyyy-mm-dd HH:MM:ss',
-						levelFirst: true,
-						messageFormat: `
+		autoLogging: isProduction
+			? {
+					ignore: (req) => (req as Request).originalUrl === '/',
+			  }
+			: false,
+		formatters: isProduction
+			? {
+					log(object) {
+						// Add corelationId to the object
+						return object;
+					},
+			  }
+			: undefined,
+		serializers: isProduction
+			? {
+					res: (response) => {
+						// remove unwanted properties from response
+						return response;
+					},
+			  }
+			: undefined,
+		transport: isProduction
+			? undefined
+			: {
+					targets: [
+						{
+							target: 'pino-pretty',
+							level: config.LOG_LEVEL || 'info',
+							options: {
+								colorize: true,
+								translateTime: 'yyyy-mm-dd HH:MM:ss',
+								levelFirst: true,
+								messageFormat: `
 						{if context} [{context}] {end}
 						{if req.method}{req.method} {end}
 						{if res.statusCode}{res.statusCode} {end}
@@ -39,11 +49,11 @@ const options: Params = {
 						{if responseTime} {responseTime}ms - {end}
 						{if msg} {msg} {end}
 						`,
-						ignore: 'hostname,pid,res,req,responseTime,context',
-					},
-				},
-			],
-		},
+								ignore: 'hostname,pid,res,req,responseTime,context',
+							},
+						},
+					],
+			  },
 	},
 	exclude: [{ method: RequestMethod.POST, path: 'health' }],
 };

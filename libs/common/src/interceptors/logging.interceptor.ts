@@ -1,12 +1,15 @@
-import { CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor } from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { Request } from 'express';
+import { PinoLogger } from 'nestjs-pino';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-	private readonly logger = new Logger(this.constructor.name);
-
+	constructor(private readonly logger: PinoLogger) {
+		this.logger.setContext(this.constructor.name);
+	}
 	intercept(context: ExecutionContext, next: CallHandler): Observable<any> | any {
 		if (context.getType() === 'http') {
 			return this.logHttpCall(context, next);
@@ -16,11 +19,11 @@ export class LoggingInterceptor implements NestInterceptor {
 	private logHttpCall(context: ExecutionContext, next: CallHandler) {
 		const request = context.switchToHttp().getRequest();
 		const userAgent = request.get('user-agent') || '';
-		const { ip, method, path: url } = request;
+		const { ip, method, path: url }: Request = request;
 		const correlationKey = uuidv4();
 		const userId = request.user?.userId;
 
-		this.logger.log(`[${correlationKey}] ${method} ${url} ${userId} ${userAgent} ${ip}: ${context.getClass().name} ${context.getHandler().name}`);
+		this.logger.info(`[${context.getClass().name}->${context.getHandler().name}] ${method} ${url} ${userId ? userId : ''} ${userAgent} ${ip}`);
 
 		const now = Date.now();
 		return next.handle().pipe(
@@ -30,7 +33,7 @@ export class LoggingInterceptor implements NestInterceptor {
 				const { statusCode } = response;
 				const contentLength = response.get('content-length');
 
-				this.logger.log(`[${correlationKey}] ${method} ${url} ${statusCode} ${contentLength}: ${Date.now() - now}ms`);
+				this.logger.info(`[${correlationKey}] ${method} ${url} ${statusCode} ${contentLength ? contentLength : ''}: ${Date.now() - now}ms`);
 			}),
 		);
 	}

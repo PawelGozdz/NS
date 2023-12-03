@@ -33,7 +33,6 @@ describe('UserController (e2e)', () => {
 
 	it('/user (GET)', async () => {
 		const response = await request(app.getHttpServer()).get('/user');
-		console.log('response', response.body);
 
 		expect(response.statusCode).toBe(200);
 		expect(response.text).toEqual('This action returns all userss');

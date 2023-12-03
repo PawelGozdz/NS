@@ -9,7 +9,7 @@ import { ApiGatewayModule } from './api-gateway';
 
 import { EnvModule } from './core/modules/environment/environmental.module';
 import { DatabaseModule } from './database/database.module';
-import { UserController } from './user/user.controller';
+import { ServicesModule } from './services';
 
 const providers = [];
 
@@ -24,8 +24,8 @@ const providers = [];
 		EnvModule,
 		CqrsModule,
 		LoggerModule.forRoot(loggerOptions),
+		ServicesModule,
 	],
 	providers: [...providers],
-	controllers: [UserController],
 })
 export class AppModule {}

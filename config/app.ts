@@ -33,7 +33,7 @@ const envSchema = z.object({
 	DATABASE_PORT: z.coerce.number().positive().max(9999),
 	DATABASE_USER: z.string(),
 	DATABASE_PASSWORD: z.string(),
-	DATABASE_LOGGING: z.coerce.boolean().default(false),
+	DATABASE_LOGGING: z.string().transform((val) => val === 'true'),
 	DATABASE_HOST: z.string(),
 	DATABASE_SCHEMA: z.string().default('public'),
 });
