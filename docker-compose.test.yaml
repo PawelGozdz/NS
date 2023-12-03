@@ -1,0 +1,45 @@
+version: '3.8'
+name: huntit-test
+
+services:
+  backend-database-test:
+    image: postgres:14
+    container_name: backend-database-test
+    env_file:
+      - .env.test
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - 5430:${DATABASE_PORT}
+    volumes:
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../volumes/huntit/database-test:/var/lib/postgresql/data
+    networks:
+      - huntit_network_test
+
+  api-service-test:
+    container_name: api-service-test
+    env_file:
+      - .env.test
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+      args:
+        - NODE_VERSION=${NODE_VERSION}
+    user: node
+    working_dir: /srv
+    volumes:
+      - ./:/srv
+    depends_on:
+      - backend-database-test
+    command: npm run test:e2e:run
+    networks:
+      - huntit_network_test
+    mem_limit: 2048MB
+
+networks:
+  huntit_network_test:
+    driver: bridge

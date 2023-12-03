@@ -6,8 +6,10 @@ import { CqrsModule } from '@libs/cqrs';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { ApiGatewayModule } from './api-gateway';
+
 import { EnvModule } from './core/modules/environment/environmental.module';
 import { DatabaseModule } from './database/database.module';
+import { UserController } from './user/user.controller';
 
 const providers = [];
 
@@ -24,5 +26,6 @@ const providers = [];
 		LoggerModule.forRoot(loggerOptions),
 	],
 	providers: [...providers],
+	controllers: [UserController],
 })
 export class AppModule {}
