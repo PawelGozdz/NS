@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User create Success should apply UserCreatedEvent with property values 1`] = `
+{
+  "email": "test@test.pl",
+  "hash": "hashed",
+  "hashedRt": "hashed-refres-token",
+  "id": Any<EntityId>,
+  "roleId": "74497f9b-1d36-4747-b1f5-9f753a74f163",
+}
+`;

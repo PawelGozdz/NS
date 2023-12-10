@@ -1,6 +1,7 @@
 import app from './app';
 import db from './database';
-import settings from './settings';
+import pinoLogger from './pino-logger';
 import services from './services';
+import settings from './settings';
 
-export default [app, db, settings, services];
+export default [app, db, settings, services, pinoLogger];

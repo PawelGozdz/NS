@@ -11,11 +11,11 @@ export class EntityId {
 
 	static create(value: string): EntityId {
 		if (!value) {
-			throw new MissingValueError('entity identifier');
+			throw MissingValueError.withValue('entity identifier');
 		}
 
 		if (!isUUID(value)) {
-			throw new InvalidParameterError('entity identifier', `${value} is not a valid UUID`);
+			throw InvalidParameterError.withParameter('entity identifier');
 		}
 
 		return new EntityId(value);

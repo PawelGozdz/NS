@@ -1,10 +1,9 @@
 import { ApplicationErrorCode, ErrorOptions } from '@libs/common';
 import { BaseError } from './base.error';
 
-type ApplicationErrorOptions = ErrorOptions & {
+export type ApplicationErrorOptions = ErrorOptions & {
 	module?: string;
 	data?: any;
-	message?: string;
 	error?: Error;
 };
 

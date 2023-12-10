@@ -1,16 +1,15 @@
 import { BaseError, ErrorOptions } from './base.error';
-import { DomainErrorCode } from './error.enum';
+import { DomainErrorCode, DomainErrorType } from './error.enum';
 
-type DomainErrorOptions = ErrorOptions & {
-	domain?: string;
+export type DomainErrorOptions = ErrorOptions & {
+	domain?: DomainErrorType;
 	code?: DomainErrorCode;
 	data?: any;
-	message?: string;
 	error?: Error;
 };
 
 export abstract class DomainError extends BaseError implements DomainErrorOptions {
-	domain?: string;
+	domain?: DomainErrorType;
 	code: DomainErrorCode;
 	data?: any;
 	timestamp?: Date;
@@ -22,7 +21,7 @@ export abstract class DomainError extends BaseError implements DomainErrorOption
 		if (options instanceof Error) {
 			this.error = options;
 		} else if (options && 'code' in options) {
-			this.domain = options?.domain || '';
+			this.domain = options?.domain;
 			this.code = options?.code || DomainErrorCode.Default;
 			this.data = options?.data || {};
 			this.error = options?.error;
@@ -37,34 +36,35 @@ export abstract class DomainError extends BaseError implements DomainErrorOption
 }
 
 export class MissingValueError extends DomainError {
-	static default = 'Missing value';
-
-	constructor(value: string, domain?: string) {
-		super(`Missing value: ${value}`, {
+	static withValue(msg: string, data?: DomainErrorOptions): MissingValueError {
+		const message = msg || 'Missing value';
+		const options = {
 			code: DomainErrorCode.MissingValue,
-			domain,
-		});
+			data,
+		};
+		return new MissingValueError(message, options);
 	}
 }
 
 export class InvalidParameterError extends DomainError {
-	static default = 'Invalid parameter';
+	static withParameter(parameter: string, msg?: string, data?: DomainErrorOptions): InvalidParameterError {
+		const message = msg || `Invalid ${parameter}`;
+		const options: DomainErrorOptions = {
+			code: DomainErrorCode.MissingValue,
+			data,
+		};
 
-	constructor(parameter: string, message?: string, domain?: string) {
-		super(`${InvalidParameterError.default}: ${parameter}.${message ? ` ${message}.` : ''}`, {
-			code: DomainErrorCode.InvalidParameter,
-			domain,
-		});
+		return new InvalidParameterError(message, options);
 	}
 }
 
-export class ConflictError extends DomainError {
-	static default = 'Invalid parameter';
-
-	constructor(message?: string, domain?: string) {
-		super(message || ConflictError.default, {
-			domain,
+export class DuplicateError extends DomainError {
+	static withEntityId(id: string, data?: DomainErrorOptions): DuplicateError {
+		const message = `Entity with id ${id} already exists`;
+		const options = {
 			code: DomainErrorCode.DuplicateEntry,
-		});
+			data,
+		};
+		return new DuplicateError(message, options);
 	}
 }

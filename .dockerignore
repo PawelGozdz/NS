@@ -31,4 +31,4 @@ coverage/
 # Custom
 dist/
 volumes/
-
+jobs-app.code-workspace

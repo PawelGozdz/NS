@@ -36,6 +36,12 @@ const envSchema = z.object({
 	DATABASE_LOGGING: z.string().transform((val) => val === 'true'),
 	DATABASE_HOST: z.string(),
 	DATABASE_SCHEMA: z.string().default('public'),
+
+	// AUTH
+	JWT_ACCESS_TOKEN_SECRET: z.string(),
+	JWT_ACCESS_TOKEN_EXPIRATION_TIME: z.string(),
+	JWT_REFRESH_TOKEN_SECRET: z.string(),
+	JWT_REFRESH_TOKEN_EXPIRATION_TIME: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;

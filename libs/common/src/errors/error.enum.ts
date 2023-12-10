@@ -67,3 +67,7 @@ export enum FrameworkErrorCode {
 	RateLimitExceeded = 'F_RATE_LIMIT_EXCEEDED',
 	ServiceUnavailable = 'F_SERVICE_UNAVAILABLE',
 }
+
+export enum DomainErrorType {
+	IDENTITY = 'identity',
+}

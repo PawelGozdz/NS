@@ -13,13 +13,13 @@ describe('Id Value Object', () => {
 		const { error } = catchActError(() => EntityId.create(wrongId));
 
 		expect(error).toBeDefined();
-		expect(error).toEqual(new InvalidParameterError('entity identifier', `${wrongId} is not a valid UUID`));
+		expect(error).toEqual(InvalidParameterError.withParameter('entity identifier'));
 	});
 
 	it('should throw assertion error if organization number is empty', () => {
 		const { error } = catchActError(() => EntityId.create(''));
 
 		expect(error).toBeDefined();
-		expect(error).toEqual(new MissingValueError('entity identifier'));
+		expect(error).toEqual(MissingValueError.withValue('entity identifier'));
 	});
 });

@@ -46,7 +46,7 @@ services:
     command: npm run start:debug
     networks:
       - huniit_network
-    mem_limit: 2048MB
+    mem_limit: 4096MB
 
 networks:
   huniit_network:

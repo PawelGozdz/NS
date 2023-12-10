@@ -33,3 +33,15 @@ async function bootstrap() {
 	await app.listen(configService.get('PORT'));
 }
 bootstrap();
+
+process.on('unhandledRejection', (reason, promise) => {
+	console.error('Unhandled Promise rejection:', reason);
+	process.exit(1);
+	// Handle the unhandled promise rejection here
+});
+
+process.on('uncaughtException', (error) => {
+	console.error('Uncaught Exception:', error);
+	process.exit(1);
+	// Handle the uncaught exception here
+});

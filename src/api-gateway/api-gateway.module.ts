@@ -1,7 +1,9 @@
-import { LoggingInterceptor } from '@libs/common';
+import { JwtAuthenticationModule } from '@app/authentication/authentication.module';
+import { AccessTokenGuard, LoggingInterceptor } from '@libs/common';
 import { CqrsModule } from '@libs/cqrs';
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthControllerV1, AuthJwtControllerV1 } from './auth';
 import { UserController } from './user.controller';
 
 const interceptors = [
@@ -12,11 +14,23 @@ const interceptors = [
 ];
 
 const providers = [];
-const controllers = [UserController];
+const controllers = [UserController, AuthControllerV1, AuthJwtControllerV1];
+const guards = [{ provide: 'APP_GUARD', useClass: AccessTokenGuard }];
+const pipes = [
+	{
+		provide: 'APP_PIPE',
+		useFactory: () => {
+			return new ValidationPipe({
+				transform: true,
+				whitelist: true,
+			});
+		},
+	},
+];
 
 @Module({
-	imports: [CqrsModule],
+	imports: [CqrsModule, JwtAuthenticationModule],
 	controllers: [...controllers],
-	providers: [...interceptors, ...providers],
+	providers: [...interceptors, ...providers, ...guards, ...pipes],
 })
 export class ApiGatewayModule {}
