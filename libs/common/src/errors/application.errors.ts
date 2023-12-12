@@ -1,12 +1,6 @@
 import { ApplicationErrorCode, ErrorOptions } from '@libs/common';
 import { BaseError } from './base.error';
 
-export type ApplicationErrorOptions = ErrorOptions & {
-	module?: string;
-	data?: any;
-	error?: Error;
-};
-
 export class ApplicationError extends BaseError implements ApplicationErrorOptions {
 	module?: string;
 	code?: ApplicationErrorCode;
@@ -20,19 +14,22 @@ export class ApplicationError extends BaseError implements ApplicationErrorOptio
 		if (options instanceof Error) {
 			this.error = options;
 		} else if (options && 'code' in options) {
-			this.module = options?.module || '';
-			this.code = options.code;
-			this.data = options?.data || {};
-			this.error = options?.error;
+			const { module = '', code, data = {}, error } = options;
+			this.module = module;
+			this.code = code;
+			this.data = data;
+			this.error = error;
 		}
 
-		this.timestamp = ApplicationError.generateTimestamp();
-	}
-
-	private static generateTimestamp(): Date {
-		return new Date();
+		this.timestamp = new Date();
 	}
 }
+
+export type ApplicationErrorOptions = ErrorOptions & {
+	module?: string;
+	data?: any;
+	error?: Error;
+};
 
 export class ValidationApplicationError extends ApplicationError {
 	static createValidationFailedError(data?: ApplicationErrorOptions): ValidationApplicationError {

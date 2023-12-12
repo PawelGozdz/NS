@@ -39,7 +39,7 @@ describe('GetUserByIdQuery', () => {
 
 	describe('Success', () => {
 		it('should return user', async () => {
-			userQueryRepositoryMock.getOneById.mockResolvedValueOnce(UserInfo);
+			userQueryRepositoryMock.getOneByEmail.mockResolvedValueOnce(UserInfo);
 
 			const result = await handler.execute(query);
 
@@ -49,7 +49,7 @@ describe('GetUserByIdQuery', () => {
 
 	describe('Failure', () => {
 		it('should throw an error when user does not exist', async () => {
-			userQueryRepositoryMock.getOneById.mockResolvedValueOnce(undefined);
+			userQueryRepositoryMock.getOneByEmail.mockResolvedValueOnce(undefined);
 
 			const { error } = await catchActError(async () => {
 				await handler.execute(query);

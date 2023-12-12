@@ -41,7 +41,7 @@ export class NotFoundError extends FrameworkError {
 	static statusCode: number = 404;
 	static message: string = 'Not Found';
 
-	constructor(message: string, options: FrameworkErrorOptions | Error = {}) {
+	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
 		super(NotFoundError.statusCode, message || NotFoundError.message, {
 			code: FrameworkErrorCode.NotFound,
 			...options,

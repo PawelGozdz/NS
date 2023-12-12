@@ -7,4 +7,10 @@ export class UserCreatedEvent extends Event<UserCreatedEvent> {
 	roleId: EntityId;
 	hash: string;
 	hashedRt: string | null;
+
+	constructor(event: UserCreatedEvent) {
+		super(event);
+
+		Object.assign(this, event);
+	}
 }

@@ -1,4 +1,4 @@
-import { EntityId, Nullable, getCoalescedField } from '@libs/common';
+import { EntityId, Nullable } from '@libs/common';
 import { AggregateRoot } from '@libs/ddd';
 import { UserCreatedEvent } from './events';
 import { UserUpdatedEvent } from './events/user-updated.event';
@@ -85,7 +85,7 @@ export class User extends AggregateRoot {
 	update({ email, hash, hashedRt, roleId }: { email?: string; hash?: string; hashedRt?: Nullable<string>; roleId?: string }) {
 		const potentialNewRoleId = roleId ?? this.roleId.value;
 		const newHash = hash ?? this.hash;
-		const potentialNewHashedRt = getCoalescedField(hashedRt, this.hashedRt);
+		const potentialNewHashedRt = hashedRt === null ? null : this.hashedRt;
 		const potentialNewEmail = email ?? this.email;
 
 		this.apply(
@@ -116,5 +116,37 @@ export class User extends AggregateRoot {
 
 	getId(): string {
 		return this.id.value;
+	}
+
+	getRoleId(): string {
+		return this.roleId.value;
+	}
+
+	getEmail(): string {
+		return this.email;
+	}
+
+	getHash(): string {
+		return this.hash;
+	}
+
+	getHashedRt(): Nullable<string> {
+		return this.hashedRt;
+	}
+
+	private onUserCreatedEvent(event: UserCreatedEvent) {
+		this.id = event.id;
+		this.email = event.email;
+		this.roleId = event.roleId;
+		this.hash = event.hash;
+		this.hashedRt = event.hashedRt;
+	}
+
+	private onUserUpdatedEvent(event: UserUpdatedEvent) {
+		this.id = event.id;
+		this.email = event.email;
+		this.roleId = event.roleId;
+		this.hash = event.hash;
+		this.hashedRt = event.hashedRt;
 	}
 }

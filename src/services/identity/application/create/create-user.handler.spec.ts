@@ -1,5 +1,5 @@
 import { createMock } from '@golevelup/ts-jest';
-import { TestLoggerModule } from '@libs/testing';
+import { TestCqrsModule, TestLoggerModule } from '@libs/testing';
 import { Test } from '@nestjs/testing';
 import { IUsersCommandRepository, User } from '../../domain';
 import { CreateUserCommand } from './create-user.command';
@@ -13,7 +13,7 @@ describe('CreateUserHandler', () => {
 		userCommandRepositoryMock = createMock();
 
 		const app = await Test.createTestingModule({
-			imports: [TestLoggerModule.forRoot()],
+			imports: [TestLoggerModule.forRoot(), TestCqrsModule],
 			providers: [
 				CreateUserHandler,
 				{

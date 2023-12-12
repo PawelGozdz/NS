@@ -98,19 +98,15 @@ export class AuthService {
 	}
 
 	public async signup(userId: string): Promise<ITokens> {
-		try {
-			const tokens = await this.getTokens(userId);
-			const hashedPassword = await this.updateHash(tokens.refresh_token);
+		const tokens = await this.getTokens(userId);
+		const hashedPassword = await this.updateHash(tokens.refresh_token);
 
-			await this.updateUser({
-				id: userId,
-				hash: hashedPassword,
-			});
+		await this.updateUser({
+			id: userId,
+			hash: hashedPassword,
+		});
 
-			return tokens;
-		} catch (error: any) {
-			throw error;
-		}
+		return tokens;
 	}
 
 	public async signin(dto: SignInDto, user: IUser): Promise<ITokens> {

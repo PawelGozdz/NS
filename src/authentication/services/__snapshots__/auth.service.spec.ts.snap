@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthService createUser failure should throw CannotCreateUserError if user creation fails 1`] = `[CannotCreateUserError: Cannot create user]`;
+
+exports[`AuthService createUser failure should throw ConflictError if user with the same email already exists 1`] = `[ConflictError: User with this email already exists!]`;
+
+exports[`AuthService createUser success should create a user and return their id 1`] = `
+{
+  "id": "userId",
+}
+`;
+
+exports[`AuthService getUserByEmail success should return a user 1`] = `
+{
+  "email": "test@test.com",
+  "id": "userId",
+}
+`;
+
+exports[`AuthService getUserById success should return a user 1`] = `
+{
+  "email": "test@example.com",
+  "id": "userId",
+}
+`;
+
+exports[`should create a user and return their id 1`] = `
+{
+  "id": "userId",
+}
+`;
+
+exports[`should get tokens, update hash and update user 1`] = `
+{
+  "access_token": "access_token",
+  "refresh_token": "refresh_token",
+}
+`;
+
+exports[`should propagate the error if an unknown error occurs 1`] = `[Error: Unknown error]`;
+
+exports[`should return a user 1`] = `
+{
+  "email": "test@example.com",
+  "id": "userId",
+}
+`;
+
+exports[`should return a user 2`] = `
+{
+  "email": "test@test.com",
+  "id": "userId",
+}
+`;
+
+exports[`should throw CannotCreateUserError if user creation fails 1`] = `[CannotCreateUserError: Cannot create user]`;
+
+exports[`should throw ConflictError if user with the same email already exists 1`] = `[ConflictError: User with this email already exists!]`;
+
+exports[`should throw ConflictError if user with the same email already exists 2`] = `[ConflictError: User with this email already exists!]`;

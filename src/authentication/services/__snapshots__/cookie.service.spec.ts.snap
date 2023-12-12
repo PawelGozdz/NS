@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CookiesService getCookieForLogOut success should return array of cookies 1`] = `
+[
+  "Authentication=; HttpOnly; Path=/; Max-Age=0",
+  "Refresh=; HttpOnly; Path=/; Max-Age=0",
+]
+`;
+
+exports[`CookiesService getCookieWithJwtAccessToken failure should throw BadRequestError 1`] = `[BadRequestError: Provide all the data!]`;
+
+exports[`CookiesService getCookieWithJwtAccessToken success should get cookie with JWT access token 1`] = `
+{
+  "cookie": "Authentication=access_token; HttpOnly; Path=/; Max-Age=2m",
+}
+`;
+
+exports[`CookiesService getCookieWithJwtRefreshToken failure should throw BadRequestError 1`] = `[BadRequestError: Provide all the data!]`;
+
+exports[`CookiesService getCookieWithJwtRefreshToken success should get cookie with JWT refresh token 1`] = `
+{
+  "cookie": "Refresh=refresh_token; HttpOnly; Path=/; Max-Age=15m",
+}
+`;
+
+exports[`CookiesService getCookies success should get cookies 1`] = `
+[
+  "accessCookie",
+  "refreshCookie",
+]
+`;

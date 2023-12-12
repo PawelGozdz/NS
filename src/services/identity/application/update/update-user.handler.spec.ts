@@ -1,8 +1,9 @@
 import { createMock } from '@golevelup/ts-jest';
-import { TestLoggerModule } from '@libs/testing';
+import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 import { Test } from '@nestjs/testing';
 
-import { IUsersCommandRepository, User } from '../../domain';
+import { EntityId } from '@libs/common';
+import { IUsersCommandRepository, User, UserNotFoundError } from '../../domain';
 import { UpdateUserCommand } from './update-user.command';
 import { UpdateUserHandler } from './update-user.handler';
 
@@ -14,7 +15,7 @@ describe('UpdateUserHandler', () => {
 		userCommandRepositoryMock = createMock();
 
 		const app = await Test.createTestingModule({
-			imports: [TestLoggerModule.forRoot()],
+			imports: [TestLoggerModule.forRoot(), TestCqrsModule],
 			providers: [
 				UpdateUserHandler,
 				{
@@ -27,39 +28,65 @@ describe('UpdateUserHandler', () => {
 		handler = app.get(UpdateUserHandler);
 	});
 
-	const userId = '34d90467-aeb4-4016-9791-86f9aec01011';
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
+	const userId = new EntityId('34d90467-aeb4-4016-9791-86f9aec010e4');
+	const hash = 'asdfadsfas';
+	const hashedRt = 'some-hash';
+	const email = 'test@test.com';
+	const roleId = new EntityId('34d90467-aeb4-4016-9791-86f9aec010e4');
+
 	const command = new UpdateUserCommand({
+		id: userId.value,
+		hash,
+		hashedRt,
+		email,
+		roleId: roleId.value,
+	});
+
+	const user = new User({
 		id: userId,
-		hash: 'asdfadsfas',
-		hashedRt: 'some-hash',
-		email: 'test@test.com',
-		roleId: '34d90467-aeb4-4016-9791-86f9aec010e4',
+		roleId,
+		email,
+		hash,
+		hashedRt,
 	});
 
 	describe('Success', () => {
 		it('should update new user', async () => {
 			// Arrange
-			let user: User;
-
+			let copyUser: User;
+			const newEmail = 'newemail@gmail.com';
+			userCommandRepositoryMock.getOneById.mockResolvedValueOnce(user);
 			userCommandRepositoryMock.save.mockImplementationOnce(async (aggregate) => {
-				user = aggregate;
+				copyUser = aggregate;
 			});
 
 			// Act
-			const result = await handler.execute(command);
+			await handler.execute({
+				...command,
+				email: newEmail,
+			});
 
 			// Assert
+			const events = user.getUncommittedEvents();
 
-			expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(expect.any(User));
-			expect(result).toStrictEqual({ id: expect.any(String) });
+			expect(events.length).toBe(1);
+			expect(userCommandRepositoryMock.save).toHaveBeenCalledWith({
+				...user,
+				email: newEmail,
+			});
+			expect(copyUser!.email).toBe(newEmail);
 		});
 
 		it('should update new user and set hashedRt as null', async () => {
 			// Arrange
-			let user: User;
-
+			let copyUser: User;
+			userCommandRepositoryMock.getOneById.mockResolvedValueOnce(user);
 			userCommandRepositoryMock.save.mockImplementationOnce(async (aggregate) => {
-				user = aggregate;
+				copyUser = aggregate;
 			});
 
 			// Act
@@ -69,9 +96,26 @@ describe('UpdateUserHandler', () => {
 			});
 
 			// Assert
+			expect(userCommandRepositoryMock.save).toHaveBeenCalledWith({ ...user, hashedRt: null });
+			expect(copyUser!.hashedRt).toStrictEqual(null);
+		});
+	});
 
-			expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(expect.any(User));
-			expect(user!.hashedRt).toStrictEqual(null);
+	describe('Failure', () => {
+		it('should throw UserNotFoundError', async () => {
+			// Arrange
+			let copyUser: User;
+			userCommandRepositoryMock.getOneById.mockResolvedValueOnce(undefined);
+			userCommandRepositoryMock.save.mockImplementationOnce(async (aggregate) => {
+				copyUser = aggregate;
+			});
+
+			// Act
+			const { error } = await catchActError(() => handler.execute(command));
+
+			// Assert
+			expect(userCommandRepositoryMock.save).toHaveBeenCalledTimes(0);
+			expect(error).toBeInstanceOf(UserNotFoundError);
 		});
 	});
 });

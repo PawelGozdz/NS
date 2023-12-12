@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HashService should hash data 1`] = `"hashedData"`;
+
+exports[`HashService should return false if hash or text is not provided 1`] = `false`;
+
+exports[`HashService should verify hash and text 1`] = `true`;
+
+exports[`HashService should verify password 1`] = `true`;

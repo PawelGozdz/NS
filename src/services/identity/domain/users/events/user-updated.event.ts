@@ -6,5 +6,11 @@ export class UserUpdatedEvent extends Event<UserUpdatedEvent> {
 	email: string;
 	roleId: EntityId;
 	hash: string;
-	hashedRt?: string | null;
+	hashedRt: string | null;
+
+	constructor(event: UserUpdatedEvent) {
+		super(event);
+
+		Object.assign(this, event);
+	}
 }

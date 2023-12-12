@@ -15,7 +15,7 @@ export class GetUserByEmailHandler implements IInferredQueryHandler<GetUserByEma
 	}
 
 	public async execute(query: GetUserByEmailQuery): Promise<GetUserByEmailQueryResult> {
-		this.logger.info(query, 'Getting user by email-----------------------------');
+		this.logger.info(query, 'Getting user by email');
 
 		const { email } = query;
 		const userInfo = await this.userQueryRepository.getOneByEmail(email);
