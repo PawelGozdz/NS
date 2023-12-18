@@ -2,6 +2,7 @@ import config from '@config/app';
 import { IUser, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import * as cookie from 'cookie';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
@@ -14,7 +15,8 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		super({
 			jwtFromRequest: ExtractJwt.fromExtractors([
 				(req: Request) => {
-					return req?.cookies?.Authentication;
+					const accessToken = req?.cookies?.Authentication || this.parseCookies(req.headers.cookie || '')?.Authentication;
+					return accessToken;
 				},
 			]),
 			ignoreExpiration: false,
@@ -23,8 +25,12 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		});
 	}
 
+	private parseCookies(cookieAsString: string) {
+		return cookie.parse(cookieAsString || '');
+	}
+
 	async validate(req: Request, payload: JwtPayload): Promise<IUser> {
-		const accessToken = req?.cookies?.Authentication;
+		const accessToken = req?.cookies?.Authentication || this.parseCookies(req.headers.cookie || '')?.Authentication;
 
 		if (!accessToken || typeof accessToken !== 'string' || accessToken === '') {
 			throw new UnauthorizedError();

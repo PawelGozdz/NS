@@ -1,4 +1,4 @@
-import { IUsersCommandRepository, User } from '@app/services/identity/domain';
+import { IUsersCommandRepository, User } from '@app/services/users/domain';
 import { EntityId } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 

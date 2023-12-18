@@ -1,4 +1,4 @@
-import { IUsersQueryRepository, UserInfo } from '@app/services/identity/domain';
+import { IUsersQueryRepository, UserInfo } from '@app/services/users/domain';
 import { EntityId } from '@libs/common';
 
 export class UsersQueryRepository implements IUsersQueryRepository {
@@ -15,7 +15,7 @@ export class UsersQueryRepository implements IUsersQueryRepository {
 	public async getOneByEmail(email: string): Promise<UserInfo | undefined> {
 		return {
 			id: 'some-id',
-			email: email,
+			email,
 			roleId: 'roleId',
 			hash: 'hash',
 			hashedRt: 'hashedRt',

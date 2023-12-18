@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './identity/identity.module';
+import { UsersModule } from './users/identity.module';
 
 const modules = [UsersModule];
 const interceptors = [];
