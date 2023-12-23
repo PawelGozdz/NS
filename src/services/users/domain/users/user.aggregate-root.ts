@@ -58,7 +58,7 @@ export class User extends AggregateRoot {
 		return user;
 	}
 
-	update({ email, roleId }: { email?: string; roleId?: string }) {
+	update({ email }: { email?: string }) {
 		const potentialNewEmail = email ?? this.email;
 
 		this.apply(

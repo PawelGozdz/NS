@@ -1,11 +1,9 @@
 import { createMock } from '@golevelup/ts-jest';
 import { CannotCreateUserError, ConflictError, EntityId, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
-import { JwtService } from '@nestjs/jwt';
-
-import { Test, TestingModule } from '@nestjs/testing';
-// import { describe } from 'node:test';
-
 import { TestLoggerModule, catchActError } from '@libs/testing';
+import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { AuthUserFixture } from '../models/auth-user.fixture';
 import { ITokens } from '../types';
 import { AuthUsersService } from './auth-users.service';

@@ -4,7 +4,7 @@ import {
 	EntityId,
 	GetUserByEmailIntegrationEvent,
 	GetUserByIdIntegrationEvent,
-	SignUpDto,
+	SignUpIntegrationDto,
 } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -27,7 +27,7 @@ export class AuthUsersService {
 		private eventEmitter: EventEmitter2,
 	) {}
 
-	async create(userData: AuthUser) {
+	async create(userData: AuthUser): Promise<IUserCreated> {
 		return await this.authUsersRepository.create({
 			id: userData.id,
 			email: userData.email,
@@ -37,7 +37,7 @@ export class AuthUsersService {
 		});
 	}
 
-	async update(userData: Partial<AuthUser> & { id: EntityId }) {
+	async update(userData: Partial<AuthUser> & { id: EntityId }): Promise<void> {
 		return await this.authUsersRepository.update({
 			hash: userData.hash,
 			hashedRt: userData.hashedRt,
@@ -45,31 +45,31 @@ export class AuthUsersService {
 		});
 	}
 
-	async delete(id: EntityId) {
-		return await this.authUsersRepository.delete(id);
+	async delete(userId: EntityId): Promise<void> {
+		return await this.authUsersRepository.delete(userId);
 	}
 
-	async getByUserId(id: EntityId) {
-		return await this.authUsersRepository.getByUserId(id);
+	async getByUserId(userId: EntityId): Promise<AuthUser | undefined> {
+		return await this.authUsersRepository.getByUserId(userId);
 	}
 
-	async getByUserEmail(email: string) {
+	async getByUserEmail(email: string): Promise<AuthUser | undefined> {
 		return await this.authUsersRepository.getByUserEmail(email);
 	}
 
 	public async getIntegrationUserById(userId: string): Promise<IUserInfo | undefined> {
 		const user = await this.eventEmitter.emitAsync(GetUserByIdIntegrationEvent.eventName, new GetUserByIdIntegrationEvent(userId));
 
-		return user[0];
+		return user?.[0];
 	}
 
 	public async getIntegrationUserByEmail(email: string): Promise<IUserInfo | undefined> {
 		const user = await this.eventEmitter.emitAsync(GetUserByEmailIntegrationEvent.eventName, new GetUserByEmailIntegrationEvent(email));
 
-		return user[0];
+		return user?.[0];
 	}
 
-	async createIntegrationUser(dto: SignUpDto): Promise<IUserCreated> {
+	async createIntegrationUser(dto: SignUpIntegrationDto): Promise<IUserCreated> {
 		const user = (await this.eventEmitter.emitAsync(
 			CreateUserIntegrationEvent.eventName,
 			new CreateUserIntegrationEvent({

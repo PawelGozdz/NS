@@ -2,7 +2,6 @@ import { EntityId } from '@libs/common';
 import { UserCreatedEvent } from './events';
 import { User } from './user.aggregate-root';
 
-const roleId = new EntityId('74497f9b-1d36-4747-b1f5-9f753a74f163');
 const email = 'test@test.pl';
 
 describe('User', () => {
