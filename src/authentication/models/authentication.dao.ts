@@ -17,14 +17,14 @@ export class AuthUserDao extends BaseModel {
 	static relationMappings = {};
 }
 
-export class AuthUser implements Pick<IAuthUser, 'hash' | 'hashedRt'> {
-	id: EntityId;
+export class AuthUser implements IAuthUser {
+	id: string;
 	email: string;
-	userId: EntityId;
+	userId: string;
 	hash: string;
 	hashedRt: string | null;
 
-	constructor({ hash, hashedRt, userId, email, id }: AuthUser) {
+	constructor({ hash, hashedRt, userId, email, id }: { hash: string; hashedRt: string | null; userId: string; email: string; id: string }) {
 		this.id = id;
 		this.hash = hash;
 		this.email = email;
@@ -34,9 +34,9 @@ export class AuthUser implements Pick<IAuthUser, 'hash' | 'hashedRt'> {
 
 	static create({ id, userId, hash, hashedRt, email }: { id?: string; userId: string; email: string; hash: string; hashedRt?: string | null }) {
 		return new AuthUser({
-			id: id ? EntityId.create(id) : EntityId.createRandom(),
+			id: id ? EntityId.create(id).value : EntityId.createRandom().value,
 			email,
-			userId: EntityId.create(userId),
+			userId: EntityId.create(userId).value,
 			hash,
 			hashedRt: hashedRt ?? null,
 		});

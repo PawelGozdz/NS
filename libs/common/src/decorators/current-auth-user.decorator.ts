@@ -1,11 +1,11 @@
+import { AuthUser } from '@app/authentication/models';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { IUser } from '../entities';
 import { NotFoundError } from '../errors';
 
-export const GetCurrentUser = createParamDecorator((_: string | undefined, context: ExecutionContext): IUser => {
+export const GetCurrentAuthUser = createParamDecorator((_: string | undefined, context: ExecutionContext): AuthUser => {
 	const request = context.switchToHttp().getRequest();
 
-	const user = request.user as IUser;
+	const user = request.authUser as AuthUser;
 
 	if (user) {
 		return user;

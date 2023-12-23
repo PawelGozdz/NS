@@ -38,14 +38,14 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
 
 		const userId = EntityId.create(payload.id);
 
-		const user = await this.authService.getAuthenticatedUserWithRefreshToken(userId, refreshToken);
+		const user = await this.authService.getAuthenticatedUserWithRefreshToken(userId.value, refreshToken);
 
 		if (user) {
+			req.authUser = user;
+
 			req.user = {
 				email: user.email,
-				hash: user.hash,
-				hashedRt: user.hashedRt,
-				userId: user.userId.value,
+				id: user.userId,
 			};
 			req.refresh_token = refreshToken;
 

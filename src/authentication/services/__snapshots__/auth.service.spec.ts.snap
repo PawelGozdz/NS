@@ -9,8 +9,8 @@ exports[`AuthService createUser success should create a user and return their id
   "email": "test@example.com",
   "hash": "hashedPassword",
   "hashedRt": null,
-  "id": Any<Object>,
-  "userId": Any<Object>,
+  "id": Any<String>,
+  "userId": Any<String>,
 }
 `;
 
@@ -23,8 +23,8 @@ exports[`AuthService getAuthenticatedUserWithEmailAndPassword success should ret
   "email": "test@email.com",
   "hash": "hashedPassword",
   "hashedRt": "hashedRefreshToken",
-  "id": Any<Object>,
-  "userId": Any<Object>,
+  "id": Any<String>,
+  "userId": Any<String>,
 }
 `;
 
@@ -35,8 +35,8 @@ exports[`AuthService getAuthenticatedUserWithJwt success should return the user 
   "email": "test@email.com",
   "hash": "hashedPassword",
   "hashedRt": "hashedRefreshToken",
-  "id": Any<Object>,
-  "userId": Any<Object>,
+  "id": Any<String>,
+  "userId": Any<String>,
 }
 `;
 
@@ -49,8 +49,8 @@ exports[`AuthService getAuthenticatedUserWithRefreshToken success should return 
   "email": "test@email.com",
   "hash": "hashedPassword",
   "hashedRt": "hashedRefreshToken",
-  "id": Any<Object>,
-  "userId": Any<Object>,
+  "id": Any<String>,
+  "userId": Any<String>,
 }
 `;
 

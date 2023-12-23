@@ -1,5 +1,5 @@
 import config from '@config/app';
-import { ConflictError, EntityId, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
+import { ConflictError, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PinoLogger } from 'nestjs-pino';
@@ -42,8 +42,8 @@ export class AuthService {
 		}
 	}
 
-	public async signup(userId: EntityId): Promise<ITokens> {
-		const tokens = await this.getTokens(userId.value);
+	public async signup(userId: string): Promise<ITokens> {
+		const tokens = await this.getTokens(userId);
 		const hashedPassword = await this.updateHash(tokens.refresh_token);
 
 		await this.authUsersService.update({
@@ -60,7 +60,7 @@ export class AuthService {
 		if (!passwordMatch) {
 			throw new UnauthorizedError(`Invalid credentials`);
 		}
-		const tokens = await this.getTokens(user.userId.value);
+		const tokens = await this.getTokens(user.userId);
 
 		const hashedRToken = await this.updateHash(tokens.refresh_token);
 
@@ -92,8 +92,8 @@ export class AuthService {
 		return user;
 	}
 
-	public async getAuthenticatedUserWithJwt(userId: EntityId): Promise<AuthUser> {
-		this.isCorrectString(userId.value);
+	public async getAuthenticatedUserWithJwt(userId: string): Promise<AuthUser> {
+		this.isCorrectString(userId);
 
 		const user = await this.authUsersService.getByUserId(userId);
 
@@ -104,8 +104,8 @@ export class AuthService {
 		throw new UnauthorizedError(`Invalid credentials`);
 	}
 
-	public async getAuthenticatedUserWithRefreshToken(userId: EntityId, token: string): Promise<AuthUser> {
-		this.isCorrectString(userId.value, token);
+	public async getAuthenticatedUserWithRefreshToken(userId: string, token: string): Promise<AuthUser> {
+		this.isCorrectString(userId, token);
 
 		const user = await this.authUsersService.getByUserId(userId);
 
@@ -122,7 +122,7 @@ export class AuthService {
 		throw new UnauthorizedError(`Invalid credentials`);
 	}
 
-	public async logout(userId: EntityId): Promise<void> {
+	public async logout(userId: string): Promise<void> {
 		await this.authUsersService.update({
 			id: userId,
 			hashedRt: null,
@@ -138,7 +138,7 @@ export class AuthService {
 			throw new UnauthorizedError(`Invalid credentials`);
 		}
 
-		const tokens = await this.getTokens(user.userId.value);
+		const tokens = await this.getTokens(user.userId);
 		const hashedRToken = await this.updateHash(tokens.refresh_token);
 
 		await this.authUsersService.update({

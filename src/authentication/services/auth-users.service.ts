@@ -1,7 +1,6 @@
 import {
 	CannotCreateUserError,
 	CreateUserIntegrationEvent,
-	EntityId,
 	GetUserByEmailIntegrationEvent,
 	GetUserByIdIntegrationEvent,
 	SignUpIntegrationDto,
@@ -37,7 +36,7 @@ export class AuthUsersService {
 		});
 	}
 
-	async update(userData: Partial<AuthUser> & { id: EntityId }): Promise<void> {
+	async update(userData: Partial<AuthUser> & { id: string }): Promise<void> {
 		return await this.authUsersRepository.update({
 			hash: userData.hash,
 			hashedRt: userData.hashedRt,
@@ -45,11 +44,11 @@ export class AuthUsersService {
 		});
 	}
 
-	async delete(userId: EntityId): Promise<void> {
+	async delete(userId: string): Promise<void> {
 		return await this.authUsersRepository.delete(userId);
 	}
 
-	async getByUserId(userId: EntityId): Promise<AuthUser | undefined> {
+	async getByUserId(userId: string): Promise<AuthUser | undefined> {
 		return await this.authUsersRepository.getByUserId(userId);
 	}
 

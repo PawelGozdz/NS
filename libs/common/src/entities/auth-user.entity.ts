@@ -3,4 +3,5 @@ export interface IAuthUser {
 	email: string;
 	hash: string;
 	hashedRt: string | null;
+	id: string;
 }

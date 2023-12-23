@@ -51,7 +51,7 @@ describe('AuthService', () => {
 	const authUser = AuthUserFixture.create();
 	const user: IUser = {
 		email: authUser.email,
-		id: authUser.userId.value,
+		id: authUser.userId,
 	};
 
 	const userResp = {
@@ -138,11 +138,11 @@ describe('AuthService', () => {
 		it('should return user with getIntegrationUserById', async () => {
 			// Arrange
 			eventEmitterMock.emitAsync.mockResolvedValue([user]);
-			const paramEvent = new GetUserByIdIntegrationEvent(authUser.userId.value);
+			const paramEvent = new GetUserByIdIntegrationEvent(authUser.userId);
 			paramEvent.integrationEventId = expect.any(String);
 
 			// Act
-			const result = await service.getIntegrationUserById(authUser.userId.value);
+			const result = await service.getIntegrationUserById(authUser.userId);
 
 			// Assert
 			expect(result).toEqual(user);

@@ -1,5 +1,5 @@
 import { createMock } from '@golevelup/ts-jest';
-import { CannotCreateUserError, ConflictError, EntityId, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
+import { CannotCreateUserError, ConflictError, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
 import { TestLoggerModule, catchActError } from '@libs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -52,7 +52,6 @@ describe('AuthService', () => {
 	const dto: SignUpDto = {
 		email: 'test@example.com',
 		password: 'password',
-		roleId: 'roleId',
 	};
 
 	const password = 'password';
@@ -79,15 +78,14 @@ describe('AuthService', () => {
 				const result = await service.createUser(dto);
 
 				// Assert
-				// expect(result).toMatchObject();
 				expect(hashServiceMock.hashData).toHaveBeenCalledWith(dto.password);
 				expect(authUsersServiceMock.createIntegrationUser).toHaveBeenCalledWith(dto);
 				expect(result).toMatchSnapshot({
-					id: expect.any(Object),
+					id: expect.any(String),
 					email: dto.email,
 					hash: hashedPassword,
 					hashedRt: null,
-					userId: expect.any(Object),
+					userId: expect.any(String),
 				});
 			});
 		});
@@ -125,7 +123,7 @@ describe('AuthService', () => {
 	});
 
 	describe('signup', () => {
-		const userId = new EntityId('userId');
+		const userId = 'userId';
 
 		beforeEach(() => {
 			service.getTokens = jest.fn().mockResolvedValueOnce(tokens);
@@ -139,7 +137,7 @@ describe('AuthService', () => {
 
 				// Assert
 				expect(result).toEqual(tokens);
-				expect(service.getTokens).toHaveBeenCalledWith(userId.value);
+				expect(service.getTokens).toHaveBeenCalledWith(userId);
 				expect(service.updateHash).toHaveBeenCalledWith(tokens.refresh_token);
 				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
 					id: userId,
@@ -215,7 +213,7 @@ describe('AuthService', () => {
 				// Assert
 				expect(service.verifyTextToHash).toHaveBeenCalledWith(user.hash, dto.password);
 				expect(result).toEqual(tokens);
-				expect(service.getTokens).toHaveBeenCalledWith(user.userId.value);
+				expect(service.getTokens).toHaveBeenCalledWith(user.userId);
 				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
 					...user,
 					hashedRt: hashedPassword,
@@ -259,8 +257,8 @@ describe('AuthService', () => {
 				expect(result).toEqual(user);
 				expect(result).toMatchSnapshot({
 					...user,
-					id: expect.any(Object),
-					userId: expect.any(Object),
+					id: expect.any(String),
+					userId: expect.any(String),
 				});
 			});
 		});
@@ -310,8 +308,8 @@ describe('AuthService', () => {
 				expect(authUsersServiceMock.getByUserId).toHaveBeenCalledWith(user.userId);
 				expect(result).toMatchSnapshot({
 					...user,
-					id: expect.any(Object),
-					userId: expect.any(Object),
+					id: expect.any(String),
+					userId: expect.any(String),
 				});
 			});
 		});
@@ -349,8 +347,8 @@ describe('AuthService', () => {
 				expect(authUsersServiceMock.getByUserId).toHaveBeenCalledWith(user.userId);
 				expect(result).toMatchSnapshot({
 					...user,
-					id: expect.any(Object),
-					userId: expect.any(Object),
+					id: expect.any(String),
+					userId: expect.any(String),
 				});
 			});
 		});
@@ -387,7 +385,7 @@ describe('AuthService', () => {
 		describe('success', () => {
 			it('should call updateUser', async () => {
 				// Arrange
-				const userId = new EntityId('userId');
+				const userId = 'userId';
 				authUsersServiceMock.update.mockResolvedValueOnce(undefined);
 
 				// Act
@@ -420,7 +418,7 @@ describe('AuthService', () => {
 				// Assert
 				expect(result).toEqual(tokens);
 				expect(hashServiceMock.hashAndTextVerify).toHaveBeenCalledWith(user.hashedRt, refreshToken);
-				expect(service.getTokens).toHaveBeenCalledWith(user.userId.value);
+				expect(service.getTokens).toHaveBeenCalledWith(user.userId);
 				expect(service.updateHash).toHaveBeenCalledWith(tokens.refresh_token);
 				expect(authUsersServiceMock.update).toHaveBeenCalledWith({ ...user, hashedRt: hashedRefreshToken });
 				expect(result).toMatchSnapshot();
@@ -474,17 +472,17 @@ describe('AuthService', () => {
 		describe('success', () => {
 			it('should return tokens', async () => {
 				// Arrange
-				const userId = new EntityId('userId');
+				const userId = 'userId';
 				jwtServiceMock.signAsync.mockResolvedValueOnce(Promise.resolve(tokens.access_token));
 				jwtServiceMock.signAsync.mockResolvedValueOnce(Promise.resolve(tokens.refresh_token));
 
 				// Act
-				const result = await service.getTokens(userId.value);
+				const result = await service.getTokens(userId);
 
 				// Assert
 				expect(jwtServiceMock.signAsync).toHaveBeenCalledWith(
 					{
-						id: userId.value,
+						id: userId,
 					},
 					{
 						secret: expect.any(String),
@@ -493,7 +491,7 @@ describe('AuthService', () => {
 				);
 				expect(jwtServiceMock.signAsync).toHaveBeenCalledWith(
 					{
-						id: userId.value,
+						id: userId,
 					},
 					{
 						secret: expect.any(String),
