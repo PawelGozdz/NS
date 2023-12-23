@@ -1,4 +1,4 @@
-import { EntityId, Nullable } from '@libs/common';
+import { EntityId } from '@libs/common';
 import { AggregateRoot } from '@libs/ddd';
 import { UserCreatedEvent } from './events';
 import { UserUpdatedEvent } from './events/user-updated.event';
@@ -13,23 +13,14 @@ export type UserEvents = typeof events;
 export class User extends AggregateRoot {
 	id: EntityId;
 	email: string;
-	roleId: EntityId;
-	hash: string;
-	hashedRt: string | null;
 
 	constructor(
 		{
 			id,
 			email,
-			roleId,
-			hash,
-			hashedRt,
 		}: {
 			id: EntityId;
 			email: string;
-			roleId: EntityId;
-			hash: string;
-			hashedRt: string | null;
 		},
 		version?: number,
 	) {
@@ -37,34 +28,22 @@ export class User extends AggregateRoot {
 
 		this.id = id;
 		this.email = email;
-		this.roleId = roleId;
-		this.hash = hash;
-		this.hashedRt = hashedRt;
 	}
 
 	public static create(
 		{
-			hash,
-			hashedRt,
 			email,
-			roleId,
 			id,
 		}: {
 			id?: EntityId;
 			email: string;
-			roleId: EntityId;
-			hash: string;
-			hashedRt: string | null;
 		},
 		version?: number,
 	): User {
 		const user = new User(
 			{
 				id: id ?? EntityId.createRandom(),
-				hash,
-				hashedRt,
 				email,
-				roleId,
 			},
 			version,
 		);
@@ -72,29 +51,20 @@ export class User extends AggregateRoot {
 		user.apply(
 			new UserCreatedEvent({
 				id: user.id,
-				hash: user.hash,
-				hashedRt: user.hashedRt,
 				email: user.email,
-				roleId: user.roleId,
 			}),
 		);
 
 		return user;
 	}
 
-	update({ email, hash, hashedRt, roleId }: { email?: string; hash?: string; hashedRt?: Nullable<string>; roleId?: string }) {
-		const potentialNewRoleId = roleId ?? this.roleId.value;
-		const newHash = hash ?? this.hash;
-		const potentialNewHashedRt = hashedRt === null ? null : this.hashedRt;
+	update({ email, roleId }: { email?: string; roleId?: string }) {
 		const potentialNewEmail = email ?? this.email;
 
 		this.apply(
 			new UserUpdatedEvent({
 				id: this.id,
 				email: potentialNewEmail,
-				roleId: new EntityId(potentialNewRoleId),
-				hash: newHash,
-				hashedRt: potentialNewHashedRt,
 			}),
 		);
 	}
@@ -103,10 +73,7 @@ export class User extends AggregateRoot {
 		const rentalPeriod = new User(
 			{
 				id: new EntityId(snapshot.id),
-				hash: snapshot.hash,
-				hashedRt: snapshot.hashedRt,
 				email: snapshot.email,
-				roleId: new EntityId(snapshot.roleId),
 			},
 			snapshot.version,
 		);
@@ -118,35 +85,17 @@ export class User extends AggregateRoot {
 		return this.id.value;
 	}
 
-	getRoleId(): string {
-		return this.roleId.value;
-	}
-
 	getEmail(): string {
 		return this.email;
-	}
-
-	getHash(): string {
-		return this.hash;
-	}
-
-	getHashedRt(): Nullable<string> {
-		return this.hashedRt;
 	}
 
 	private onUserCreatedEvent(event: UserCreatedEvent) {
 		this.id = event.id;
 		this.email = event.email;
-		this.roleId = event.roleId;
-		this.hash = event.hash;
-		this.hashedRt = event.hashedRt;
 	}
 
 	private onUserUpdatedEvent(event: UserUpdatedEvent) {
 		this.id = event.id;
 		this.email = event.email;
-		this.roleId = event.roleId;
-		this.hash = event.hash;
-		this.hashedRt = event.hashedRt;
 	}
 }

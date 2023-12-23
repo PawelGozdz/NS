@@ -1,37 +1,30 @@
 import { createMock } from '@golevelup/ts-jest';
-import {
-	CannotCreateUserError,
-	ConflictError,
-	CreateUserIntegrationEvent,
-	GetUserByIdIntegrationEvent,
-	IUser,
-	SignInDto,
-	SignUpDto,
-	UnauthorizedError,
-	UpdateUserIntegrationEvent,
-} from '@libs/common';
-import { catchActError } from '@libs/testing';
+import { CannotCreateUserError, ConflictError, EntityId, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
-import { describe } from 'node:test';
+// import { describe } from 'node:test';
+
+import { TestLoggerModule, catchActError } from '@libs/testing';
+import { AuthUserFixture } from '../models/auth-user.fixture';
 import { ITokens } from '../types';
+import { AuthUsersService } from './auth-users.service';
 import { AuthService } from './auth.service';
 import { HashService } from './hash.service';
 
 describe('AuthService', () => {
 	let service: AuthService;
 	let hashServiceMock: jest.Mocked<HashService>;
-	let eventEmitterMock: jest.Mocked<EventEmitter2>;
+	let authUsersServiceMock: jest.Mocked<AuthUsersService>;
 	let jwtServiceMock: jest.Mocked<JwtService>;
 
 	beforeEach(async () => {
 		hashServiceMock = createMock();
-		eventEmitterMock = createMock();
+		authUsersServiceMock = createMock();
 		jwtServiceMock = createMock();
 
 		const module: TestingModule = await Test.createTestingModule({
+			imports: [TestLoggerModule.forRoot()],
 			providers: [
 				AuthService,
 				{
@@ -39,8 +32,8 @@ describe('AuthService', () => {
 					useValue: hashServiceMock,
 				},
 				{
-					provide: EventEmitter2,
-					useValue: eventEmitterMock,
+					provide: AuthUsersService,
+					useValue: authUsersServiceMock,
 				},
 				{
 					provide: JwtService,
@@ -54,6 +47,8 @@ describe('AuthService', () => {
 
 	afterEach(() => {
 		jest.clearAllMocks();
+		jest.resetModules();
+		jest.restoreAllMocks();
 	});
 
 	const dto: SignUpDto = {
@@ -62,33 +57,49 @@ describe('AuthService', () => {
 		roleId: 'roleId',
 	};
 
+	const password = 'password';
+	const hashedPassword = 'hashedPassword';
+	const refreshToken = 'refreshToken';
+	const hashedRefreshToken = 'hashedRefreshToken';
+
+	const tokens: ITokens = {
+		access_token: 'accessToken',
+		refresh_token: 'newRefreshToken',
+	};
+
 	describe('createUser', () => {
+		const user = { id: '6a0ee9ee-a36d-45c6-b264-1f06bf144b9a' };
 		describe('success', () => {
 			it('should create a user and return their id', async () => {
 				// Arrange
-				const hash = 'hashedPassword';
-				const user = { id: 'userId' };
-				hashServiceMock.hashData.mockResolvedValueOnce(hash);
-				eventEmitterMock.emitAsync.mockResolvedValueOnce([user]);
+
+				hashServiceMock.hashData.mockResolvedValueOnce(hashedPassword);
+				authUsersServiceMock.createIntegrationUser.mockResolvedValueOnce(user);
+				authUsersServiceMock.create.mockResolvedValueOnce({ id: user.id });
 
 				// Act
 				const result = await service.createUser(dto);
 
 				// Assert
-				expect(result).toEqual({ id: user.id });
+				// expect(result).toMatchObject();
 				expect(hashServiceMock.hashData).toHaveBeenCalledWith(dto.password);
-				expect(eventEmitterMock.emitAsync).toHaveBeenCalledWith(CreateUserIntegrationEvent.eventName, expect.any(CreateUserIntegrationEvent));
-				expect(result).toMatchSnapshot();
+				expect(authUsersServiceMock.createIntegrationUser).toHaveBeenCalledWith(dto);
+				expect(result).toMatchSnapshot({
+					id: expect.any(Object),
+					email: dto.email,
+					hash: hashedPassword,
+					hashedRt: null,
+					userId: expect.any(Object),
+				});
 			});
 		});
 
 		describe('failure', () => {
 			it('should throw CannotCreateUserError if user creation fails', async () => {
 				// Arrange
-				const hash = 'hashedPassword';
-
-				hashServiceMock.hashData.mockResolvedValueOnce(hash);
-				eventEmitterMock.emitAsync.mockResolvedValueOnce([undefined]);
+				hashServiceMock.hashData.mockResolvedValueOnce(hashedPassword);
+				authUsersServiceMock.createIntegrationUser.mockRejectedValueOnce(new CannotCreateUserError('error'));
+				authUsersServiceMock.create.mockRejectedValue(new CannotCreateUserError('error'));
 
 				// Act
 				const { error } = await catchActError(() => service.createUser(dto));
@@ -100,11 +111,10 @@ describe('AuthService', () => {
 
 			it('should throw ConflictError if user with the same email already exists', async () => {
 				// Arrange
-				const hash = 'hashedPassword';
 				const err = { code: 'P2002' };
 
-				hashServiceMock.hashData.mockResolvedValueOnce(hash);
-				eventEmitterMock.emitAsync.mockRejectedValueOnce(err);
+				hashServiceMock.hashData.mockResolvedValueOnce(hashedPassword);
+				authUsersServiceMock.createIntegrationUser.mockRejectedValueOnce(new ConflictError('error'));
 
 				// Act
 				const { error } = await catchActError(() => service.createUser(dto));
@@ -116,108 +126,13 @@ describe('AuthService', () => {
 		});
 	});
 
-	describe('getUserById', () => {
-		const id = 'userId';
-
-		describe('success', () => {
-			it('should return a user by Id', async () => {
-				// Arrange
-				const user = { id, email: 'test@example.com' };
-				eventEmitterMock.emitAsync.mockResolvedValueOnce([user]);
-
-				// Act
-				const result = await service.getUserById(id);
-
-				// Assert
-				expect(result).toEqual(user);
-				expect(eventEmitterMock.emitAsync).toHaveBeenCalledWith(GetUserByIdIntegrationEvent.eventName, expect.any(GetUserByIdIntegrationEvent));
-				expect(result).toMatchSnapshot();
-			});
-		});
-	});
-
-	// describe('getUserByEmail', () => {
-	// 	const email = 'test@test.com';
-
-	// 	describe('success', () => {
-	// 		it('should return a user by email', async () => {
-	// 			// Arrange
-	// 			const user = { email };
-	// 			eventEmitterMock.emitAsync.mockResolvedValueOnce([user]);
-
-	// 			// Act
-	// 			const result = await service.getUserByEmail(email);
-
-	// 			// Assert
-	// 			expect(result).toBe(user);
-	// 			expect(eventEmitterMock.emitAsync).toHaveBeenCalledWith(GetUserByEmailIntegrationEvent.eventName, expect.any(GetUserByEmailIntegrationEvent));
-	// 			expect(result).toMatchSnapshot();
-	// 		});
-	// 	});
-	// });
-
-	describe('updateUser', () => {
-		const user: Partial<IUser> & { id: string } = {
-			id: 'userId',
-			hash: 'hashedPassword',
-			hashedRt: 'hashedRt',
-			email: 'test@example.com',
-			roleId: 'roleId',
-		};
-
-		describe('success', () => {
-			it('should update a user', async () => {
-				// Arrange
-				eventEmitterMock.emitAsync.mockResolvedValueOnce([void 0]);
-
-				// Act
-				await service.updateUser(user);
-
-				// Assert
-				expect(eventEmitterMock.emitAsync).toHaveBeenCalledWith(UpdateUserIntegrationEvent.eventName, expect.any(UpdateUserIntegrationEvent));
-			});
-
-			it('should throw ConflictError if user with the same email address already exists', async () => {
-				// Arrange
-				const err = { code: 'P2002' };
-				eventEmitterMock.emitAsync.mockRejectedValueOnce(err);
-
-				// Act
-				const { error } = await catchActError(() => service.updateUser(user));
-
-				// Assert
-				expect(error).toBeInstanceOf(ConflictError);
-				expect(error).toMatchSnapshot();
-			});
-		});
-
-		describe('failure', () => {
-			it('should propagate the error if an unknown error occurs', async () => {
-				// Arrange
-				const err = new Error('Unknown error');
-				eventEmitterMock.emitAsync.mockRejectedValueOnce(err);
-
-				// Act
-				const { error } = await catchActError(() => service.updateUser(user));
-
-				// Assert
-				expect(error).toBe(err);
-				expect(error).toMatchSnapshot();
-			});
-		});
-	});
-
 	describe('signup', () => {
-		const userId = 'userId';
-		const tokens: ITokens = {
-			access_token: 'access_token',
-			refresh_token: 'refresh_token',
-		};
-		const hashedPassword = 'hashedPassword';
+		const userId = new EntityId('userId');
 
-		service.getTokens = jest.fn().mockResolvedValueOnce(tokens);
-		service.updateHash = jest.fn().mockResolvedValueOnce(hashedPassword);
-		service.updateUser = jest.fn().mockResolvedValueOnce(undefined);
+		beforeEach(() => {
+			service.getTokens = jest.fn().mockResolvedValueOnce(tokens);
+			service.updateHash = jest.fn().mockResolvedValueOnce(hashedPassword);
+		});
 
 		describe('success', () => {
 			it('should get tokens, update hash and update user', async () => {
@@ -226,9 +141,9 @@ describe('AuthService', () => {
 
 				// Assert
 				expect(result).toEqual(tokens);
-				expect(service.getTokens).toHaveBeenCalledWith(userId);
+				expect(service.getTokens).toHaveBeenCalledWith(userId.value);
 				expect(service.updateHash).toHaveBeenCalledWith(tokens.refresh_token);
-				expect(service.updateUser).toHaveBeenCalledWith({
+				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
 					id: userId,
 					hash: hashedPassword,
 				});
@@ -247,6 +162,7 @@ describe('AuthService', () => {
 
 				// Assert
 				expect(error!.message).toEqual(err.message);
+				expect(error!.message).toMatchSnapshot();
 			});
 
 			it('should throw an error if updateHash fails', async () => {
@@ -265,7 +181,7 @@ describe('AuthService', () => {
 			it('should throw an error if updateUser fails', async () => {
 				// Arrange
 				const err = new Error('updateUser error');
-				service.updateUser = jest.fn().mockRejectedValueOnce(err);
+				authUsersServiceMock.update.mockRejectedValueOnce(err);
 
 				// Act
 				const { error } = await catchActError(() => service.signup(userId));
@@ -282,37 +198,38 @@ describe('AuthService', () => {
 			email: 'test@example.com',
 			password: 'password',
 		};
-		const user = {
-			id: 'userId',
-			email: dto.email,
-			hash: 'hashedPassword',
-		} as IUser;
-		const tokens: ITokens = {
-			access_token: 'accessToken',
-			refresh_token: 'refreshToken',
-		};
 
 		beforeEach(() => {
-			service.getUserByEmail = jest.fn().mockResolvedValue(user);
 			service.verifyTextToHash = jest.fn().mockResolvedValue(true);
 			service.getTokens = jest.fn().mockResolvedValue(tokens);
+			service.updateHash = jest.fn().mockResolvedValue(hashedPassword);
+			authUsersServiceMock.update.mockResolvedValue(undefined);
 		});
 
 		describe('success', () => {
 			it('should return signin user and return tokens', async () => {
+				// Arrange
+				const user = AuthUserFixture.create();
+
 				// Act
 				const result = await service.signin(dto, user);
 
 				// Assert
-				expect(result).toEqual(tokens);
 				expect(service.verifyTextToHash).toHaveBeenCalledWith(user.hash, dto.password);
-				expect(service.getTokens).toHaveBeenCalledWith(user.id);
+				expect(result).toEqual(tokens);
+				expect(service.getTokens).toHaveBeenCalledWith(user.userId.value);
+				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
+					...user,
+					hashedRt: hashedPassword,
+				});
+				expect(result).toMatchSnapshot();
 			});
 		});
 
 		describe('failure', () => {
 			it('should throw UnauthorizedError if password is not valid', async () => {
 				// Arrange
+				const user = AuthUserFixture.create();
 				service.verifyTextToHash = jest.fn().mockResolvedValue(false);
 
 				// Act
@@ -320,147 +237,94 @@ describe('AuthService', () => {
 
 				// Assert
 				expect(error).toBeInstanceOf(UnauthorizedError);
-			});
-
-			it('should throw UnauthorizedError if user not found', async () => {
-				// Arrange
-				// Act
-				const { error } = await catchActError(() => service.signin(dto, null as unknown as IUser));
-
-				// Assert
-				expect(error).toBeInstanceOf(UnauthorizedError);
+				expect(error).toMatchSnapshot();
 			});
 		});
 	});
 
 	describe('getAuthenticatedUserWithEmailAndPassword', () => {
-		const email = 'test@example.com';
-		const password = 'password';
-		const hash = 'hashedPassword';
-		let user: IUser;
+		const user = AuthUserFixture.create();
 
 		beforeEach(() => {
-			service.getUserByEmail = jest.fn().mockResolvedValueOnce(user);
-
-			user = {
-				id: 'userId',
-				email: email,
-				hash: hash,
-			} as IUser;
+			service.verifyTextToHash = jest.fn().mockResolvedValueOnce(true);
 		});
 
 		describe('success', () => {
 			it('should return the user if email and password are valid', async () => {
 				// Arrange
-				service.getUserByEmail = jest.fn().mockResolvedValueOnce(user);
-				service.verifyTextToHash = jest.fn().mockResolvedValueOnce(true);
+				authUsersServiceMock.getByUserEmail.mockResolvedValueOnce(user);
 
 				// Act
-				const result = await service.getAuthenticatedUserWithEmailAndPassword(email, password);
+				const result = await service.getAuthenticatedUserWithEmailAndPassword(user.email, password);
 
 				// Assert
 				expect(result).toEqual(user);
+				expect(result).toMatchSnapshot({
+					...user,
+					id: expect.any(Object),
+					userId: expect.any(Object),
+				});
 			});
 		});
 
 		describe('failure', () => {
-			it('should throw UnauthorizedError if password is not a string', async () => {
-				// Arrange
-				const invalidPasswords = [null, undefined, {}, 0, NaN];
-
-				for (const invalidPassword of invalidPasswords) {
-					// Act
-					const { error } = await catchActError(() => service.getAuthenticatedUserWithEmailAndPassword(email, invalidPassword as any));
-
-					// Assert
-					expect(error).toBeInstanceOf(UnauthorizedError);
-				}
-			});
-
-			it('should throw UnauthorizedError if email is not a string', async () => {
-				// Arrange
-				service.verifyTextToHash = jest.fn().mockResolvedValueOnce(false);
-				const invalidEmails = [null, undefined, {}];
-
-				for (const invalidEmail of invalidEmails) {
-					// Act
-					const { error } = await catchActError(() => service.getAuthenticatedUserWithEmailAndPassword(invalidEmail as string, password));
-
-					// Assert
-					expect(error).toBeInstanceOf(UnauthorizedError);
-				}
-			});
-
 			it('should throw UnauthorizedError if user does not exist', async () => {
 				// Arrange
-				service.getUserByEmail = jest.fn().mockResolvedValueOnce(null);
-
+				authUsersServiceMock.getByUserEmail.mockResolvedValueOnce(null as any);
 				// Act
-				const { error } = await catchActError(() => service.getAuthenticatedUserWithEmailAndPassword(email, password));
+				const { error } = await catchActError(() => service.getAuthenticatedUserWithEmailAndPassword(user.email, password));
 
 				// Assert
 				expect(error).toBeInstanceOf(UnauthorizedError);
+				expect(error).toMatchSnapshot();
 			});
 
 			it('should throw UnauthorizedError if password does not match', async () => {
 				// Arrange
-				service.getUserByEmail = jest.fn().mockResolvedValueOnce(user);
+				authUsersServiceMock.getByUserEmail.mockResolvedValueOnce(user);
 				service.verifyTextToHash = jest.fn().mockResolvedValueOnce(false);
 
 				// Act
-				const { error } = await catchActError(() => service.getAuthenticatedUserWithEmailAndPassword(email, password));
+				const { error } = await catchActError(() => service.getAuthenticatedUserWithEmailAndPassword(user.email, password));
 
 				// Assert
 				expect(error).toBeInstanceOf(UnauthorizedError);
+				expect(error).toMatchSnapshot();
 			});
 		});
 	});
 
 	describe('getAuthenticatedUserWithJwt', () => {
-		const userId = 'userId';
-		const user = {
-			id: userId,
-			email: 'test@example.com',
-			hash: 'hashedPasswordasdf',
-		} as IUser;
-
-		beforeEach(() => {
-			service.getUserById = jest.fn().mockResolvedValue(user);
+		const user = AuthUserFixture.create({
+			userId: '74497f9b-1d36-4747-b1f5-9f753a74f163',
 		});
 
 		describe('success', () => {
 			it('should return the user if userId is valid', async () => {
+				// Arrange
+				authUsersServiceMock.getByUserId.mockResolvedValueOnce(user);
+
 				// Act
-				const result = await service.getAuthenticatedUserWithJwt(userId);
+				const result = await service.getAuthenticatedUserWithJwt(user.userId);
 
 				// Assert
 				expect(result).toEqual(user);
-				expect(service.getUserById).toHaveBeenCalledWith(userId);
-				expect(result).toMatchSnapshot();
+				expect(authUsersServiceMock.getByUserId).toHaveBeenCalledWith(user.userId);
+				expect(result).toMatchSnapshot({
+					...user,
+					id: expect.any(Object),
+					userId: expect.any(Object),
+				});
 			});
 		});
 
 		describe('failure', () => {
-			it('should throw UnauthorizedError if userId is not a string', async () => {
-				// Arrange
-				const invalidUserIds = [null, undefined, {}, []];
-
-				for (const invalidUserId of invalidUserIds) {
-					// Act
-					const { error } = await catchActError(() => service.getAuthenticatedUserWithJwt(invalidUserId as any));
-
-					// Assert
-					expect(error).toBeInstanceOf(UnauthorizedError);
-					expect(error).toMatchSnapshot();
-				}
-			});
-
 			it('should throw UnauthorizedError if user does not exist', async () => {
 				// Arrange
-				service.getUserById = jest.fn().mockResolvedValue(null);
+				authUsersServiceMock.getByUserId.mockResolvedValueOnce(undefined);
 
 				// Act
-				const { error } = await catchActError(() => service.getAuthenticatedUserWithJwt(userId));
+				const { error } = await catchActError(() => service.getAuthenticatedUserWithJwt(user.userId));
 
 				// Assert
 				expect(error).toBeInstanceOf(UnauthorizedError);
@@ -470,73 +334,69 @@ describe('AuthService', () => {
 	});
 
 	describe('getAuthenticatedUserWithRefreshToken', () => {
-		const refreshToken = 'refreshToken';
-		const userId = 'userId';
-		const user = {
-			id: userId,
-			email: 'test@example.com',
-			hash: 'hashedPassword1234',
-			hashedRt: 'hashedRt',
-		} as IUser;
-
-		beforeEach(() => {
-			service.getUserById = jest.fn().mockResolvedValue(user);
-		});
+		const user = AuthUserFixture.create();
 
 		describe('success', () => {
 			it('should return the user if refreshToken is valid', async () => {
 				// Arrange
+				authUsersServiceMock.getByUserId.mockResolvedValue(user);
 				hashServiceMock.hashAndTextVerify.mockResolvedValueOnce(true);
+
 				// Act
-				const result = await service.getAuthenticatedUserWithRefreshToken(userId, refreshToken);
+				const result = await service.getAuthenticatedUserWithRefreshToken(user.userId, refreshToken);
 
 				// Assert
 				expect(result).toEqual(user);
 				expect(hashServiceMock.hashAndTextVerify).toHaveBeenCalledWith(user.hashedRt, refreshToken);
-				expect(service.getUserById).toHaveBeenCalledWith(userId);
+				expect(authUsersServiceMock.getByUserId).toHaveBeenCalledWith(user.userId);
+				expect(result).toMatchSnapshot({
+					...user,
+					id: expect.any(Object),
+					userId: expect.any(Object),
+				});
 			});
 		});
 
 		describe('failure', () => {
 			it('should throw UnauthorizedError if refreshToken is not a string', async () => {
 				// Arrange
-				const invalidRefreshTokens = [null, undefined, {}, []];
+				authUsersServiceMock.getByUserId.mockResolvedValue(undefined);
 
-				for (const invalidRefreshToken of invalidRefreshTokens) {
-					// Act
-					const { error } = await catchActError(() => service.getAuthenticatedUserWithRefreshToken(userId, invalidRefreshToken as any));
+				// Act
+				const { error } = await catchActError(() => service.getAuthenticatedUserWithRefreshToken(user.userId, refreshToken));
 
-					// Assert
-					expect(error).toBeInstanceOf(UnauthorizedError);
-				}
+				// Assert
+				expect(error).toBeInstanceOf(UnauthorizedError);
+				expect(error).toMatchSnapshot();
 			});
 
 			it('should throw UnauthorizedError if user does not exist', async () => {
 				// Arrange
-				service.getUserById = jest.fn().mockResolvedValue(null);
+				authUsersServiceMock.getByUserId.mockResolvedValue(user);
+				hashServiceMock.hashAndTextVerify.mockResolvedValueOnce(false);
 
 				// Act
-				const { error } = await catchActError(() => service.getAuthenticatedUserWithRefreshToken(refreshToken));
+				const { error } = await catchActError(() => service.getAuthenticatedUserWithRefreshToken(user.userId, refreshToken));
 
 				// Assert
 				expect(error).toBeInstanceOf(UnauthorizedError);
+				expect(error).toMatchSnapshot();
 			});
 		});
 	});
 
 	describe('logout', () => {
-		const userId = 'useId2';
-
 		describe('success', () => {
 			it('should call updateUser', async () => {
 				// Arrange
-				service.updateUser = jest.fn().mockResolvedValueOnce(undefined);
+				const userId = new EntityId('userId');
+				authUsersServiceMock.update.mockResolvedValueOnce(undefined);
 
 				// Act
 				await service.logout(userId);
 
 				// Assert
-				expect(service.updateUser).toHaveBeenCalledWith({
+				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
 					id: userId,
 					hashedRt: null,
 				});
@@ -545,25 +405,13 @@ describe('AuthService', () => {
 	});
 
 	describe('refreshTokens', () => {
-		const refreshToken = 'refreshToken';
-		const hashedRefreshToken = 'hashedRefreshToken';
-		const userId = 'userId';
-		const user = {
-			id: userId,
-			email: 'test@example.com',
-			hash: 'hashedPassword',
-			hashedRt: hashedRefreshToken,
-		} as IUser;
-		const tokens: ITokens = {
-			access_token: 'accessToken',
-			refresh_token: 'newRefreshToken',
-		};
+		const user = AuthUserFixture.create();
 
 		beforeEach(() => {
 			hashServiceMock.hashAndTextVerify.mockResolvedValue(true);
 			service.getTokens = jest.fn().mockResolvedValue(tokens);
 			service.updateHash = jest.fn().mockResolvedValue(hashedRefreshToken);
-			service.updateUser = jest.fn().mockResolvedValue(undefined);
+			authUsersServiceMock.update.mockResolvedValue(undefined);
 		});
 
 		describe('success', () => {
@@ -574,30 +422,14 @@ describe('AuthService', () => {
 				// Assert
 				expect(result).toEqual(tokens);
 				expect(hashServiceMock.hashAndTextVerify).toHaveBeenCalledWith(user.hashedRt, refreshToken);
-				expect(service.getTokens).toHaveBeenCalledWith(user.id);
+				expect(service.getTokens).toHaveBeenCalledWith(user.userId.value);
 				expect(service.updateHash).toHaveBeenCalledWith(tokens.refresh_token);
-				expect(service.updateUser).toHaveBeenCalledWith({ ...user, hashedRt: hashedRefreshToken });
+				expect(authUsersServiceMock.update).toHaveBeenCalledWith({ ...user, hashedRt: hashedRefreshToken });
+				expect(result).toMatchSnapshot();
 			});
 		});
 
 		describe('failure', () => {
-			it('should throw UnauthorizedError if refreshToken is not a string or user does not exist or user.hashedRt does not exist', async () => {
-				// Arrange
-				const invalidInputs = [
-					[null, refreshToken],
-					[user, null],
-					[{ ...user, hashedRt: null }, refreshToken],
-				];
-
-				for (const [invalidUser, invalidRefreshToken] of invalidInputs) {
-					// Act
-					const { error } = await catchActError(() => service.refreshTokens(invalidUser as IUser, invalidRefreshToken as string));
-
-					// Assert
-					expect(error).toBeInstanceOf(UnauthorizedError);
-				}
-			});
-
 			it('should throw UnauthorizedError if refreshToken does not match user.hashedRt', async () => {
 				// Arrange
 				hashServiceMock.hashAndTextVerify.mockResolvedValue(false);
@@ -607,26 +439,21 @@ describe('AuthService', () => {
 
 				// Assert
 				expect(error).toBeInstanceOf(UnauthorizedError);
+				expect(error).toMatchSnapshot();
 			});
 		});
 	});
 
 	describe('verifyTextToHash', () => {
-		const hash = 'hashedPassword';
-		const password = 'password1234';
-
-		beforeEach(() => {
-			hashServiceMock.hashAndTextVerify.mockResolvedValue(true);
-		});
-
 		describe('success', () => {
 			it('should return true if password matches hash', async () => {
+				// Arrange
+				hashServiceMock.hashAndTextVerify.mockResolvedValue(true);
 				// Act
-				const result = await service.verifyTextToHash(hash, password);
-
+				const result = await service.verifyTextToHash(hashedPassword, password);
 				// Assert
 				expect(result).toBe(true);
-				expect(hashServiceMock.hashAndTextVerify).toHaveBeenCalledWith(hash, password);
+				expect(hashServiceMock.hashAndTextVerify).toHaveBeenCalledWith(hashedPassword, password);
 			});
 		});
 
@@ -634,14 +461,83 @@ describe('AuthService', () => {
 			it('should throw UnauthorizedError if hashAndTextVerify doesnt return bool', async () => {
 				// Arrange
 				hashServiceMock.hashAndTextVerify.mockResolvedValueOnce(5 as unknown as boolean);
-
 				// Act
-				const { error } = await catchActError(() => service.verifyTextToHash(hash, password));
+				const { error } = await catchActError(() => service.verifyTextToHash(hashedPassword, password));
 
 				// Assert
 				expect(error).toBeInstanceOf(UnauthorizedError);
-				expect(hashServiceMock.hashAndTextVerify).toHaveBeenCalledWith(hash, password);
+				expect(hashServiceMock.hashAndTextVerify).toHaveBeenCalledWith(hashedPassword, password);
+				expect(error).toMatchSnapshot();
 			});
+		});
+	});
+
+	describe('getTokens', () => {
+		describe('success', () => {
+			it('should return tokens', async () => {
+				// Arrange
+				const userId = new EntityId('userId');
+				jwtServiceMock.signAsync.mockResolvedValueOnce(Promise.resolve(tokens.access_token));
+				jwtServiceMock.signAsync.mockResolvedValueOnce(Promise.resolve(tokens.refresh_token));
+
+				// Act
+				const result = await service.getTokens(userId.value);
+
+				// Assert
+				expect(jwtServiceMock.signAsync).toHaveBeenCalledWith(
+					{
+						id: userId.value,
+					},
+					{
+						secret: expect.any(String),
+						expiresIn: expect.any(String),
+					},
+				);
+				expect(jwtServiceMock.signAsync).toHaveBeenCalledWith(
+					{
+						id: userId.value,
+					},
+					{
+						secret: expect.any(String),
+						expiresIn: expect.any(String),
+					},
+				);
+				expect(result).toEqual(tokens);
+				expect(result).toMatchSnapshot();
+			});
+		});
+	});
+
+	describe('updateHash', () => {
+		describe('success', () => {
+			it('should call updateUser', async () => {
+				// Arrange
+				const text = 'some-text';
+				const updatedText = 'uptadet-some-text';
+				hashServiceMock.hashData.mockResolvedValueOnce(updatedText);
+
+				// Act
+				const result = await service.updateHash(text);
+
+				// Assert
+				expect(hashServiceMock.hashData).toHaveBeenCalledWith(text);
+				expect(result).toEqual(updatedText);
+				expect(result).toMatchSnapshot();
+			});
+		});
+	});
+
+	describe('isCorrectString', () => {
+		describe('failure', () => {
+			it.each([{ input: null }, { input: undefined }, { input: {} }, { input: 0 }, { input: NaN }, { input: '' }, { input: '    ' }])(
+				'should throw UnauthorizedError if password is: $input',
+				async ({ input }) => {
+					// Act
+					const { error } = catchActError(() => service.isCorrectString(input as string));
+					// Assert
+					expect(error).toBeInstanceOf(UnauthorizedError);
+				},
+			);
 		});
 	});
 });

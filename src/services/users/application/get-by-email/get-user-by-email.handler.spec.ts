@@ -14,10 +14,7 @@ describe('GetUserByIdQuery', () => {
 	const query = new GetUserByEmailQuery({ email: userEmail });
 	const UserInfo: UserInfo = {
 		id: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
-		hash: 'hash',
-		hashedRt: 'hashedRt',
 		email: userEmail,
-		roleId: 'roleId',
 	};
 
 	beforeEach(async () => {

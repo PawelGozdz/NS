@@ -3,9 +3,6 @@ import { EntityId } from '@libs/common';
 export type UserInfo = {
 	id: string;
 	email: string;
-	roleId: string;
-	hash: string;
-	hashedRt: string | null;
 };
 
 export abstract class IUsersQueryRepository {

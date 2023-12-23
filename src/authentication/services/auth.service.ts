@@ -1,62 +1,39 @@
 import config from '@config/app';
-import {
-	CannotCreateUserError,
-	ConflictError,
-	CreateUserIntegrationEvent,
-	GetUserByEmailIntegrationEvent,
-	GetUserByIdIntegrationEvent,
-	IUser,
-	SignInDto,
-	SignUpDto,
-	UnauthorizedError,
-	UpdateUserIntegrationEvent,
-} from '@libs/common';
+import { ConflictError, EntityId, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
+import { PinoLogger } from 'nestjs-pino';
+import { AuthUser } from '../models';
 import { ITokens } from '../types';
+import { AuthUsersService } from './auth-users.service';
 import { HashService } from './hash.service';
-
-interface IUserInfo {
-	id: string;
-	email: string;
-	roleId: string;
-	hash: string;
-	hashedRt: string | null;
-}
-
-interface IUserCreated {
-	id?: string;
-}
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private eventEmitter: EventEmitter2,
 		private readonly jwtService: JwtService,
 		private readonly hashService: HashService,
-	) {}
-	public async createUser(dto: SignUpDto): Promise<{ id: string }> {
+		private readonly authUsersService: AuthUsersService,
+		private readonly logger: PinoLogger,
+	) {
+		this.logger.setContext(this.constructor.name);
+	}
+	public async createUser(dto: SignUpDto): Promise<AuthUser> {
 		try {
 			const hash = await this.hashService.hashData(dto.password);
 
-			const user = (await this.eventEmitter.emitAsync(
-				CreateUserIntegrationEvent.eventName,
-				new CreateUserIntegrationEvent({
-					email: dto.email,
-					hash,
-					roleId: dto.roleId,
-					hashedRt: null,
-				}),
-			)) as IUserCreated[];
+			const userCreated = await this.authUsersService.createIntegrationUser(dto);
 
-			if (!user[0]?.id) {
-				throw CannotCreateUserError.failed();
-			}
+			const buildUserObj = AuthUser.create({
+				userId: userCreated.id!,
+				hash,
+				email: dto.email,
+				hashedRt: null,
+			});
 
-			return {
-				id: user[0].id,
-			};
+			await this.authUsersService.create(buildUserObj);
+
+			return buildUserObj;
 		} catch (error: any) {
 			if (error.code === 'P2002') {
 				throw new ConflictError(`User with this email already exists!`);
@@ -65,43 +42,11 @@ export class AuthService {
 		}
 	}
 
-	public async getUserById(userId: string): Promise<IUserInfo | undefined> {
-		const user = await this.eventEmitter.emitAsync(GetUserByIdIntegrationEvent.eventName, new GetUserByIdIntegrationEvent(userId));
-
-		return user[0];
-	}
-
-	public async getUserByEmail(email: string): Promise<IUserInfo | undefined> {
-		const user = await this.eventEmitter.emitAsync(GetUserByEmailIntegrationEvent.eventName, new GetUserByEmailIntegrationEvent(email));
-
-		return user[0];
-	}
-
-	public async updateUser(user: Partial<IUser> & { id: string }): Promise<void> {
-		try {
-			await this.eventEmitter.emitAsync(
-				UpdateUserIntegrationEvent.eventName,
-				new UpdateUserIntegrationEvent({
-					hash: user.hash,
-					id: user.id,
-					hashedRt: user.hashedRt,
-					email: user.email,
-					roleId: user.roleId,
-				}),
-			);
-		} catch (error: any) {
-			if (error.code === 'P2002') {
-				throw new ConflictError(`User with this email already exists!`);
-			}
-			throw error;
-		}
-	}
-
-	public async signup(userId: string): Promise<ITokens> {
-		const tokens = await this.getTokens(userId);
+	public async signup(userId: EntityId): Promise<ITokens> {
+		const tokens = await this.getTokens(userId.value);
 		const hashedPassword = await this.updateHash(tokens.refresh_token);
 
-		await this.updateUser({
+		await this.authUsersService.update({
 			id: userId,
 			hash: hashedPassword,
 		});
@@ -109,20 +54,17 @@ export class AuthService {
 		return tokens;
 	}
 
-	public async signin(dto: SignInDto, user: IUser): Promise<ITokens> {
-		if (!user) {
-			throw new UnauthorizedError(`Invalid credentials`);
-		}
+	public async signin(dto: SignInDto, user: AuthUser): Promise<ITokens> {
 		const passwordMatch = await this.verifyTextToHash(user.hash, dto.password);
 
 		if (!passwordMatch) {
 			throw new UnauthorizedError(`Invalid credentials`);
 		}
-		const tokens = await this.getTokens(user.id);
+		const tokens = await this.getTokens(user.userId.value);
 
 		const hashedRToken = await this.updateHash(tokens.refresh_token);
 
-		await this.updateUser({
+		await this.authUsersService.update({
 			...user,
 			hashedRt: hashedRToken,
 		});
@@ -130,32 +72,30 @@ export class AuthService {
 		return tokens;
 	}
 
-	public async getAuthenticatedUserWithEmailAndPassword(email: string, password: string): Promise<IUser> {
-		if (!password || typeof password !== 'string' || !email || typeof email !== 'string') {
-			throw new UnauthorizedError(`Invalid credentials`);
-		}
+	public async getAuthenticatedUserWithEmailAndPassword(email: string, password: string): Promise<AuthUser> {
+		this.isCorrectString(email, password);
 
-		const user = await this.getUserByEmail(email);
+		const user = await this.authUsersService.getByUserEmail(email);
 
 		if (!user) {
+			this.logger.warn(`User with email ${email} not found`);
 			throw new UnauthorizedError(`Invalid credentials`);
 		}
 
 		const passwordMatch = await this.verifyTextToHash(user.hash, password);
 
 		if (!passwordMatch) {
+			this.logger.warn(`User password with email ${email} is incorrect`);
 			throw new UnauthorizedError(`Invalid credentials`);
 		}
 
 		return user;
 	}
 
-	public async getAuthenticatedUserWithJwt(userId: string): Promise<IUser> {
-		if (!userId || typeof userId !== 'string') {
-			throw new UnauthorizedError(`Invalid credentials`);
-		}
+	public async getAuthenticatedUserWithJwt(userId: EntityId): Promise<AuthUser> {
+		this.isCorrectString(userId.value);
 
-		const user = await this.getUserById(userId);
+		const user = await this.authUsersService.getByUserId(userId);
 
 		if (user) {
 			return user;
@@ -164,12 +104,10 @@ export class AuthService {
 		throw new UnauthorizedError(`Invalid credentials`);
 	}
 
-	public async getAuthenticatedUserWithRefreshToken(userId: string, token: string): Promise<IUser> {
-		if (!userId || typeof userId !== 'string' || !token || typeof token !== 'string') {
-			throw new UnauthorizedError(`Invalid credentials`);
-		}
+	public async getAuthenticatedUserWithRefreshToken(userId: EntityId, token: string): Promise<AuthUser> {
+		this.isCorrectString(userId.value, token);
 
-		const user = await this.getUserById(userId);
+		const user = await this.authUsersService.getByUserId(userId);
 
 		if (!user || !user.hashedRt) {
 			throw new UnauthorizedError(`Invalid credentials`);
@@ -184,28 +122,26 @@ export class AuthService {
 		throw new UnauthorizedError(`Invalid credentials`);
 	}
 
-	public async logout(userId: string): Promise<void> {
-		await this.updateUser({
+	public async logout(userId: EntityId): Promise<void> {
+		await this.authUsersService.update({
 			id: userId,
 			hashedRt: null,
 		});
 	}
 
-	public async refreshTokens(user: IUser, refreshToken: string): Promise<ITokens> {
-		if (!user || !user.hashedRt || !refreshToken || typeof refreshToken !== 'string') {
-			throw new UnauthorizedError(`Invalid credentials`);
-		}
+	public async refreshTokens(user: AuthUser, refreshToken: string): Promise<ITokens> {
+		this.isCorrectString(user.hashedRt!, refreshToken);
 
-		const refreshTokenMatches = await this.hashService.hashAndTextVerify(user.hashedRt, refreshToken);
+		const refreshTokenMatches = await this.hashService.hashAndTextVerify(user.hashedRt!, refreshToken);
 
 		if (!refreshTokenMatches) {
 			throw new UnauthorizedError(`Invalid credentials`);
 		}
 
-		const tokens = await this.getTokens(user.id);
+		const tokens = await this.getTokens(user.userId.value);
 		const hashedRToken = await this.updateHash(tokens.refresh_token);
 
-		await this.updateUser({
+		await this.authUsersService.update({
 			...user,
 			hashedRt: hashedRToken,
 		});
@@ -234,6 +170,7 @@ export class AuthService {
 				expiresIn: config.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 			},
 		);
+
 		const refreshToken = this.jwtService.signAsync(
 			{
 				id: userId,
@@ -252,5 +189,14 @@ export class AuthService {
 
 	async updateHash(text: string) {
 		return await this.hashService.hashData(text);
+	}
+
+	isCorrectString(...texts: (string | string[])[]) {
+		const arr = Array.isArray(texts) ? texts : [texts];
+		for (const text of arr) {
+			if (!text || typeof text !== 'string' || (typeof text === 'string' && !text.trim())) {
+				throw new UnauthorizedError(`Invalid credentials`);
+			}
+		}
 	}
 }

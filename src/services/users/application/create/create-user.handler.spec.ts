@@ -27,10 +27,7 @@ describe('CreateUserHandler', () => {
 	});
 
 	const command = new CreateUserCommand({
-		hash: 'asdfadsfas',
-		hashedRt: null,
 		email: 'test@test.com',
-		roleId: '34d90467-aeb4-4016-9791-86f9aec010e4',
 	});
 
 	describe('Success', () => {

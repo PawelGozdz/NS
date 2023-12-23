@@ -1,11 +1,12 @@
 import config from '@config/app';
-import { IUser, UnauthorizedError } from '@libs/common';
+import { EntityId, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import * as cookie from 'cookie';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
+import { AuthUser } from '../models';
 import { AuthService } from '../services';
 import { JwtPayload } from '../types';
 
@@ -28,17 +29,24 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
 		return cookie.parse(cookieAsString || '');
 	}
 
-	async validate(req: Request, payload: JwtPayload): Promise<IUser> {
+	async validate(req: Request, payload: JwtPayload): Promise<AuthUser> {
 		const refreshToken = req?.cookies?.Refresh || this.parseCookies(req.headers.cookie || '')?.Refresh;
 
 		if (!refreshToken || typeof refreshToken !== 'string') {
 			throw new UnauthorizedError();
 		}
 
-		const user = await this.authService.getUserById(payload.id);
+		const userId = EntityId.create(payload.id);
+
+		const user = await this.authService.getAuthenticatedUserWithRefreshToken(userId, refreshToken);
 
 		if (user) {
-			req.user = user;
+			req.user = {
+				email: user.email,
+				hash: user.hash,
+				hashedRt: user.hashedRt,
+				userId: user.userId.value,
+			};
 			req.refresh_token = refreshToken;
 
 			return user;

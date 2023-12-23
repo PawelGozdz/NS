@@ -4,7 +4,4 @@ export interface IUserBase {
 
 export interface IUser extends IUserBase {
 	email: string;
-	roleId: string;
-	hash: string;
-	hashedRt: string | null;
 }

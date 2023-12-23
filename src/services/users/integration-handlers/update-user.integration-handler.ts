@@ -9,14 +9,11 @@ export class OnUpdateUserEventHandler {
 	constructor(private readonly commandBus: CommandBus) {}
 
 	@OnEvent(UpdateUserIntegrationEvent.eventName)
-	async onUserCreated({ payload: { hash, hashedRt, id, email, roleId } }: UpdateUserIntegrationEvent): Promise<void> {
+	async onUserCreated({ payload: { id, email } }: UpdateUserIntegrationEvent): Promise<void> {
 		return await this.commandBus.execute(
 			new UpdateUserCommand({
 				id,
 				email,
-				roleId,
-				hash,
-				hashedRt,
 			}),
 		);
 	}

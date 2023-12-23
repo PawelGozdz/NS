@@ -1,4 +1,3 @@
-import { EntityId } from '@libs/common';
 import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 import { PinoLogger } from 'nestjs-pino';
 import { IUsersCommandRepository, User } from '../../domain';
@@ -17,6 +16,7 @@ export class CreateUserHandler implements IInferredCommandHandler<CreateUserComm
 		this.logger.info(command, 'Creating user:');
 
 		const user = this.createUserInstance(command);
+
 		await this.userCommandRepository.save(user);
 
 		return { id: user.getId() };
@@ -24,10 +24,7 @@ export class CreateUserHandler implements IInferredCommandHandler<CreateUserComm
 
 	private createUserInstance(command: CreateUserCommand) {
 		return User.create({
-			hash: command.hash,
-			hashedRt: command.hashedRt,
 			email: command.email,
-			roleId: EntityId.create(command.roleId),
 		});
 	}
 }

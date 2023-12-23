@@ -3,13 +3,7 @@ import { BaseModel } from '@libs/ddd';
 export class UserModel extends BaseModel {
 	id: string;
 
-	name: string;
-
-	roleId: string;
-
-	hash: string;
-
-	hashedRt: string | null;
+	email: string;
 
 	updatedAt: Date;
 

@@ -2,10 +2,7 @@ import { IntegrationEvent } from '../integration-base.event';
 import { IntegrationEventNames } from '../integration-events.enum';
 
 interface IUserCreate {
-	hash: string;
-	hashedRt: string | null;
 	email: string;
-	roleId: string;
 }
 
 export class CreateUserIntegrationEvent extends IntegrationEvent {
@@ -17,9 +14,6 @@ export class CreateUserIntegrationEvent extends IntegrationEvent {
 		super();
 
 		this.payload = {
-			hash: user.hash,
-			roleId: user.roleId,
-			hashedRt: user.hashedRt,
 			email: user.email,
 		};
 	}

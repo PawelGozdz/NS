@@ -3,10 +3,18 @@ import { CqrsModule } from '@libs/cqrs';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { AuthUsersRepository, IAuthUsersRepository } from './repositories';
 import { AuthService, CookiesService, HashService } from './services';
+import { AuthUsersService } from './services/auth-users.service';
 import { AtStrategy, RtStrategy } from './strategies';
 
-const providers = [AuthService, JwtService, AtStrategy, RtStrategy, CookiesService, HashService];
+const providers = [AuthService, JwtService, AtStrategy, RtStrategy, CookiesService, HashService, AuthUsersService];
+const repositories = [
+	{
+		provide: IAuthUsersRepository,
+		useClass: AuthUsersRepository,
+	},
+];
 
 @Module({
 	imports: [
@@ -22,7 +30,7 @@ const providers = [AuthService, JwtService, AtStrategy, RtStrategy, CookiesServi
 		}),
 		CqrsModule,
 	],
-	providers: [...providers],
+	providers: [...providers, ...repositories],
 	exports: [...providers],
 })
 export class JwtAuthenticationModule {}

@@ -1,9 +1,9 @@
-import { IUser } from '@libs/common';
+import { IAuthUser } from '@libs/common';
 
 declare global {
 	namespace Express {
 		interface Request {
-			user?: IUser;
+			user?: IAuthUser;
 			refresh_token?: string;
 		}
 	}

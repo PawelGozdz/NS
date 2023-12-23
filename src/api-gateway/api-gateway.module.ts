@@ -3,7 +3,7 @@ import { AccessTokenGuard, LoggingInterceptor } from '@libs/common';
 import { CqrsModule } from '@libs/cqrs';
 import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AuthControllerV1, AuthJwtControllerV1 } from './auth';
+import { AuthJwtControllerV1 } from './auth';
 import { UserController } from './user.controller';
 
 const interceptors = [
@@ -14,7 +14,7 @@ const interceptors = [
 ];
 
 const providers = [];
-const controllers = [UserController, AuthControllerV1, AuthJwtControllerV1];
+const controllers = [UserController, AuthJwtControllerV1];
 const guards = [{ provide: 'APP_GUARD', useClass: AccessTokenGuard }];
 const pipes = [
 	{

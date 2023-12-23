@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 export class UsersCommandRepository implements IUsersCommandRepository {
 	constructor() {}
 	async getOneById(id: EntityId): Promise<User | undefined> {
-		return User.create({ id: id, hash: 'hash', hashedRt: 'hashedRt', email: 'test@test.com', roleId: EntityId.createRandom() });
+		return User.create({ id, email: 'test@test.com' });
 	}
 
 	async save(user: User): Promise<void> {}

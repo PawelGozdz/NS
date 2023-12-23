@@ -12,10 +12,7 @@ export class OnCreateUserEventHandler {
 	async onUserCreated(payload: CreateUserIntegrationEvent): Promise<CreateUserResponse> {
 		return await this.commandBus.execute(
 			new CreateUserCommand({
-				hash: payload.payload.hash,
-				hashedRt: payload.payload.hashedRt,
 				email: payload.payload.email,
-				roleId: payload.payload.roleId,
 			}),
 		);
 	}
