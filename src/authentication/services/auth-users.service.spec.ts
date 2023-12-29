@@ -58,6 +58,11 @@ describe('AuthService', () => {
 		id: user.id,
 	};
 
+	const expectTokens = {
+		lastLogin: expect.any(Date),
+		tokenRefreshedAt: expect.any(Date),
+	};
+
 	describe('create', () => {
 		it('should create user', async () => {
 			// Arrange
@@ -140,6 +145,7 @@ describe('AuthService', () => {
 			eventEmitterMock.emitAsync.mockResolvedValue([user]);
 			const paramEvent = new GetUserByIdIntegrationEvent(authUser.userId);
 			paramEvent.integrationEventId = expect.any(String);
+			paramEvent.integrationEventOccuredON = expect.any(Date);
 
 			// Act
 			const result = await service.getIntegrationUserById(authUser.userId);
@@ -177,6 +183,7 @@ describe('AuthService', () => {
 				eventEmitterMock.emitAsync.mockResolvedValue([userResp]);
 				const paramEvent = new CreateUserIntegrationEvent({
 					email: dto.email,
+					...expectTokens,
 				});
 				paramEvent.integrationEventId = expect.any(String);
 
@@ -195,6 +202,7 @@ describe('AuthService', () => {
 				eventEmitterMock.emitAsync.mockRejectedValueOnce(CannotCreateUserError.failed());
 				const paramEvent = new CreateUserIntegrationEvent({
 					email: dto.email,
+					...expectTokens,
 				});
 				paramEvent.integrationEventId = expect.any(String);
 

@@ -64,6 +64,11 @@ describe('AuthService', () => {
 		refresh_token: 'newRefreshToken',
 	};
 
+	const expectTokens = {
+		lastLogin: expect.any(Date),
+		tokenRefreshedAt: expect.any(Date),
+	};
+
 	describe('createUser', () => {
 		const user = { id: '6a0ee9ee-a36d-45c6-b264-1f06bf144b9a' };
 		describe('success', () => {
@@ -142,6 +147,7 @@ describe('AuthService', () => {
 				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
 					id: userId,
 					hash: hashedPassword,
+					...expectTokens,
 				});
 				expect(result).toMatchSnapshot();
 			});
@@ -217,6 +223,7 @@ describe('AuthService', () => {
 				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
 					...user,
 					hashedRt: hashedPassword,
+					...expectTokens,
 				});
 				expect(result).toMatchSnapshot();
 			});
@@ -420,7 +427,12 @@ describe('AuthService', () => {
 				expect(hashServiceMock.hashAndTextVerify).toHaveBeenCalledWith(user.hashedRt, refreshToken);
 				expect(service.getTokens).toHaveBeenCalledWith(user.userId);
 				expect(service.updateHash).toHaveBeenCalledWith(tokens.refresh_token);
-				expect(authUsersServiceMock.update).toHaveBeenCalledWith({ ...user, hashedRt: hashedRefreshToken });
+				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
+					...user,
+					hashedRt: hashedRefreshToken,
+					lastLogin: null,
+					tokenRefreshedAt: expect.any(Date),
+				});
 				expect(result).toMatchSnapshot();
 			});
 		});

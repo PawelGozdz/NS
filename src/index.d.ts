@@ -5,7 +5,6 @@ declare global {
 		interface Request {
 			authUser?: IAuthUser;
 			user?: IUser;
-			refresh_token?: string;
 		}
 	}
 }

@@ -5,7 +5,7 @@ import { Request } from 'express';
 export const GetRefreshToken = createParamDecorator((_: undefined, context: ExecutionContext): string => {
 	const request = context.switchToHttp().getRequest() as Request;
 
-	const token = request.refresh_token;
+	const token = request?.authUser?.hashedRt;
 
 	if (token) {
 		return token;

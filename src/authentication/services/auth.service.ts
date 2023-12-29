@@ -46,9 +46,13 @@ export class AuthService {
 		const tokens = await this.getTokens(userId);
 		const hashedPassword = await this.updateHash(tokens.refresh_token);
 
+		const date = new Date();
+
 		await this.authUsersService.update({
 			id: userId,
 			hash: hashedPassword,
+			lastLogin: date,
+			tokenRefreshedAt: date,
 		});
 
 		return tokens;
@@ -64,9 +68,13 @@ export class AuthService {
 
 		const hashedRToken = await this.updateHash(tokens.refresh_token);
 
+		const date = new Date();
+
 		await this.authUsersService.update({
 			...user,
 			hashedRt: hashedRToken,
+			lastLogin: date,
+			tokenRefreshedAt: date,
 		});
 
 		return tokens;
@@ -144,6 +152,7 @@ export class AuthService {
 		await this.authUsersService.update({
 			...user,
 			hashedRt: hashedRToken,
+			tokenRefreshedAt: new Date(),
 		});
 
 		return tokens;
