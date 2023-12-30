@@ -22,10 +22,10 @@ export class AuthService {
 		try {
 			const hash = await this.hashService.hashData(dto.password);
 
-			const userCreated = await this.authUsersService.createIntegrationUser(dto);
+			const integrationUser = await this.authUsersService.createIntegrationUser(dto);
 
 			const buildUserObj = AuthUser.create({
-				userId: userCreated.id!,
+				userId: integrationUser.id!,
 				hash,
 				email: dto.email,
 				hashedRt: null,
@@ -42,17 +42,17 @@ export class AuthService {
 		}
 	}
 
-	public async signup(userId: string): Promise<ITokens> {
-		const tokens = await this.getTokens(userId);
-		const hashedPassword = await this.updateHash(tokens.refresh_token);
+	public async signup(id: string): Promise<ITokens> {
+		const tokens = await this.getTokens(id);
+		const hashedRt = await this.updateHash(tokens.refresh_token);
 
 		const date = new Date();
 
 		await this.authUsersService.update({
-			id: userId,
-			hash: hashedPassword,
+			id,
 			lastLogin: date,
 			tokenRefreshedAt: date,
+			hashedRt: hashedRt,
 		});
 
 		return tokens;
@@ -93,7 +93,7 @@ export class AuthService {
 		const passwordMatch = await this.verifyTextToHash(user.hash, password);
 
 		if (!passwordMatch) {
-			this.logger.warn(`User password with email ${email} is incorrect`);
+			this.logger.info(`User password with email ${email} is incorrect`);
 			throw new UnauthorizedError(`Invalid credentials`);
 		}
 

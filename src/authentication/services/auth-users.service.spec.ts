@@ -89,11 +89,7 @@ describe('AuthService', () => {
 
 			// Assert
 			expect(result).toBeUndefined();
-			expect(authUsersRepositoryMock.update).toHaveBeenNthCalledWith(1, {
-				hash: authUser.hash,
-				hashedRt: authUser.hashedRt,
-				userId: authUser.userId,
-			});
+			expect(authUsersRepositoryMock.update).toHaveBeenNthCalledWith(1, authUser);
 		});
 	});
 

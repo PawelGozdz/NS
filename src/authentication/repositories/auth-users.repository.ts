@@ -1,42 +1,63 @@
-import { Injectable } from '@nestjs/common';
-import { AuthUser, AuthUserDao } from '../models';
+import { Inject, Injectable } from '@nestjs/common';
+import { AuthUser, AuthUserModel } from '../models';
 import { IAuthUsersRepository } from './auth-users-repository.interface';
 
 @Injectable()
 export class AuthUsersRepository implements IAuthUsersRepository {
+	constructor(@Inject(AuthUserModel) readonly authUserModel: typeof AuthUserModel) {}
+
 	async create(user: AuthUser): Promise<{ id: string }> {
-		return {
+		const userDao = await this.authUserModel.query().insert({
 			id: user.id,
-		};
-	}
-	async update(user: AuthUser): Promise<void> {}
-	async delete(userId: string): Promise<void> {}
-	async getByUserId(userId: string): Promise<AuthUser | undefined> {
-		return this.mapResponse({
-			id: '6a0ee9ee-a36d-45c6-b264-1f06bf144b9a',
-			email: 'email@email.com',
-			userId: userId,
-			hash: '$argon2id$v=19$m=65536,t=6,p=4$BlQGwDIOfelyoqJPYzP+Sw$X+4peb4YMalUd7C4cKBr0NVIw3tCjzk3IR8ACcwpN/o',
-			hashedRt: null,
-		} as AuthUserDao);
-	}
-	async getByUserEmail(email: string): Promise<AuthUser | undefined> {
-		return this.mapResponse({
-			id: '6a0ee9ee-a36d-45c6-b264-1f06bf144b9a',
-			email: email,
-			userId: '6a0ee9ee-a36d-45c6-b264-1f06bf144b9f',
-			hash: '$argon2id$v=19$m=65536,t=6,p=4$BlQGwDIOfelyoqJPYzP+Sw$X+4peb4YMalUd7C4cKBr0NVIw3tCjzk3IR8ACcwpN/o',
-			hashedRt: null,
-		} as AuthUserDao);
+			email: user.email,
+			userId: user.userId,
+			hash: user.hash,
+			hashedRt: user.hashedRt,
+			lastLogin: user.lastLogin,
+			tokenRefreshedAt: user.tokenRefreshedAt,
+		});
+
+		return { id: userDao.id };
 	}
 
-	mapResponse(user: AuthUserDao) {
+	async update(user: AuthUser): Promise<void> {
+		await this.authUserModel.query().update(user);
+	}
+
+	async delete(userId: string): Promise<void> {}
+
+	async getByUserId(userId: string): Promise<AuthUser | undefined> {
+		const userDao = await this.authUserModel.query().findOne({
+			userId,
+		});
+
+		if (!userDao) {
+			return undefined;
+		}
+
+		return this.mapResponse(userDao);
+	}
+	async getByUserEmail(email: string): Promise<AuthUser | undefined> {
+		const userDao = await this.authUserModel.query().findOne({
+			email,
+		});
+
+		if (!userDao) {
+			return undefined;
+		}
+
+		return this.mapResponse(userDao);
+	}
+
+	mapResponse(user: AuthUserModel): AuthUser {
 		return AuthUser.create({
 			id: user.id,
 			email: user.email,
 			userId: user.userId,
 			hash: user.hash,
 			hashedRt: user.hashedRt,
+			lastLogin: user.lastLogin,
+			tokenRefreshedAt: user.tokenRefreshedAt,
 		});
 	}
 }

@@ -146,7 +146,7 @@ describe('AuthService', () => {
 				expect(service.updateHash).toHaveBeenCalledWith(tokens.refresh_token);
 				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
 					id: userId,
-					hash: hashedPassword,
+					hashedRt: hashedPassword,
 					...expectTokens,
 				});
 				expect(result).toMatchSnapshot();
@@ -266,6 +266,7 @@ describe('AuthService', () => {
 					...user,
 					id: expect.any(String),
 					userId: expect.any(String),
+					...expectTokens,
 				});
 			});
 		});
@@ -317,6 +318,7 @@ describe('AuthService', () => {
 					...user,
 					id: expect.any(String),
 					userId: expect.any(String),
+					...expectTokens,
 				});
 			});
 		});
@@ -356,6 +358,7 @@ describe('AuthService', () => {
 					...user,
 					id: expect.any(String),
 					userId: expect.any(String),
+					...expectTokens,
 				});
 			});
 		});
@@ -430,7 +433,7 @@ describe('AuthService', () => {
 				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
 					...user,
 					hashedRt: hashedRefreshToken,
-					lastLogin: null,
+					lastLogin: expect.any(Date),
 					tokenRefreshedAt: expect.any(Date),
 				});
 				expect(result).toMatchSnapshot();

@@ -1,6 +1,7 @@
 import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 import { PinoLogger } from 'nestjs-pino';
 import { IUsersCommandRepository, User } from '../../domain';
+import { UserAlreadyExistsError } from '../../domain/users/errors/user-already-exists.error';
 import { CreateUserCommand, CreateUserResponse } from './create-user.command';
 
 @CommandHandler(CreateUserCommand)
@@ -14,6 +15,12 @@ export class CreateUserHandler implements IInferredCommandHandler<CreateUserComm
 
 	async execute(command: CreateUserCommand): Promise<CreateUserResponse> {
 		this.logger.info(command, 'Creating user:');
+
+		const currentUser = await this.userCommandRepository.getOneByEmail(command.email);
+
+		if (currentUser) {
+			throw UserAlreadyExistsError.withEmail(command.email);
+		}
 
 		const user = this.createUserInstance(command);
 

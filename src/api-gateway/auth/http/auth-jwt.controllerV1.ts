@@ -32,7 +32,7 @@ export class AuthJwtControllerV1 {
 			throw new UnauthorizedError();
 		}
 
-		const tokens: ITokens = await this.authService.signup(user.userId);
+		const tokens: ITokens = await this.authService.signup(user.id);
 
 		req.res!.setHeader('Set-Cookie', this.cookieService.getCookies(tokens));
 
@@ -49,7 +49,7 @@ export class AuthJwtControllerV1 {
 			this.logger.info(`Integration user not found with email: ${bodyDto.email}`);
 			throw new UnauthorizedError();
 		}
-		const authUser = await this.usersService.getByUserId(user.id);
+		const authUser = await this.usersService.getByUserId(user.userId);
 
 		if (!authUser) {
 			this.logger.info(`Auth user not found for user id: ${user.id}`);

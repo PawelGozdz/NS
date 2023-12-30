@@ -26,8 +26,8 @@ exports[`AuthService getAuthenticatedUserWithEmailAndPassword success should ret
   "hash": "hashedPassword",
   "hashedRt": "hashedRefreshToken",
   "id": Any<String>,
-  "lastLogin": null,
-  "tokenRefreshedAt": null,
+  "lastLogin": Any<Date>,
+  "tokenRefreshedAt": Any<Date>,
   "userId": Any<String>,
 }
 `;
@@ -40,8 +40,8 @@ exports[`AuthService getAuthenticatedUserWithJwt success should return the user 
   "hash": "hashedPassword",
   "hashedRt": "hashedRefreshToken",
   "id": Any<String>,
-  "lastLogin": null,
-  "tokenRefreshedAt": null,
+  "lastLogin": Any<Date>,
+  "tokenRefreshedAt": Any<Date>,
   "userId": Any<String>,
 }
 `;
@@ -56,8 +56,8 @@ exports[`AuthService getAuthenticatedUserWithRefreshToken success should return 
   "hash": "hashedPassword",
   "hashedRt": "hashedRefreshToken",
   "id": Any<String>,
-  "lastLogin": null,
-  "tokenRefreshedAt": null,
+  "lastLogin": Any<Date>,
+  "tokenRefreshedAt": Any<Date>,
   "userId": Any<String>,
 }
 `;

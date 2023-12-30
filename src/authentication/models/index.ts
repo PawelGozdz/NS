@@ -1,1 +1,1 @@
-export * from './authentication.dao';
+export * from './authentication.model';

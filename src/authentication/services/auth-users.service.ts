@@ -33,15 +33,13 @@ export class AuthUsersService {
 			hash: userData.hash,
 			hashedRt: userData.hashedRt,
 			userId: userData.userId,
+			lastLogin: userData.lastLogin,
+			tokenRefreshedAt: userData.tokenRefreshedAt,
 		});
 	}
 
 	async update(userData: Partial<AuthUser> & { id: string }): Promise<void> {
-		return await this.authUsersRepository.update({
-			hash: userData.hash,
-			hashedRt: userData.hashedRt,
-			userId: userData.userId,
-		});
+		await this.authUsersRepository.update(userData);
 	}
 
 	async delete(userId: string): Promise<void> {

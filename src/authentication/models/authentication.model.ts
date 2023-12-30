@@ -2,7 +2,7 @@ import { BaseModel } from '@libs/ddd';
 
 import { EntityId, IAuthUser } from '@libs/common';
 
-export class AuthUserDao extends BaseModel {
+export class AuthUserModel extends BaseModel {
 	id: string;
 	email: string;
 	userId: string;
@@ -12,10 +12,10 @@ export class AuthUserDao extends BaseModel {
 	createdAt: Date;
 	updatedAt: Date;
 
-	lastLogin?: Date;
-	tokenRefreshedAt?: Date;
+	lastLogin: Date | null;
+	tokenRefreshedAt: Date | null;
 
-	static tableName = 'auth-users';
+	static tableName = 'auth_users';
 
 	static relationMappings = {};
 }
@@ -26,8 +26,8 @@ export class AuthUser implements IAuthUser {
 	userId: string;
 	hash: string;
 	hashedRt: string | null;
-	lastLogin?: Date | null;
-	tokenRefreshedAt?: Date | null;
+	lastLogin: Date | null;
+	tokenRefreshedAt: Date | null;
 
 	constructor({
 		hash,
@@ -43,16 +43,16 @@ export class AuthUser implements IAuthUser {
 		userId: string;
 		email: string;
 		id: string;
-		tokenRefreshedAt?: Date | null;
-		lastLogin?: Date | null;
+		tokenRefreshedAt: Date | null;
+		lastLogin: Date | null;
 	}) {
 		this.id = id;
 		this.hash = hash;
 		this.email = email;
 		this.hashedRt = hashedRt ?? null;
 		this.userId = userId;
-		this.tokenRefreshedAt = tokenRefreshedAt ?? null;
-		this.lastLogin = lastLogin || null;
+		this.tokenRefreshedAt = tokenRefreshedAt;
+		this.lastLogin = lastLogin;
 	}
 
 	static create({
@@ -70,7 +70,7 @@ export class AuthUser implements IAuthUser {
 		hash: string;
 		hashedRt?: string | null;
 		tokenRefreshedAt?: Date | null;
-		lastLogin?: Date;
+		lastLogin?: Date | null;
 	}) {
 		return new AuthUser({
 			id: id ? EntityId.create(id).value : EntityId.createRandom().value,
