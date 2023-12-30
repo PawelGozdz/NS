@@ -59,4 +59,3 @@ const options: Params = {
 };
 
 export default options;
-// export default registerAs<Params>('pino', () => options);
