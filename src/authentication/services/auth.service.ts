@@ -42,17 +42,17 @@ export class AuthService {
 		}
 	}
 
-	public async signup(id: string): Promise<ITokens> {
-		const tokens = await this.getTokens(id);
+	public async signup(userId: string): Promise<ITokens> {
+		const tokens = await this.getTokens(userId);
 		const hashedRt = await this.updateHash(tokens.refresh_token);
 
 		const date = new Date();
 
 		await this.authUsersService.update({
-			id,
+			userId,
+			hashedRt,
 			lastLogin: date,
 			tokenRefreshedAt: date,
-			hashedRt: hashedRt,
 		});
 
 		return tokens;
@@ -66,13 +66,13 @@ export class AuthService {
 		}
 		const tokens = await this.getTokens(user.userId);
 
-		const hashedRToken = await this.updateHash(tokens.refresh_token);
+		const hashedRt = await this.updateHash(tokens.refresh_token);
 
 		const date = new Date();
 
 		await this.authUsersService.update({
 			...user,
-			hashedRt: hashedRToken,
+			hashedRt,
 			lastLogin: date,
 			tokenRefreshedAt: date,
 		});
@@ -132,7 +132,7 @@ export class AuthService {
 
 	public async logout(userId: string): Promise<void> {
 		await this.authUsersService.update({
-			id: userId,
+			userId,
 			hashedRt: null,
 		});
 	}

@@ -12,10 +12,14 @@ export class OnUGetUserByIdEventHandler {
 
 	@OnEvent(GetUserByIdIntegrationEvent.eventName)
 	async onUserByIdRequested(payload: GetUserByIdIntegrationEvent): Promise<UserInfo | undefined> {
-		return await this.queryBus.execute(
-			new GetUserByIdQuery({
-				userId: payload.payload.userId,
-			}),
-		);
+		try {
+			return await this.queryBus.execute(
+				new GetUserByIdQuery({
+					userId: payload.payload.userId,
+				}),
+			);
+		} catch (error) {
+			return error;
+		}
 	}
 }

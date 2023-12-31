@@ -1,4 +1,4 @@
-import { ApplicationErrorCode, ErrorOptions, FrameworkErrorCode } from '@libs/common';
+import { ErrorOptions, FrameworkErrorCode } from '@libs/common';
 import { BaseError } from './base.error';
 
 type FrameworkErrorOptions = ErrorOptions & {
@@ -10,7 +10,7 @@ type FrameworkErrorOptions = ErrorOptions & {
 export class FrameworkError extends BaseError implements FrameworkErrorOptions {
 	statusCode: number;
 	module?: string;
-	code?: ApplicationErrorCode;
+	code?: FrameworkErrorCode;
 	data?: any;
 	timestamp?: Date;
 	error?: Error;

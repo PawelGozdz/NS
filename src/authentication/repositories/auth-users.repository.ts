@@ -21,7 +21,7 @@ export class AuthUsersRepository implements IAuthUsersRepository {
 	}
 
 	async update(user: AuthUser): Promise<void> {
-		await this.authUserModel.query().update(user);
+		await this.authUserModel.query().where({ userId: user.userId }).update(user);
 	}
 
 	async delete(userId: string): Promise<void> {}

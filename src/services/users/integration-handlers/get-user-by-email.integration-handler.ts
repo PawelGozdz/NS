@@ -12,10 +12,14 @@ export class OnUGetUserByEmailEventHandler {
 
 	@OnEvent(GetUserByEmailIntegrationEvent.eventName)
 	async onUserByEmailRequested(payload: GetUserByEmailIntegrationEvent): Promise<UserInfo | undefined> {
-		return await this.queryBus.execute(
-			new GetUserByEmailQuery({
-				email: payload.payload.email,
-			}),
-		);
+		try {
+			return await this.queryBus.execute(
+				new GetUserByEmailQuery({
+					email: payload.payload.email,
+				}),
+			);
+		} catch (error) {
+			return error;
+		}
 	}
 }

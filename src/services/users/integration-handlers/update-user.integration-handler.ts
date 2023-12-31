@@ -10,11 +10,15 @@ export class OnUpdateUserEventHandler {
 
 	@OnEvent(UpdateUserIntegrationEvent.eventName)
 	async onUserCreated({ payload: { id, email } }: UpdateUserIntegrationEvent): Promise<void> {
-		return await this.commandBus.execute(
-			new UpdateUserCommand({
-				id,
-				email,
-			}),
-		);
+		try {
+			return await this.commandBus.execute(
+				new UpdateUserCommand({
+					id,
+					email,
+				}),
+			);
+		} catch (error) {
+			return error;
+		}
 	}
 }

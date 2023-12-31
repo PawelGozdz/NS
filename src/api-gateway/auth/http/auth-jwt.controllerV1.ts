@@ -32,7 +32,7 @@ export class AuthJwtControllerV1 {
 			throw new UnauthorizedError();
 		}
 
-		const tokens: ITokens = await this.authService.signup(user.id);
+		const tokens: ITokens = await this.authService.signup(user.userId);
 
 		req.res!.setHeader('Set-Cookie', this.cookieService.getCookies(tokens));
 

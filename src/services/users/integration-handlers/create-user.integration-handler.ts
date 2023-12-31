@@ -10,10 +10,14 @@ export class OnCreateUserEventHandler {
 
 	@OnEvent(CreateUserIntegrationEvent.eventName)
 	async onUserCreated(payload: CreateUserIntegrationEvent): Promise<CreateUserResponse> {
-		return await this.commandBus.execute(
-			new CreateUserCommand({
-				email: payload.payload.email,
-			}),
-		);
+		try {
+			return await this.commandBus.execute(
+				new CreateUserCommand({
+					email: payload.payload.email,
+				}),
+			);
+		} catch (error) {
+			return error;
+		}
 	}
 }

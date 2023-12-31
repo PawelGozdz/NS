@@ -71,3 +71,7 @@ export enum FrameworkErrorCode {
 export enum DomainErrorType {
 	IDENTITY = 'identity',
 }
+
+export enum UserErrorCode {
+	CannotCreate = 'U_CANNOT_CREATE',
+}

@@ -145,7 +145,7 @@ describe('AuthService', () => {
 				expect(service.getTokens).toHaveBeenCalledWith(userId);
 				expect(service.updateHash).toHaveBeenCalledWith(tokens.refresh_token);
 				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
-					id: userId,
+					userId,
 					hashedRt: hashedPassword,
 					...expectTokens,
 				});
@@ -403,7 +403,7 @@ describe('AuthService', () => {
 
 				// Assert
 				expect(authUsersServiceMock.update).toHaveBeenCalledWith({
-					id: userId,
+					userId,
 					hashedRt: null,
 				});
 			});

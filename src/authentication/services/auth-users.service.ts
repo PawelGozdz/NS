@@ -1,8 +1,10 @@
 import {
+	BaseError,
 	CannotCreateUserError,
 	CreateUserIntegrationEvent,
 	GetUserByEmailIntegrationEvent,
 	GetUserByIdIntegrationEvent,
+	IntegrationEvent,
 	SignUpIntegrationDto,
 } from '@libs/common';
 import { Injectable } from '@nestjs/common';
@@ -38,7 +40,7 @@ export class AuthUsersService {
 		});
 	}
 
-	async update(userData: Partial<AuthUser> & { id: string }): Promise<void> {
+	async update(userData: Partial<AuthUser> & { userId: string }): Promise<void> {
 		await this.authUsersRepository.update(userData);
 	}
 
@@ -55,31 +57,49 @@ export class AuthUsersService {
 	}
 
 	public async getIntegrationUserById(userId: string): Promise<IUserInfo | undefined> {
-		const user = await this.eventEmitter.emitAsync(GetUserByIdIntegrationEvent.eventName, new GetUserByIdIntegrationEvent(userId));
+		const user = (await this.integrationCall(GetUserByIdIntegrationEvent.eventName, new GetUserByIdIntegrationEvent(userId))) as
+			| IUserInfo
+			| undefined;
 
-		return user?.[0];
+		return user;
 	}
 
 	public async getIntegrationUserByEmail(email: string): Promise<IUserInfo | undefined> {
-		const user = await this.eventEmitter.emitAsync(GetUserByEmailIntegrationEvent.eventName, new GetUserByEmailIntegrationEvent(email));
+		const user = (await this.integrationCall(GetUserByEmailIntegrationEvent.eventName, new GetUserByEmailIntegrationEvent(email))) as
+			| IUserInfo
+			| undefined;
 
-		return user?.[0];
+		return user;
 	}
 
 	async createIntegrationUser(dto: SignUpIntegrationDto): Promise<IUserCreated> {
-		const user = (await this.eventEmitter.emitAsync(
+		const user = (await this.integrationCall(
 			CreateUserIntegrationEvent.eventName,
 			new CreateUserIntegrationEvent({
 				email: dto.email,
 			}),
-		)) as IUserCreated[];
+		)) as IUserCreated;
 
-		if (!user[0]?.id) {
+		if (!user?.id) {
 			throw CannotCreateUserError.failed();
 		}
 
 		return {
-			id: user[0].id,
+			id: user.id,
 		};
+	}
+
+	private async integrationCall(eventType: string, event: IntegrationEvent) {
+		const eventData = await this.eventEmitter.emitAsync(eventType, event);
+
+		this.handleIntergationError(eventData[0]);
+
+		return eventData[0];
+	}
+
+	private handleIntergationError(data: unknown) {
+		if (data instanceof BaseError) {
+			throw data;
+		}
 	}
 }
