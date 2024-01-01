@@ -8,26 +8,20 @@ import {
 	FrameworkErrorCode,
 	UserErrorCode,
 } from '@libs/common';
+import { ApiResponseBase, ApiResponseStatusJsendEnum, createJsendResponse } from '@libs/common/api';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
 import { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
-
-interface ICoreMessages {
-	messages: string[];
-}
-
-interface ICoreParams {
-	path: string;
-	statusCode: number;
-	timestamp: string;
-	messages: ICoreMessages['messages'];
-}
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
 	defaultStatusCode = 500;
 
-	constructor(private readonly logger: PinoLogger) {
+	constructor(
+		private readonly logger: PinoLogger,
+		private readonly httpAdapterHost: HttpAdapterHost,
+	) {
 		this.logger.setContext(this.constructor.name);
 	}
 
@@ -35,37 +29,26 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		const ctx = host.switchToHttp();
 		const response = ctx.getResponse<Response>();
 		const request = ctx.getRequest<Request>();
-
+		const { httpAdapter } = this.httpAdapterHost;
 		const timestamp = new Date().toISOString();
 		const path = request.url;
 
-		const coreParams: ICoreParams = {
-			path,
-			statusCode: this.defaultStatusCode,
-			timestamp,
-			messages: [],
-		};
+		const coreParams = new ApiResponseBase(this.defaultStatusCode, timestamp, path);
 
 		const responseObj = this.mapResponse(exception, coreParams);
 
-		return response.status(responseObj.statusCode).json(responseObj);
+		return httpAdapter.reply(response, responseObj, responseObj.statusCode);
 	}
 
-	private baseErrors(exception: BaseError): ICoreMessages {
-		return {
-			messages: Array.isArray(exception.message) ? exception.message : [exception.message],
-		};
+	private baseErrors(exception: BaseError) {
+		return exception.message;
 	}
-	private httpErrors(exception: HttpException): ICoreMessages {
-		return {
-			messages: Array.isArray(exception.message) ? exception.message : [exception.message],
-		};
+	private httpErrors(exception: HttpException) {
+		return exception.message;
 	}
-	private otherErrors(exception: unknown): ICoreMessages {
+	private otherErrors(exception: unknown) {
 		const message = (exception as Error).message;
-		return {
-			messages: [message],
-		};
+		return message || FrameworkErrorCode.UnknownError;
 	}
 
 	private mapCustomErrorToHttpStatusCode(error: BaseError | HttpException | unknown) {
@@ -179,7 +162,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		return code || this.defaultStatusCode;
 	}
 
-	private mapMessageToResponse(exception: BaseError | HttpException | unknown): ICoreMessages {
+	private mapMessageToResponse(exception: BaseError | HttpException | unknown) {
 		if (exception instanceof HttpException) {
 			return this.httpErrors(exception);
 		}
@@ -191,13 +174,38 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		return this.otherErrors(exception);
 	}
 
-	private mapResponse(exception: BaseError | HttpException, coreParams: ICoreParams) {
+	private mapJsendProperties(exception: BaseError | HttpException | Error, statusCode: number) {
+		const message = this.mapMessageToResponse(exception);
+		const status = this.getStatus(statusCode);
+		let data: any = null;
+		const isFail = this.isFail(statusCode);
+
+		if (exception instanceof HttpException) {
+			const subErrors = Array.isArray(exception?.['response']?.message) ? exception['response'].message : undefined;
+			data = isFail ? { subErrors, error: message } : null;
+		} else if (exception instanceof BaseError) {
+			data = isFail ? { error: message } : null;
+		} else {
+			data = isFail ? { error: message } : null;
+		}
+
+		return isFail ? createJsendResponse(status, { ...data }) : createJsendResponse(status, message);
+	}
+
+	isFail(statusCode: number) {
+		return statusCode >= 400 && statusCode < 500;
+	}
+
+	getStatus(statusCode: number) {
+		return this.isFail(statusCode) ? ApiResponseStatusJsendEnum.FAIL : ApiResponseStatusJsendEnum.ERROR;
+	}
+
+	private mapResponse(exception: BaseError | HttpException, coreParams: ApiResponseBase) {
 		const responseObj = { ...coreParams };
 
 		responseObj.statusCode = this.mapCustomErrorToHttpStatusCode(exception) || this.defaultStatusCode;
+		const jsonResponsetype = this.mapJsendProperties(exception, responseObj.statusCode);
 
-		responseObj.messages = this.mapMessageToResponse(exception).messages;
-
-		return responseObj;
+		return { ...responseObj, ...jsonResponsetype };
 	}
 }

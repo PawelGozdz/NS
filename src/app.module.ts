@@ -8,17 +8,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
 import { ApiGatewayModule } from './api-gateway';
 
-import { GlobalExceptionFilter } from './core';
 import { EnvModule } from './core/modules/environment/environmental.module';
 import { DatabaseModule } from './database/database.module';
 import { ServicesModule } from './services';
-
-const exceptiofilter = [
-	{
-		provide: 'APP_FILTER',
-		useClass: GlobalExceptionFilter,
-	},
-];
 
 @Module({
 	imports: [
@@ -36,6 +28,5 @@ const exceptiofilter = [
 		LoggerModule.forRoot(loggerOptions),
 		ServicesModule,
 	],
-	providers: [...exceptiofilter],
 })
 export class AppModule {}
