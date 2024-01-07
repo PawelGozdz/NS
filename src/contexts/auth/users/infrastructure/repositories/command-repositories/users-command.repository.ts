@@ -1,9 +1,9 @@
-import { IUsersCommandRepository, User, UserCreatedEvent, UserSnapshot } from '@app/services/users/domain';
 import { EntityId } from '@libs/common';
 import { EventBus } from '@libs/cqrs';
 import { EntityRepository } from '@libs/ddd';
 import { Inject, Injectable } from '@nestjs/common';
 import { Transaction } from 'objection';
+import { IUsersCommandRepository, User, UserCreatedEvent, UserSnapshot } from '../../../domain';
 import { UserModel } from '../../models';
 
 @Injectable()

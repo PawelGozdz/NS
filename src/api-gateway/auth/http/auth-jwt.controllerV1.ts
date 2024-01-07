@@ -1,7 +1,7 @@
-import { AuthUser } from '@app/authentication/models';
-import { AuthService, CookiesService } from '@app/authentication/services';
-import { AuthUsersService } from '@app/authentication/services/auth-users.service';
-import { ITokens } from '@app/authentication/types';
+import { AuthUser } from '@app/contexts/auth/authentication/models';
+import { AuthService, CookiesService } from '@app/contexts/auth/authentication/services';
+import { AuthUsersService } from '@app/contexts/auth/authentication/services/auth-users.service';
+import { ITokens } from '@app/contexts/auth/authentication/types';
 import { GetRefreshToken, Public, RefreshTokenGuard, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
 import { GetCurrentAuthUser } from '@libs/common/decorators/current-auth-user.decorator';
 import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';

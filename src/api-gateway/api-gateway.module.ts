@@ -1,10 +1,10 @@
-import { JwtAuthenticationModule } from '@app/authentication/authentication.module';
+import { AuthenticationModule } from '@app/contexts/auth';
 import { GlobalExceptionFilter } from '@app/core';
-import { AccessTokenGuard, LoggingInterceptor } from '@libs/common';
-import { JsendTransformSuccessInterceptor } from '@libs/common/interceptors/jsend-transform.interceptor';
+import { AccessTokenGuard, JsendTransformSuccessInterceptor, LoggingInterceptor } from '@libs/common';
 import { CqrsModule } from '@libs/cqrs';
 import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+
 import { AuthJwtControllerV1 } from './auth';
 import { UserController } from './user.controller';
 
@@ -42,7 +42,7 @@ const pipes = [
 const controllers = [UserController, AuthJwtControllerV1];
 
 @Module({
-	imports: [CqrsModule, JwtAuthenticationModule],
+	imports: [CqrsModule, AuthenticationModule],
 	controllers: [...controllers],
 	providers: [...exceptionFilters, ...interceptors, ...guards, ...pipes],
 })

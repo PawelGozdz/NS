@@ -8,9 +8,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
 import { ApiGatewayModule } from './api-gateway';
 
+import { ContextModule } from './contexts';
 import { EnvModule } from './core/modules/environment/environmental.module';
 import { DatabaseModule } from './database/database.module';
-import { ServicesModule } from './services';
 
 @Module({
 	imports: [
@@ -26,7 +26,7 @@ import { ServicesModule } from './services';
 		EnvModule,
 		CqrsModule,
 		LoggerModule.forRoot(loggerOptions),
-		ServicesModule,
+		ContextModule,
 	],
 })
 export class AppModule {}

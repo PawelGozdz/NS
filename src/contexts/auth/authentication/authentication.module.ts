@@ -36,4 +36,4 @@ const repositories = [
 	providers: [...providers, ...repositories],
 	exports: [...providers],
 })
-export class JwtAuthenticationModule {}
+export class AuthenticationModule {}

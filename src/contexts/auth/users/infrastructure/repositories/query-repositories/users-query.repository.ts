@@ -1,5 +1,5 @@
-import { IUsersQueryRepository, UserInfo } from '@app/services/users/domain';
 import { EntityId } from '@libs/common';
+import { IUsersQueryRepository, UserInfo } from '../../../domain';
 
 export class UsersQueryRepository implements IUsersQueryRepository {
 	public async getOneById(id: EntityId): Promise<UserInfo | undefined> {

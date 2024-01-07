@@ -1,4 +1,4 @@
-import { AuthService, CookiesService } from '@app/authentication/services';
+import { AuthService, CookiesService } from '@app/contexts/auth/authentication/services';
 import { Controller, Get, Inject } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
