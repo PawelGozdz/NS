@@ -18,7 +18,7 @@ interface IUserInfo {
 }
 
 interface IUserCreated {
-	id?: string;
+	id: string;
 }
 
 @Injectable()

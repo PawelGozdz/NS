@@ -24,6 +24,7 @@ export enum ApplicationErrorCode {
 	Unauthorized = 'A_UNAUTHORIZED',
 	Forbidden = 'A_FORBIDDEN',
 	ValidationFailed = 'A_VALIDATION_FAILED',
+	CannotCreateEntity = 'A_CANNOT_CREATE_ENTITY',
 	DuplicateEntry = 'A_DUPLICATE_ENTRY',
 	InvalidFormat = 'A_INVALID_FORMAT',
 	InvalidParameter = 'A_INVALID_PARAMETER',

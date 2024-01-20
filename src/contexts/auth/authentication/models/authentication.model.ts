@@ -1,8 +1,10 @@
+import { TableNames } from '@app/database';
+import { IAuthUserDao } from '@app/database/kysley';
+import { EntityId, IAuthUser } from '@libs/common';
 import { BaseModel } from '@libs/ddd';
 
-import { EntityId, IAuthUser } from '@libs/common';
-
-export class AuthUserModel extends BaseModel {
+// small trick for the sake of simplicity of Kysely
+export class AuthUserDao extends BaseModel implements IAuthUserDao {
 	id: string;
 	email: string;
 	userId: string;
@@ -15,9 +17,7 @@ export class AuthUserModel extends BaseModel {
 	lastLogin: Date | null;
 	tokenRefreshedAt: Date | null;
 
-	static tableName = 'auth_users';
-
-	static relationMappings = {};
+	static tableName = TableNames.AUTH_USERS;
 }
 
 export class AuthUser implements IAuthUser {

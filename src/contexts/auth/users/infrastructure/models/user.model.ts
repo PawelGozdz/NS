@@ -1,6 +1,9 @@
+import { TableNames } from '@app/database';
+import { IUserDao } from '@app/database/kysley';
 import { BaseModel } from '@libs/ddd';
 
-export class UserModel extends BaseModel {
+// small trick for the sake of simplicity of Kysely
+export class UserDao extends BaseModel implements IUserDao {
 	id: string;
 
 	email: string;
@@ -11,7 +14,5 @@ export class UserModel extends BaseModel {
 
 	version: number;
 
-	static tableName = 'users';
-
-	static relationMappings = {};
+	static tableName = TableNames.USERS;
 }

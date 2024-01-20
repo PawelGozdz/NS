@@ -3,8 +3,6 @@ import { CqrsModule } from '@libs/cqrs';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ObjectionModule } from '@willsoto/nestjs-objection';
-import { AuthUserModel } from './models';
 import { AuthUsersRepository, IAuthUsersRepository } from './repositories';
 import { AuthService, CookiesService, HashService } from './services';
 import { AuthUsersService } from './services/auth-users.service';
@@ -31,7 +29,6 @@ const repositories = [
 			}),
 		}),
 		CqrsModule,
-		ObjectionModule.forFeature([AuthUserModel]),
 	],
 	providers: [...providers, ...repositories],
 	exports: [...providers],

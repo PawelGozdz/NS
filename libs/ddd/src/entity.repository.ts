@@ -1,15 +1,16 @@
-/* eslint-disable no-await-in-loop */
+import { TableNames } from '@app/database';
 import { ConflictError } from '@libs/common';
 import { EventBus, IEvent } from '@libs/cqrs';
 import { AggregateRoot, BaseModel } from '@libs/ddd';
-import { Transaction } from 'objection';
+import { Kysely, Transaction } from 'kysely';
 
-export type EventHandler = (event: IEvent, trx: Transaction) => Promise<void> | void;
+export type EventHandler = <T extends unknown>(event: IEvent, trx: Transaction<T>) => Promise<void> | void;
 
 export abstract class EntityRepository {
 	protected constructor(
 		private eventBus: EventBus,
 		protected model: typeof BaseModel,
+		protected db: Kysely<any>,
 	) {}
 
 	protected async handleUncommittedEvents(aggregate: AggregateRoot) {
@@ -19,25 +20,18 @@ export abstract class EntityRepository {
 		const newVersion = aggregateVersion + 1;
 		const uncommittedEvents = aggregate.getUncommittedEvents();
 
-		await this.model.transaction(async (trx) => {
-			const version: { rows: Record<string, { version: number }> } = await trx.raw(
-				`UPDATE :tableName:
-					SET version = CASE
-						WHEN version = :aggregateVersion THEN :newVersion
-						ELSE :aggregateVersion:
-					END
-					WHERE id = :id
-				RETURNING (version)`,
-				{
-					tableName: this.model.tableName,
-					aggregateVersion,
-					newVersion,
-					id: aggregate.getId(),
-				},
-			);
+		await this.db.transaction().execute(async (trx) => {
+			const version = await trx
+				.updateTable(this.model.tableName)
+				.set((eb) => ({
+					version: eb.case().when('version', '=', aggregateVersion).then(newVersion).else(aggregateVersion).end(),
+				}))
+				.where('id', '=', aggregate.getId())
+				.returning('version')
+				.execute();
 
-			if (version.rows.length && version.rows[0].version !== newVersion) {
-				await trx.rollback(new ConflictError('Model version does not match what is stored in the database'));
+			if (version.length && version[0].version !== newVersion) {
+				throw new ConflictError('Model version does not match what is stored in the database');
 			}
 
 			for (const event of uncommittedEvents) {
@@ -48,7 +42,10 @@ export abstract class EntityRepository {
 					throw new Error(`Missing handler ${handlerName} in repository ${this.constructor.name}`);
 				}
 
-				await Promise.all([trx.table('event_log').insert({ eventName: event.constructor.name, data: event }), handler.call(this, event, trx)]);
+				await Promise.all([
+					trx.insertInto(TableNames.EVENT_LOG).values({ eventName: event.constructor.name, data: event }).execute(),
+					handler.call(this, event, trx),
+				]);
 			}
 		});
 

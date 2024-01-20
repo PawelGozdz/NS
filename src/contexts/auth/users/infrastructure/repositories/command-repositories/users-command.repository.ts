@@ -1,22 +1,23 @@
+import { Database, TableNames } from '@app/database';
 import { EntityId } from '@libs/common';
 import { EventBus } from '@libs/cqrs';
 import { EntityRepository } from '@libs/ddd';
-import { Inject, Injectable } from '@nestjs/common';
-import { Transaction } from 'objection';
+import { Injectable } from '@nestjs/common';
+import { Transaction } from 'kysely';
 import { IUsersCommandRepository, User, UserCreatedEvent, UserSnapshot } from '../../../domain';
-import { UserModel } from '../../models';
+import { UserDao } from '../../models';
 
 @Injectable()
 export class UsersCommandRepository extends EntityRepository implements IUsersCommandRepository {
 	constructor(
 		eventBus: EventBus,
-		@Inject(UserModel) readonly userModel: typeof UserModel,
+		readonly db: Database,
 	) {
-		super(eventBus, userModel);
+		super(eventBus, UserDao, db);
 	}
 
 	async getOneById(id: EntityId): Promise<User | undefined> {
-		const user = await this.userModel.query().findById(id.value);
+		const user = await this.db.selectFrom(TableNames.USERS).selectAll().where('id', '=', id.value).executeTakeFirst();
 
 		if (!user) {
 			return undefined;
@@ -28,7 +29,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
 	}
 
 	async getOneByEmail(email: string): Promise<User | undefined> {
-		const user = await this.userModel.query().findOne({ email });
+		const user = await this.db.selectFrom(TableNames.USERS).selectAll().where('email', '=', email).executeTakeFirst();
 
 		if (!user) {
 			return undefined;
@@ -43,7 +44,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
 		return this.handleUncommittedEvents(user);
 	}
 
-	private userToSnapshot(userModel: UserModel): UserSnapshot {
+	private userToSnapshot(userModel: UserDao): UserSnapshot {
 		return {
 			email: userModel.email,
 			id: userModel.id,
@@ -51,10 +52,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
 		};
 	}
 
-	public async handleUserCreatedEvent(event: UserCreatedEvent, trx: Transaction) {
-		await this.userModel.query(trx).insert({
-			id: event.id.value,
-			email: event.email,
-		});
+	public async handleUserCreatedEvent(event: UserCreatedEvent, trx: Transaction<any>) {
+		await trx.insertInto(TableNames.USERS).values({ id: event.id.value, email: event.email }).execute();
 	}
 }

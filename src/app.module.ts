@@ -10,7 +10,7 @@ import { ApiGatewayModule } from './api-gateway';
 
 import { ContextModule } from './contexts';
 import { EnvModule } from './core/modules/environment/environmental.module';
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from './database/kysley';
 
 @Module({
 	imports: [
