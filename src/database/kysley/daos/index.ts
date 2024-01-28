@@ -5,6 +5,6 @@ export * from './auth-user-model.interface';
 export * from './user-model.interface';
 
 export type IDatabaseDaos = {
-	auth_users: IAuthUserDao;
+	authUsers: IAuthUserDao;
 	users: IUserDao;
 };

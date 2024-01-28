@@ -13,7 +13,7 @@ export class UserController {
 	}
 	@Get()
 	findAll(): string {
-		this.logger.warn({ abc: this.constructor.name }, 'Hello world!');
+		this.logger.warn({ abc: 1, ddd: { asdf: '111' } }, 'Hello world!s');
 		return 'This action returns all userss';
 	}
 }

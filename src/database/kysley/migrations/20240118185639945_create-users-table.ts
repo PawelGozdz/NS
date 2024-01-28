@@ -12,8 +12,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn('email', 'varchar', (col) => col.notNull().unique())
 		.addColumn('version', 'integer', (col) => col.notNull().defaultTo(0))
 
-		.addColumn('created_at', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
-		.addColumn('updated_at', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
+		.addColumn('createdAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
+		.addColumn('updatedAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
 		.execute()
 		.then(() => sql.raw(`${onUpdateTriggerQuery}`).execute(db));
 }

@@ -1,6 +1,6 @@
 import config from '@config/database';
 import { ConfigurableModuleBuilder } from '@nestjs/common';
-import { Kysely, PostgresDialect } from 'kysely';
+import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 import { IDatabaseDaos } from './daos';
 
@@ -19,3 +19,9 @@ export const dialect = new PostgresDialect({
 		charset: config.connection.charset,
 	}),
 });
+
+export const kyselyPlugins = [
+	new CamelCasePlugin({
+		underscoreBetweenUppercaseLetters: true,
+	}),
+];

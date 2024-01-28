@@ -1,7 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 
-import { CamelCasePlugin } from 'kysely';
-import { ConfigurableDatabaseModule, Database, dialect } from './kysely.config';
+import { ConfigurableDatabaseModule, Database, dialect, kyselyPlugins } from './kysely.config';
 
 @Global()
 @Module({
@@ -18,7 +17,7 @@ import { ConfigurableDatabaseModule, Database, dialect } from './kysely.config';
 							console.log('Parameters:', event.query.parameters);
 						}
 					},
-					plugins: [new CamelCasePlugin()],
+					plugins: kyselyPlugins,
 				});
 			},
 		},

@@ -14,7 +14,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/scripts/init.sql
       - ../volumes/huntit/database-test:/var/lib/postgresql/data
     networks:
       - huntit_network_test
@@ -23,6 +23,8 @@ services:
     container_name: api-service-test
     env_file:
       - .env.test
+    environment:
+      - FORCE_COLOR=1
     build:
       context: .
       dockerfile: Dockerfile
@@ -35,7 +37,7 @@ services:
       - ./:/srv
     depends_on:
       - backend-database-test
-    command: npm run test:e2e:run
+    command: npm run test:e2e:run:watch
     networks:
       - huntit_network_test
     mem_limit: 2048MB

@@ -7,9 +7,26 @@ export class AuthenticationServer {
 	private accessTokenExpirationTime = process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME || '2m';
 	private refreshTokenExpirationTime = process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || '15m';
 
-	constructor() {
-		this.secret = process.env.JWT_ACCESS_TOKEN_SECRET || this.secret;
-		this.refreshSecret = process.env.JWT_REFRESH_TOKEN_SECRET || this.refreshSecret;
+	constructor(
+		props: {
+			secret?: string;
+			refreshSecret?: string;
+			userId?: string;
+			accessTokenExpirationTime?: string;
+			refreshTokenExpirationTime?: string;
+		} = {},
+	) {
+		this.secret = props.secret || process.env.JWT_ACCESS_TOKEN_SECRET || this.secret;
+		this.refreshSecret = props.refreshSecret || process.env.JWT_REFRESH_TOKEN_SECRET || this.refreshSecret;
+		this.userId = props.userId || process.env.JWT_USER_ID || this.userId;
+		this.accessTokenExpirationTime =
+			props.accessTokenExpirationTime || process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME || this.accessTokenExpirationTime;
+		this.refreshTokenExpirationTime =
+			props.refreshTokenExpirationTime || process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || this.refreshTokenExpirationTime;
+	}
+
+	getTestingUserId(): string {
+		return this.userId;
 	}
 
 	generateAccessToken(userId: string = this.userId): string {

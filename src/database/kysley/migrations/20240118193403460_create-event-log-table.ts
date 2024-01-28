@@ -8,8 +8,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.createTable(tableName)
 		.addColumn('id', 'bigint', (col) => col.primaryKey().generatedAlwaysAsIdentity())
 		.addColumn('data', 'jsonb', (col) => col.notNull())
-		.addColumn('created_at', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
-		.addColumn('event_name', 'text', (col) => col.notNull())
+		.addColumn('createdAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
+		.addColumn('eventName', 'text', (col) => col.notNull())
 		.execute();
 }
 

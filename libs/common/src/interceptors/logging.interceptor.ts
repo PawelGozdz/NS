@@ -23,7 +23,11 @@ export class LoggingInterceptor implements NestInterceptor {
 		const correlationKey = uuidv4();
 		const userId = request.user?.userId;
 
-		this.logger.info(`[${context.getClass().name}->${context.getHandler().name}] ${method} ${url} ${userId ? userId : ''} ${userAgent} ${ip}`);
+		this.logger.info(
+			`[${correlationKey}] [${context.getClass().name} --> ${context.getHandler().name}] ${method} ${url} ${
+				userId ? `[USER: ${userId}]` : ''
+			} ${userAgent} ${ip}`,
+		);
 
 		const now = Date.now();
 		return next.handle().pipe(

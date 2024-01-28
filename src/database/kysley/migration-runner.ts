@@ -1,11 +1,12 @@
 import { promises as fs } from 'fs';
 import { FileMigrationProvider, Kysely, Migrator } from 'kysely';
 import * as path from 'path';
-import { dialect } from './kysely.config';
+import { dialect, kyselyPlugins } from './kysely.config';
 
 async function migrateToLatest() {
 	const database = new Kysely({
 		dialect,
+		plugins: kyselyPlugins,
 	});
 
 	const migrator = new Migrator({
