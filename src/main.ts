@@ -1,4 +1,6 @@
 import '@config/app';
+
+import { otelSDK } from '@app/core';
 import { globalPrefix, globalVersioning } from '@config/app';
 import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -11,6 +13,8 @@ import { nestApplicationOptions } from './nest-app-configuration';
 import { nestApplicationSecirityConfiguration } from './security-configuration';
 
 async function bootstrap() {
+	await otelSDK.start();
+
 	const app = await NestFactory.create(AppModule, {
 		...nestApplicationOptions,
 	});

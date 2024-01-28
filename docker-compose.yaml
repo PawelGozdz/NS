@@ -40,13 +40,25 @@ services:
       - ./:/srv
     depends_on:
       - backend-database
+      - jaeger
     ports:
-      - 9229:${DEBUG_PORT}
-      - 3000:${PORT}
+      - 9229:9299
+      - 3000:3000
     command: npm run start:debug
     networks:
       - huniit_network
     mem_limit: 4096MB
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - 16686:16686
+      - 4317:4317
+      - 4318:4318
+    environment:
+      - LOG_LEVEL=debug
+    networks:
+      - huniit_network
 
 networks:
   huniit_network:

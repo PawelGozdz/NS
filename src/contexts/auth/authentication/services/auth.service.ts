@@ -81,6 +81,7 @@ export class AuthService {
 	}
 
 	public async getAuthenticatedUserWithEmailAndPassword(email: string, password: string): Promise<AuthUser> {
+		this.logger.info({ email, password: '*' }, 'Getting authenticated user with email and password');
 		this.isCorrectString(email, password);
 
 		const user = await this.authUsersService.getByUserEmail(email);

@@ -1,8 +1,8 @@
 export enum TableNames {
 	// Auth context
-	AUTH_USERS = 'auth_users',
+	AUTH_USERS = 'authUsers',
 	USERS = 'users',
 
 	// Event Sourcing
-	EVENT_LOG = 'event_log',
+	EVENT_LOG = 'eventLog',
 }

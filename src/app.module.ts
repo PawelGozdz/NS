@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-
+import { OpenTelemetryModuleModule } from '@app/core';
 import config from '@config/app';
 import loggerOptions from '@config/pino-logger';
 import { CqrsModule } from '@libs/cqrs';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
@@ -27,6 +27,7 @@ import { DatabaseModule } from './database/kysley';
 		CqrsModule,
 		LoggerModule.forRoot(loggerOptions),
 		ContextModule,
+		OpenTelemetryModuleModule,
 	],
 })
 export class AppModule {}

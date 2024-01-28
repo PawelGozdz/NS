@@ -15,8 +15,6 @@ export const dialect = new PostgresDialect({
 		user: config.connection.user,
 		password: config.connection.password,
 		database: config.connection.database,
-		schema: config.connection.schema,
-		charset: config.connection.charset,
 	}),
 });
 

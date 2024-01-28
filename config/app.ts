@@ -27,6 +27,7 @@ const envSchema = z.object({
 	DEBUG_PORT: z.coerce.number().positive().max(9999).default(9229),
 	NODE_ENV: z.nativeEnum(Environment),
 	APP_NAME: z.literal(appName),
+	APP_VERSION: z.string(),
 	LOG_LEVEL: z.string().optional(),
 	NODE_VERSION: z.string().default(nodeVersion),
 	DATABASE_NAME: z.string(),
@@ -42,6 +43,9 @@ const envSchema = z.object({
 	JWT_ACCESS_TOKEN_EXPIRATION_TIME: z.string(),
 	JWT_REFRESH_TOKEN_SECRET: z.string(),
 	JWT_REFRESH_TOKEN_EXPIRATION_TIME: z.string(),
+
+	// JAEGER
+	JAEGER_URL: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
