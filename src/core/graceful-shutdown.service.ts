@@ -22,6 +22,8 @@ export class GracefulShutdownService implements OnApplicationShutdown {
 	}
 
 	async onApplicationShutdown(signal?: string) {
+		if (!this.config) return;
+
 		this.logger.info(`****** Shutting down application ${this.config.applicationName.toLocaleUpperCase()} with signal ${signal} ******`);
 
 		await this.shutdownDatabase();
@@ -29,8 +31,6 @@ export class GracefulShutdownService implements OnApplicationShutdown {
 		await this.shutdownOT();
 
 		this.logger.info(`****** All processes successfuly shut down ******`);
-
-		this.exitProcess();
 	}
 
 	setConfig(config: GracefulShutDownConfig) {
@@ -39,10 +39,6 @@ export class GracefulShutdownService implements OnApplicationShutdown {
 			throw new Error(`Invalid GracefulShutDown configuration`);
 		}
 		this.config = config;
-	}
-
-	exitProcess() {
-		process.exit(0);
 	}
 
 	async shutdownDatabase() {
