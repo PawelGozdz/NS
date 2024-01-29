@@ -9,8 +9,11 @@ import { LoggerModule } from 'nestjs-pino';
 import { ApiGatewayModule } from './api-gateway';
 
 import { ContextModule } from './contexts';
+import { GracefulShutdownService } from './core/graceful-shutdown.service';
 import { EnvModule } from './core/modules/environment/environmental.module';
 import { DatabaseModule } from './database/kysley';
+
+const providers = [GracefulShutdownService];
 
 @Module({
 	imports: [
@@ -29,5 +32,6 @@ import { DatabaseModule } from './database/kysley';
 		ContextModule,
 		OpenTelemetryModuleModule,
 	],
+	providers: [...providers],
 })
 export class AppModule {}

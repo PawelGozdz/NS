@@ -1,19 +1,18 @@
 import '@config/app';
 
-import { otelSDK } from '@app/core';
-import { globalPrefix, globalVersioning } from '@config/app';
+import config, { globalPrefix, globalVersioning } from '@config/app';
 import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import { Logger } from 'nestjs-pino';
 
 import { AppModule } from './app.module';
-import { EnvService } from './core/modules/environment/environment.service';
+import { GracefulShutdownService } from './core/graceful-shutdown.service';
 import { nestApplicationOptions } from './nest-app-configuration';
 import { nestApplicationSecirityConfiguration } from './security-configuration';
 
 async function bootstrap() {
-	await otelSDK.start();
+	// await otelSDK.start();
 
 	const app = await NestFactory.create(AppModule, {
 		...nestApplicationOptions,
@@ -33,8 +32,15 @@ async function bootstrap() {
 
 	nestApplicationSecirityConfiguration(app);
 
-	const configService = app.get(EnvService);
-	await app.listen(configService.get('PORT'));
+	const gracefulShutdownServie = app.get(GracefulShutdownService);
+	gracefulShutdownServie.setConfig({
+		app,
+		applicationName: config.APP_NAME,
+	});
+
+	app.enableShutdownHooks();
+
+	await app.listen(config.PORT);
 }
 bootstrap();
 
