@@ -35,6 +35,7 @@ const envSchema = z.object({
 	DATABASE_USER: z.string(),
 	DATABASE_PASSWORD: z.string(),
 	DATABASE_LOGGING: z.string().transform((val) => val === 'true'),
+	DATABASE_LOGGING_LEVEL: z.string().optional(),
 	DATABASE_HOST: z.string(),
 	DATABASE_SCHEMA: z.string().default('public'),
 

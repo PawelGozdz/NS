@@ -1,15 +1,14 @@
-import { Kysely, sql } from 'kysely';
+import { Kysely, Transaction, sql } from 'kysely';
 import { TableNames } from '../table-names';
-import { IDatabaseDaos } from './daos';
 
 export class TestingE2EFunctions {
-	constructor(private readonly connection: Kysely<IDatabaseDaos>) {}
+	constructor(private readonly connection: Kysely<any>) {}
 
-	async truncateTables(givenTables?: string[]) {
+	async truncateTables(givenTables?: string[], trx?: Transaction<any>) {
 		const tables = !givenTables?.length ? Object.values(TableNames) : givenTables;
 
-		for await (const tableName of tables) {
-			sql.raw(`TRUNCATE TABLE ${this.convertCamelToSnakeCase(tableName)} CASCADE`).execute(this.connection);
+		for (const tableName of tables) {
+			await sql.raw(`TRUNCATE TABLE ${this.convertCamelToSnakeCase(tableName)} CASCADE`).execute(trx || this.connection);
 		}
 	}
 

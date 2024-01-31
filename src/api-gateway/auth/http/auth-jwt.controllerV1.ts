@@ -2,6 +2,7 @@ import { AuthUser } from '@app/contexts/auth/authentication/models';
 import { AuthService, CookiesService } from '@app/contexts/auth/authentication/services';
 import { AuthUsersService } from '@app/contexts/auth/authentication/services/auth-users.service';
 import { ITokens } from '@app/contexts/auth/authentication/types';
+import { AppRoutes } from '@app/core';
 import { GetRefreshToken, Public, RefreshTokenGuard, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
 import { GetCurrentAuthUser } from '@libs/common/decorators/current-auth-user.decorator';
 import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
@@ -9,7 +10,6 @@ import { Request } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 
 @Controller({
-	path: 'auth',
 	version: '1',
 })
 export class AuthJwtControllerV1 {
@@ -23,7 +23,7 @@ export class AuthJwtControllerV1 {
 	}
 
 	@Public()
-	@Post('/signup')
+	@Post(AppRoutes.AUTH.v1.signup)
 	@HttpCode(HttpStatus.CREATED)
 	async signup(@Body() bodyDto: SignUpDto, @Req() req: Request): Promise<ITokens> {
 		const user = await this.authService.createUser(bodyDto);
@@ -40,7 +40,7 @@ export class AuthJwtControllerV1 {
 	}
 
 	@Public()
-	@Post('/signin')
+	@Post(AppRoutes.AUTH.v1.signin)
 	@HttpCode(HttpStatus.OK)
 	async signin(@Body() bodyDto: SignInDto, @Req() req: Request): Promise<ITokens> {
 		const user = await this.authService.getAuthenticatedUserWithEmailAndPassword(bodyDto.email, bodyDto.password);
@@ -63,7 +63,7 @@ export class AuthJwtControllerV1 {
 		return tokens;
 	}
 
-	@Post('/logout')
+	@Post(AppRoutes.AUTH.v1.logout)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	async logout(@GetCurrentAuthUser() user: AuthUser, @Req() req: Request) {
 		await this.authService.logout(user.userId);
@@ -75,7 +75,7 @@ export class AuthJwtControllerV1 {
 
 	@Public()
 	@UseGuards(RefreshTokenGuard)
-	@Post('/refresh')
+	@Post(AppRoutes.AUTH.v1.refresh)
 	@HttpCode(HttpStatus.OK)
 	async refreshTokens(@GetCurrentAuthUser() user: AuthUser, @GetRefreshToken() token: string, @Req() req: Request) {
 		const tokens = await this.authService.refreshTokens(user, token);

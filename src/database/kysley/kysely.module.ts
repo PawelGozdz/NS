@@ -1,22 +1,25 @@
+import config from '@config/app';
 import { Global, Module } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 
 import { ConfigurableDatabaseModule, Database, dialect, kyselyPlugins } from './kysely.config';
 
 const providers = [
 	{
 		provide: Database,
-		useFactory: () => {
+		useFactory: (logger: PinoLogger) => {
 			return new Database({
 				dialect,
 				log(event) {
-					if (event.level === 'query') {
-						console.log('Query:', event.query.sql);
-						console.log('Parameters:', event.query.parameters);
+					if (config.DATABASE_LOGGING && event.level === config?.DATABASE_LOGGING_LEVEL) {
+						logger.info('Query:', event.query.sql);
+						logger.info('Parameters:', event.query.parameters);
 					}
 				},
 				plugins: kyselyPlugins,
 			});
 		},
+		inject: [PinoLogger],
 	},
 ];
 

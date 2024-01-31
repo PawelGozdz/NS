@@ -1,14 +1,14 @@
 import { UserDao } from '@app/contexts/auth';
+import { testingDefaults } from '@libs/testing';
 import _ from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
 
 export class UserFixtureFactory {
 	public static create(overrides?: Partial<UserDao>): UserDao {
 		const userDao = new UserDao();
 
 		const defaults = {
-			id: uuidv4(),
-			email: 'test@test.com',
+			id: testingDefaults.userId,
+			email: testingDefaults.email,
 			version: 1,
 		};
 

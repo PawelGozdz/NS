@@ -19,6 +19,7 @@ export class AuthService {
 		this.logger.setContext(this.constructor.name);
 	}
 	public async createUser(dto: SignUpDto): Promise<AuthUser> {
+		this.logger.info({ email: dto.email, password: '*' }, 'Creating user');
 		try {
 			const hash = await this.hashService.hashData(dto.password);
 
@@ -43,6 +44,8 @@ export class AuthService {
 	}
 
 	public async signup(userId: string): Promise<ITokens> {
+		this.logger.info({ userId }, 'Signing up user');
+
 		const tokens = await this.getTokens(userId);
 		const hashedRt = await this.updateHash(tokens.refresh_token);
 
@@ -59,10 +62,13 @@ export class AuthService {
 	}
 
 	public async signin(dto: SignInDto, user: AuthUser): Promise<ITokens> {
+		this.logger.info({ dto, user }, 'Signing up user');
+
 		const passwordMatch = await this.verifyTextToHash(user.hash, dto.password);
 
 		if (!passwordMatch) {
-			throw new UnauthorizedError(`Invalid credentials`);
+			this.logger.warn(`User password with email ${dto.email} is incorrect`);
+			throw new UnauthorizedError();
 		}
 		const tokens = await this.getTokens(user.userId);
 
@@ -81,21 +87,20 @@ export class AuthService {
 	}
 
 	public async getAuthenticatedUserWithEmailAndPassword(email: string, password: string): Promise<AuthUser> {
-		this.logger.info({ email, password: '*' }, 'Getting authenticated user with email and password');
 		this.isCorrectString(email, password);
 
 		const user = await this.authUsersService.getByUserEmail(email);
 
 		if (!user) {
 			this.logger.warn(`User with email ${email} not found`);
-			throw new UnauthorizedError(`Invalid credentials`);
+			throw new UnauthorizedError();
 		}
 
 		const passwordMatch = await this.verifyTextToHash(user.hash, password);
 
 		if (!passwordMatch) {
-			this.logger.info(`User password with email ${email} is incorrect`);
-			throw new UnauthorizedError(`Invalid credentials`);
+			this.logger.warn(`User password with email ${email} is incorrect`);
+			throw new UnauthorizedError();
 		}
 
 		return user;
@@ -110,7 +115,7 @@ export class AuthService {
 			return user;
 		}
 
-		throw new UnauthorizedError(`Invalid credentials`);
+		throw new UnauthorizedError();
 	}
 
 	public async getAuthenticatedUserWithRefreshToken(userId: string, token: string): Promise<AuthUser> {
@@ -119,7 +124,8 @@ export class AuthService {
 		const user = await this.authUsersService.getByUserId(userId);
 
 		if (!user || !user.hashedRt) {
-			throw new UnauthorizedError(`Invalid credentials`);
+			this.logger.warn(`User with id ${userId} not found`);
+			throw new UnauthorizedError();
 		}
 
 		const isAuth = await this.hashService.hashAndTextVerify(user.hashedRt!, token);
@@ -128,10 +134,12 @@ export class AuthService {
 			return user;
 		}
 
-		throw new UnauthorizedError(`Invalid credentials`);
+		throw new UnauthorizedError();
 	}
 
 	public async logout(userId: string): Promise<void> {
+		this.logger.info({ userId }, 'Logging out user');
+
 		await this.authUsersService.update({
 			userId,
 			hashedRt: null,
@@ -139,12 +147,14 @@ export class AuthService {
 	}
 
 	public async refreshTokens(user: AuthUser, refreshToken: string): Promise<ITokens> {
+		this.logger.info({ userId: user.userId }, 'Refreshing tokens');
 		this.isCorrectString(user.hashedRt!, refreshToken);
 
 		const refreshTokenMatches = await this.hashService.hashAndTextVerify(user.hashedRt!, refreshToken);
 
 		if (!refreshTokenMatches) {
-			throw new UnauthorizedError(`Invalid credentials`);
+			this.logger.warn(`Refresh token for user with id ${user.userId} is invalid`);
+			throw new UnauthorizedError();
 		}
 
 		const tokens = await this.getTokens(user.userId);
@@ -164,7 +174,7 @@ export class AuthService {
 		const passwordMatches = await this.hashService.hashAndTextVerify(hash, password);
 
 		if (typeof passwordMatches !== 'boolean') {
-			throw new UnauthorizedError(`Invalid credentials`);
+			throw new UnauthorizedError();
 		}
 
 		return passwordMatches;
@@ -205,7 +215,7 @@ export class AuthService {
 		const arr = Array.isArray(texts) ? texts : [texts];
 		for (const text of arr) {
 			if (!text || typeof text !== 'string' || (typeof text === 'string' && !text.trim())) {
-				throw new UnauthorizedError(`Invalid credentials`);
+				throw new UnauthorizedError();
 			}
 		}
 	}

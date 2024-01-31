@@ -1,9 +1,10 @@
 import * as jwt from 'jsonwebtoken';
+import { testingDefaults } from './constants';
 
 export class AuthenticationServer {
-	private secret: string = 'secret';
-	private refreshSecret: string = 'refreshSecret';
-	public userId = 'a6185a9f-8873-4f1b-b630-3729318bc636';
+	private secret: string = testingDefaults.secret;
+	private refreshSecret: string = testingDefaults.refreshSecret;
+	public userId = testingDefaults.userId;
 	private accessTokenExpirationTime = process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME || '2m';
 	private refreshTokenExpirationTime = process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || '15m';
 

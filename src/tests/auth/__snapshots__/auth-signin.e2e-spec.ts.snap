@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthJwtControllerV1 -> signin (e2e) /auth/signin (POST) V1 FAILURE should return UnauthorizedError 1`] = `
+{
+  "data": {
+    "error": "Unauthorized",
+  },
+  "path": "/auth/signin",
+  "status": "fail",
+  "statusCode": 401,
+  "timestamp": Any<String>,
+}
+`;
+
+exports[`AuthJwtControllerV1 -> signin (e2e) /auth/signin (POST) V1 FAILURE should return input validation errors 1`] = `
+{
+  "data": {
+    "error": Any<String>,
+    "subErrors": Any<Array>,
+  },
+  "path": "/auth/signin",
+  "status": "fail",
+  "statusCode": 400,
+  "timestamp": Any<String>,
+}
+`;
+
+exports[`AuthJwtControllerV1 -> signin (e2e) /auth/signin (POST) V1 SUCCESS should return success and both tokens 1`] = `
+{
+  "data": {
+    "access_token": Any<String>,
+    "refresh_token": Any<String>,
+  },
+  "path": "/auth/signin",
+  "status": "success",
+  "statusCode": 200,
+  "timestamp": Any<String>,
+}
+`;

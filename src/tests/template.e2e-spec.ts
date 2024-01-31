@@ -2,17 +2,15 @@ import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AuthUserDao, UserDao } from '@app/contexts/auth';
-import { IDatabaseDaos, TestingE2EFunctions } from '@app/database/kysley';
+import { TestingE2EFunctions } from '@app/database/kysley';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 import { AppModule } from '../app.module';
-import { TableNames, dialect, kyselyPlugins } from '../database';
-import { UserSeedBuilder } from './builders/builder';
+import { dialect, kyselyPlugins } from '../database';
 
-type IDdbDaos = IDatabaseDaos;
+type IDdbDaos = any;
 
-describe('UserController (e2e)', () => {
+describe('Template (e2e)', () => {
 	const dbConnection = new Kysely<IDdbDaos>({
 		dialect,
 		plugins: kyselyPlugins,
@@ -21,7 +19,7 @@ describe('UserController (e2e)', () => {
 	let app: INestApplication;
 	let authenticationServer: AuthenticationServer;
 
-	const tablesInvolved = [TableNames.USERS, TableNames.AUTH_USERS];
+	const tablesInvolved = [];
 
 	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -42,26 +40,20 @@ describe('UserController (e2e)', () => {
 	beforeEach(async () => {
 		await dbConnection.transaction().execute(async (trx) => {
 			await dbUtils.truncateTables(tablesInvolved, trx);
-
-			const builder = await UserSeedBuilder.create(trx);
-			await builder.insertUser();
-			await builder.insertAuthUser();
-
-			userDao = builder.userDao;
-			authUserDao = builder.authUserDao;
+			// Perform any other setup here
+			// like insertion user, etc
+			// all in a transaction
 		});
 	});
 
-	let userDao: UserDao;
-	let authUserDao: AuthUserDao;
+	let someDao: any;
 
 	it('/user', async () => {
-		const response = await request(app.getHttpServer())
-			.get('/user')
-			.set(...authenticationServer.getTokensAsCookie())
-			.set('Content-Type', 'application/json');
+		// Act
+		const response = await request(app.getHttpServer()).get('/user').set(['Authorization', `Bearer ZYX`]).set('Content-Type', 'application/json');
 
-		expect(response.statusCode).toBe(200);
-		expect(response.body.data).toEqual('This action returns all userss');
+		// Assert
+		expect(response.statusCode).toBe(401);
+		expect(response.body.data.error).toEqual('Unauthorized');
 	});
 });

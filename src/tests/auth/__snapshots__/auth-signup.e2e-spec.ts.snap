@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthJwtControllerV1 -> signup (e2e) /auth/signup (POST) V1 FAILURE should return conflict error 1`] = `
+{
+  "data": {
+    "error": "Entity with email test@test.com already exists",
+  },
+  "path": "/auth/signup",
+  "status": "fail",
+  "statusCode": 409,
+  "timestamp": Any<String>,
+}
+`;
+
+exports[`AuthJwtControllerV1 -> signup (e2e) /auth/signup (POST) V1 FAILURE should return input validation errors 1`] = `
+{
+  "data": {
+    "error": Any<String>,
+    "subErrors": Any<Array>,
+  },
+  "path": "/auth/signup",
+  "status": "fail",
+  "statusCode": 400,
+  "timestamp": Any<String>,
+}
+`;
+
+exports[`AuthJwtControllerV1 -> signup (e2e) /auth/signup (POST) V1 SUCCESS should return success and both tokens 1`] = `
+{
+  "data": {
+    "access_token": Any<String>,
+    "refresh_token": Any<String>,
+  },
+  "path": "/auth/signup",
+  "status": "success",
+  "statusCode": 201,
+  "timestamp": Any<String>,
+}
+`;

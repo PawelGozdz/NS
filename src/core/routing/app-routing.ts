@@ -1,21 +1,26 @@
-import { v1 } from '@config/app';
-
-const appRoot = '';
-
 const UserRoutes: { [key: string]: any } = {};
-const userVersionV1 = 'v1';
-UserRoutes.root = `${appRoot}/users`;
-UserRoutes[userVersionV1] = {
-	getUsers: `${userVersionV1}/`,
+
+UserRoutes.root = `/users`;
+UserRoutes.v1 = {
+	getUsers: `${UserRoutes.root}/`,
 };
 
-const AuthRoutes: { [key: string]: any } = {};
-AuthRoutes.root = `${appRoot}/auth`;
-AuthRoutes[v1] = {
-	signup: `/signup`,
-	signin: `/signin`,
-	logout: `/logout`,
-	refresh: `/refresh`,
+interface IAuthRoutes {
+	signup: string;
+	signin: string;
+	logout: string;
+	refresh: string;
+}
+
+const authRoot = `auth`;
+const AuthRoutes: { root: string; v1: IAuthRoutes } = {
+	root: authRoot,
+	v1: {
+		signup: `/${authRoot}/signup`,
+		signin: `/${authRoot}/signin`,
+		logout: `/${authRoot}/logout`,
+		refresh: `/${authRoot}/refresh`,
+	},
 };
 
 export const AppRoutes = {
