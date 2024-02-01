@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthJwtControllerV1 -> logout (e2e) /auth/logout (POST) V1 FAILURE should return UnauthorizedError if incorrect refreshToken 1`] = `
+{
+  "data": {
+    "error": "Unauthorized",
+  },
+  "path": "/auth/logout",
+  "status": "fail",
+  "statusCode": 401,
+  "timestamp": Any<String>,
+}
+`;
+
+exports[`AuthJwtControllerV1 -> logout (e2e) /auth/logout (POST) V1 SUCCESS should return both tokens if refresh token is still valid 1`] = `{}`;

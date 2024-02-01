@@ -2,7 +2,7 @@ import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AuthUserDao, UserDao } from '@app/contexts/auth';
+import { HashService } from '@app/contexts/auth';
 import { IDatabaseDaos, TestingE2EFunctions } from '@app/database/kysley';
 import { Kysely } from 'kysely';
 import request from 'supertest';
@@ -20,6 +20,7 @@ describe('UserController (e2e)', () => {
 	const dbUtils = new TestingE2EFunctions(dbConnection);
 	let app: INestApplication;
 	let authenticationServer: AuthenticationServer;
+	let hashService: HashService;
 
 	const tablesInvolved = [TableNames.USERS, TableNames.AUTH_USERS];
 
@@ -32,6 +33,7 @@ describe('UserController (e2e)', () => {
 		await app.init();
 
 		authenticationServer = new AuthenticationServer();
+		hashService = app.get(HashService);
 	});
 
 	afterAll(async () => {
@@ -39,26 +41,31 @@ describe('UserController (e2e)', () => {
 		await app.close();
 	});
 
+	let cookieTokens: [string, string];
+	let cookies: [string, string];
+
 	beforeEach(async () => {
+		cookieTokens = [authenticationServer.generateAccessToken(), authenticationServer.generateRefreshToken()];
+		cookies = authenticationServer.getTokensAsCookie({
+			accessToken: cookieTokens[0],
+			refreshToken: cookieTokens[1],
+		});
+
 		await dbConnection.transaction().execute(async (trx) => {
 			await dbUtils.truncateTables(tablesInvolved, trx);
 
-			const builder = await UserSeedBuilder.create(trx);
-			await builder.insertUser();
-			await builder.insertAuthUser();
-
-			userDao = builder.userDao;
-			authUserDao = builder.authUserDao;
+			const seedBuilder = await UserSeedBuilder.create(trx);
+			seedBuilder.withUser().withAuthUser({
+				hashedRt: await hashService.hashData(cookieTokens[1]),
+			});
+			await seedBuilder.build();
 		});
 	});
-
-	let userDao: UserDao;
-	let authUserDao: AuthUserDao;
 
 	it('/user', async () => {
 		const response = await request(app.getHttpServer())
 			.get('/user')
-			.set(...authenticationServer.getTokensAsCookie())
+			.set(...cookies)
 			.set('Content-Type', 'application/json');
 
 		expect(response.statusCode).toBe(200);

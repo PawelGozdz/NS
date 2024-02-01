@@ -1,20 +1,21 @@
 import { TestingE2EFunctions } from '@app/database/kysley';
 import { ApiResponseStatusJsendEnum } from '@libs/common/api';
-import { AuthenticationServer, TestLoggerModule, testingDefaults } from '@libs/testing';
+import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-import { UserAlreadyExistsError } from '@app/contexts/auth/users/domain/users/errors/user-already-exists.error';
+import { HashService } from '@app/contexts/auth';
 import { AppRoutes } from '@app/core';
+import { UnauthorizedError } from '@libs/common';
 import { AppModule } from '../../app.module';
 import { TableNames, dialect, kyselyPlugins } from '../../database';
 import { UserSeedBuilder } from '../builders/builder';
 
 type IDdbDaos = any;
 
-describe('AuthJwtControllerV1 -> signup (e2e)', () => {
+describe('AuthJwtControllerV1 -> refresh (e2e)', () => {
 	const dbConnection = new Kysely<IDdbDaos>({
 		dialect,
 		plugins: kyselyPlugins,
@@ -22,18 +23,21 @@ describe('AuthJwtControllerV1 -> signup (e2e)', () => {
 	const dbUtils = new TestingE2EFunctions(dbConnection);
 	let app: INestApplication;
 	let authenticationServer: AuthenticationServer;
+	let hashService: HashService;
 
 	const tablesInvolved = [TableNames.USERS, TableNames.USERS];
 
 	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule, TestLoggerModule.forRoot()],
+			providers: [HashService],
 		}).compile();
 
 		app = moduleFixture.createNestApplication();
 		await app.init();
 
 		authenticationServer = new AuthenticationServer();
+		hashService = app.get(HashService);
 	});
 
 	afterAll(async () => {
@@ -41,28 +45,40 @@ describe('AuthJwtControllerV1 -> signup (e2e)', () => {
 		await app.close();
 	});
 
+	let cookieTokens: [string, string];
+	let cookies: [string, string];
+
 	beforeEach(async () => {
+		cookieTokens = [authenticationServer.generateAccessToken(), authenticationServer.generateRefreshToken()];
+		cookies = authenticationServer.getTokensAsCookie({
+			accessToken: cookieTokens[0],
+			refreshToken: cookieTokens[1],
+		});
+
 		await dbConnection.transaction().execute(async (trx) => {
 			await dbUtils.truncateTables(tablesInvolved, trx);
+
+			const seedBuilder = await UserSeedBuilder.create(trx);
+			seedBuilder.withUser().withAuthUser({
+				hashedRt: await hashService.hashData(cookieTokens[1]),
+			});
+			await seedBuilder.build();
 		});
 	});
 
-	describe('/auth/signup (POST) V1', () => {
+	describe('/auth/refresh (POST) V1', () => {
 		describe('SUCCESS', () => {
-			it('should return success and both tokens', async () => {
+			it('should return both tokens if refresh token is still valid', async () => {
 				// Act
-				const response = await request(app.getHttpServer()).post(AppRoutes.AUTH.v1.signup).set('Content-Type', 'application/json').send({
-					email: testingDefaults.email,
-					password: testingDefaults.userPassword,
-				});
+				const response = await request(app.getHttpServer())
+					.post(AppRoutes.AUTH.v1.refresh)
+					.set(...cookies)
+					.set('Content-Type', 'application/json')
+					.send();
 
 				// Assert
-				expect(response.statusCode).toBe(201);
+				expect(response.statusCode).toBe(200);
 				expect(response.body.status).toBe(ApiResponseStatusJsendEnum.SUCCESS);
-				expect(response.body.data).toEqual({
-					access_token: expect.any(String),
-					refresh_token: expect.any(String),
-				});
 				expect(response.body).toMatchSnapshot({
 					timestamp: expect.any(String),
 					data: {
@@ -74,46 +90,21 @@ describe('AuthJwtControllerV1 -> signup (e2e)', () => {
 		});
 
 		describe('FAILURE', () => {
-			it('should return input validation errors', async () => {
+			it('should return UnauthorizedError if incorrect refreshToken', async () => {
 				// Act
-				const response = await request(app.getHttpServer()).post(AppRoutes.AUTH.v1.signup).set('Content-Type', 'application/json').send({
-					email: null,
-					password: 12,
-				});
+				const response = await request(app.getHttpServer())
+					.post(AppRoutes.AUTH.v1.refresh)
+					.set('Cookie', 'incorrect-cookie')
+					.set('Content-Type', 'application/json')
+					.send();
 
 				// Assert
-				expect(response.statusCode).toBe(400);
+				expect(response.statusCode).toBe(401);
 				expect(response.body.status).toBe(ApiResponseStatusJsendEnum.FAIL);
 				expect(response.body).toMatchSnapshot({
 					timestamp: expect.any(String),
 					data: {
-						subErrors: expect.any(Array),
-						error: expect.any(String),
-					},
-				});
-			});
-
-			it('should return conflict error', async () => {
-				// Arrange
-				await dbConnection.transaction().execute(async (trx) => {
-					const builder = await UserSeedBuilder.create(trx);
-					await builder.insertUser();
-					await builder.insertAuthUser();
-				});
-
-				// Act
-				const response = await request(app.getHttpServer()).post(AppRoutes.AUTH.v1.signup).set('Content-Type', 'application/json').send({
-					email: testingDefaults.email,
-					password: testingDefaults.userPassword,
-				});
-
-				// Assert
-				expect(response.statusCode).toBe(409);
-				expect(response.body.status).toBe(ApiResponseStatusJsendEnum.FAIL);
-				expect(response.body).toMatchSnapshot({
-					timestamp: expect.any(String),
-					data: {
-						error: UserAlreadyExistsError.withEmail(testingDefaults.email).message,
+						error: UnauthorizedError.message,
 					},
 				});
 			});

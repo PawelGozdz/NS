@@ -64,9 +64,9 @@ export class AuthenticationServer {
 		return ['Cookie', `Refresh=${token}`];
 	}
 
-	getTokensAsCookie(): [string, string] {
-		const accessToken = this.generateAccessToken();
-		const refreshToken = this.generateRefreshToken();
-		return ['Cookie', `Authentication=${accessToken}; Refresh=${refreshToken}`];
+	getTokensAsCookie(tokens?: { accessToken?: string; refreshToken?: string }): [string, string] {
+		const at = tokens?.accessToken ?? this.generateAccessToken();
+		const rt = tokens?.refreshToken ?? this.generateRefreshToken();
+		return ['Cookie', `Authentication=${at}; Refresh=${rt}`];
 	}
 }

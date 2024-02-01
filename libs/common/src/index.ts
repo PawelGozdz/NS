@@ -9,4 +9,5 @@ export * from './interceptors';
 export * from './setup-dayjs';
 export * from './types';
 export * from './users';
+export * from './utils';
 export * from './value-objects';

@@ -16,9 +16,9 @@ exports[`AuthService createUser success should create a user and return their id
 }
 `;
 
-exports[`AuthService getAuthenticatedUserWithEmailAndPassword failure should throw UnauthorizedError if password does not match 1`] = `[UnauthorizedError: Invalid credentials]`;
+exports[`AuthService getAuthenticatedUserWithEmailAndPassword failure should throw UnauthorizedError if password does not match 1`] = `[UnauthorizedError: Unauthorized]`;
 
-exports[`AuthService getAuthenticatedUserWithEmailAndPassword failure should throw UnauthorizedError if user does not exist 1`] = `[UnauthorizedError: Invalid credentials]`;
+exports[`AuthService getAuthenticatedUserWithEmailAndPassword failure should throw UnauthorizedError if user does not exist 1`] = `[UnauthorizedError: Unauthorized]`;
 
 exports[`AuthService getAuthenticatedUserWithEmailAndPassword success should return the user if email and password are valid 1`] = `
 {
@@ -32,7 +32,7 @@ exports[`AuthService getAuthenticatedUserWithEmailAndPassword success should ret
 }
 `;
 
-exports[`AuthService getAuthenticatedUserWithJwt failure should throw UnauthorizedError if user does not exist 1`] = `[UnauthorizedError: Invalid credentials]`;
+exports[`AuthService getAuthenticatedUserWithJwt failure should throw UnauthorizedError if user does not exist 1`] = `[UnauthorizedError: Unauthorized]`;
 
 exports[`AuthService getAuthenticatedUserWithJwt success should return the user if userId is valid 1`] = `
 {
@@ -46,9 +46,9 @@ exports[`AuthService getAuthenticatedUserWithJwt success should return the user 
 }
 `;
 
-exports[`AuthService getAuthenticatedUserWithRefreshToken failure should throw UnauthorizedError if refreshToken is not a string 1`] = `[UnauthorizedError: Invalid credentials]`;
+exports[`AuthService getAuthenticatedUserWithRefreshToken failure should throw UnauthorizedError if refreshToken is not a string 1`] = `[UnauthorizedError: Unauthorized]`;
 
-exports[`AuthService getAuthenticatedUserWithRefreshToken failure should throw UnauthorizedError if user does not exist 1`] = `[UnauthorizedError: Invalid credentials]`;
+exports[`AuthService getAuthenticatedUserWithRefreshToken failure should throw UnauthorizedError if user does not exist 1`] = `[UnauthorizedError: Unauthorized]`;
 
 exports[`AuthService getAuthenticatedUserWithRefreshToken success should return the user if refreshToken is valid 1`] = `
 {
@@ -69,7 +69,7 @@ exports[`AuthService getTokens success should return tokens 1`] = `
 }
 `;
 
-exports[`AuthService refreshTokens failure should throw UnauthorizedError if refreshToken does not match user.hashedRt 1`] = `[UnauthorizedError: Invalid credentials]`;
+exports[`AuthService refreshTokens failure should throw UnauthorizedError if refreshToken does not match user.hashedRt 1`] = `[UnauthorizedError: Unauthorized]`;
 
 exports[`AuthService refreshTokens success should return new tokens if refreshToken is valid 1`] = `
 {
@@ -78,7 +78,7 @@ exports[`AuthService refreshTokens success should return new tokens if refreshTo
 }
 `;
 
-exports[`AuthService signin failure should throw UnauthorizedError if password is not valid 1`] = `[UnauthorizedError: Invalid credentials]`;
+exports[`AuthService signin failure should throw UnauthorizedError if password is not valid 1`] = `[UnauthorizedError: Unauthorized]`;
 
 exports[`AuthService signin success should return signin user and return tokens 1`] = `
 {
@@ -102,4 +102,4 @@ exports[`AuthService signup success should get tokens, update hash and update us
 
 exports[`AuthService updateHash success should call updateUser 1`] = `"uptadet-some-text"`;
 
-exports[`AuthService verifyTextToHash failure should throw UnauthorizedError if hashAndTextVerify doesnt return bool 1`] = `[UnauthorizedError: Invalid credentials]`;
+exports[`AuthService verifyTextToHash failure should throw UnauthorizedError if hashAndTextVerify doesnt return bool 1`] = `[UnauthorizedError: Unauthorized]`;

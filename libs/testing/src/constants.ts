@@ -3,6 +3,7 @@ const defaultRefreshSecret: string = 'refreshSecret';
 const defaultUserId = 'a6185a9f-8873-4f1b-b630-3729318bc636';
 const defaultEmail = 'test@test.com';
 const defaultArgoHash = '$argon2id$v=19$m=65536,t=6,p=4$RmxoqYIZ22sKbn/GLB0gTA$0mUiaHMKEsA3OH2OoyndMkvQwyYAZ+Hqc+RUYq7IwJ0';
+const defaultArgoRefreshedRt = '$argon2id$v=19$m=65536,t=6,p=4$wj5QB9gumhpE2v7Fd81lig$9W9Max8KnC1JIVo8w6c+AIZapZ5MO38Pgd4Q4bOaQU4';
 const defaultUserPassword = 'Test1234';
 
 export const testingDefaults = {
@@ -12,4 +13,5 @@ export const testingDefaults = {
 	email: defaultEmail,
 	hash: defaultArgoHash,
 	userPassword: defaultUserPassword,
+	hashedRt: defaultArgoRefreshedRt,
 };
