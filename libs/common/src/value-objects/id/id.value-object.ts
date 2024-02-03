@@ -1,12 +1,11 @@
-import { InvalidParameterError, MissingValueError } from '@libs/common';
+import { AppUtils, InvalidParameterError, MissingValueError } from '@libs/common';
 import { isUUID } from 'class-validator';
-import { v4 as uuidv4 } from 'uuid';
 
 export class EntityId {
 	constructor(readonly value: string) {}
 
 	static createRandom() {
-		return new EntityId(uuidv4());
+		return new EntityId(AppUtils.getUUID());
 	}
 
 	static create(value: string): EntityId {

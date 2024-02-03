@@ -1,7 +1,7 @@
+import { DatabaseModule } from '@app/database/kysley';
 import { CqrsModule } from '@libs/cqrs';
 import { Module } from '@nestjs/common';
 
-import { DatabaseModule } from '@app/database/kysley';
 import { CreateUserHandler, GetUserByEmailHandler, GetUserByIdHandler, UpdateUserHandler } from './application';
 import { IUsersCommandRepository, IUsersQueryRepository } from './domain';
 import { UsersCommandRepository, UsersQueryRepository } from './infrastructure';

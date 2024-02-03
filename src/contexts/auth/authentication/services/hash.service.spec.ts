@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as argon2 from 'argon2';
+
 import { HashService } from './hash.service';
 
 jest.mock('argon2', () => ({

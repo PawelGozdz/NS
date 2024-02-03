@@ -1,4 +1,4 @@
-import { OpenTelemetryModuleModule } from '@app/core';
+import { GracefulShutdownService, OpenTelemetryModuleModule } from '@app/core';
 import config from '@config/app';
 import loggerOptions from '@config/pino-logger';
 import { CqrsModule } from '@libs/cqrs';
@@ -9,7 +9,6 @@ import { LoggerModule } from 'nestjs-pino';
 import { ApiGatewayModule } from './api-gateway';
 
 import { ContextModule } from './contexts';
-import { GracefulShutdownService } from './core/graceful-shutdown.service';
 import { EnvModule } from './core/modules/environment/environmental.module';
 import { DatabaseModule } from './database/kysley';
 

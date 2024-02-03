@@ -1,5 +1,6 @@
 import { EntityId } from '@libs/common';
 import { AggregateRoot } from '@libs/ddd';
+
 import { UserCreatedEvent } from './events';
 import { UserUpdatedEvent } from './events/user-updated.event';
 import { UserSnapshot } from './user.snapshot';

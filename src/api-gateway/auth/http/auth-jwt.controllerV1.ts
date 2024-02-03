@@ -1,14 +1,26 @@
+import {
+	RefreshTokensResponseDto,
+	SignInDto,
+	SignInResponseDto,
+	SignInValidationErrorDto,
+	SignUpDto,
+	SignUpResponseDto,
+	SignUpValidationErrorDto,
+} from '@app/contexts/auth';
 import { AuthUser } from '@app/contexts/auth/authentication/models';
 import { AuthService, CookiesService } from '@app/contexts/auth/authentication/services';
 import { AuthUsersService } from '@app/contexts/auth/authentication/services/auth-users.service';
 import { ITokens } from '@app/contexts/auth/authentication/types';
 import { AppRoutes } from '@app/core';
-import { GetRefreshToken, Public, RefreshTokenGuard, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
+import { ConflictErrorResponse, GetRefreshToken, Public, RefreshTokenGuard, UnauthorizedError, UnauthorizedErrorResponse } from '@libs/common';
+import { ApiJsendResponse, ApiResponseStatusJsendEnum } from '@libs/common/api';
 import { GetCurrentAuthUser } from '@libs/common/decorators/current-auth-user.decorator';
 import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 
+@ApiTags('Auth')
 @Controller({
 	version: '1',
 })
@@ -22,9 +34,30 @@ export class AuthJwtControllerV1 {
 		this.logger.setContext(this.constructor.name);
 	}
 
+	@ApiOperation({
+		summary: 'Sign up',
+		description: 'Create a new user',
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.CREATED,
+		type: SignUpResponseDto,
+		path: AppRoutes.AUTH.v1.signup,
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.BAD_REQUEST,
+		type: SignUpValidationErrorDto,
+		path: AppRoutes.AUTH.v1.signup,
+		status: ApiResponseStatusJsendEnum.FAIL,
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.CONFLICT,
+		type: ConflictErrorResponse,
+		path: AppRoutes.AUTH.v1.signup,
+		status: ApiResponseStatusJsendEnum.FAIL,
+	})
 	@Public()
-	@Post(AppRoutes.AUTH.v1.signup)
 	@HttpCode(HttpStatus.CREATED)
+	@Post(AppRoutes.AUTH.v1.signup)
 	async signup(@Body() bodyDto: SignUpDto, @Req() req: Request): Promise<ITokens> {
 		const user = await this.authService.createUser(bodyDto);
 
@@ -39,9 +72,30 @@ export class AuthJwtControllerV1 {
 		return tokens;
 	}
 
+	@ApiOperation({
+		summary: 'Sign in',
+		description: 'Login with email and password',
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.OK,
+		type: SignInResponseDto,
+		path: AppRoutes.AUTH.v1.signin,
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.BAD_REQUEST,
+		type: SignInValidationErrorDto,
+		path: AppRoutes.AUTH.v1.signin,
+		status: ApiResponseStatusJsendEnum.FAIL,
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.UNAUTHORIZED,
+		type: UnauthorizedErrorResponse,
+		path: AppRoutes.AUTH.v1.signin,
+		status: ApiResponseStatusJsendEnum.FAIL,
+	})
 	@Public()
-	@Post(AppRoutes.AUTH.v1.signin)
 	@HttpCode(HttpStatus.OK)
+	@Post(AppRoutes.AUTH.v1.signin)
 	async signin(@Body() bodyDto: SignInDto, @Req() req: Request): Promise<ITokens> {
 		const user = await this.authService.getAuthenticatedUserWithEmailAndPassword(bodyDto.email, bodyDto.password);
 
@@ -63,6 +117,21 @@ export class AuthJwtControllerV1 {
 		return tokens;
 	}
 
+	@ApiOperation({
+		summary: 'Logout',
+		description: 'Logging user out',
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.NO_CONTENT,
+		path: AppRoutes.AUTH.v1.logout,
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.UNAUTHORIZED,
+		type: UnauthorizedErrorResponse,
+		path: AppRoutes.AUTH.v1.logout,
+		status: ApiResponseStatusJsendEnum.FAIL,
+	})
+	@ApiBearerAuth()
 	@Post(AppRoutes.AUTH.v1.logout)
 	@HttpCode(HttpStatus.NO_CONTENT)
 	async logout(@GetCurrentAuthUser() user: AuthUser, @Req() req: Request) {
@@ -73,10 +142,25 @@ export class AuthJwtControllerV1 {
 		return;
 	}
 
-	@Public()
+	@ApiOperation({
+		summary: 'Refresh tokens',
+		description: 'Refreshing tokens',
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.OK,
+		type: RefreshTokensResponseDto,
+		path: AppRoutes.AUTH.v1.refresh,
+	})
+	@ApiJsendResponse({
+		statusCode: HttpStatus.UNAUTHORIZED,
+		type: UnauthorizedErrorResponse,
+		path: AppRoutes.AUTH.v1.refresh,
+		status: ApiResponseStatusJsendEnum.FAIL,
+	})
+	@ApiBearerAuth()
 	@UseGuards(RefreshTokenGuard)
-	@Post(AppRoutes.AUTH.v1.refresh)
 	@HttpCode(HttpStatus.OK)
+	@Post(AppRoutes.AUTH.v1.refresh)
 	async refreshTokens(@GetCurrentAuthUser() user: AuthUser, @GetRefreshToken() token: string, @Req() req: Request) {
 		const tokens = await this.authService.refreshTokens(user, token);
 

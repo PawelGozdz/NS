@@ -1,4 +1,5 @@
 import { Query } from '@libs/cqrs';
+
 import { UserInfo } from '../../domain';
 
 export class GetUserByEmailQuery extends Query<GetUserByEmailQuery, GetUserByEmailQueryResult> {

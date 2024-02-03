@@ -1,44 +1,26 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { ApiResponseStatusJsendEnum } from './api.interfaces';
 
-export class SuccessResponse<T extends unknown> {
-	@ApiProperty({ enum: ApiResponseStatusJsendEnum, example: ApiResponseStatusJsendEnum.SUCCESS })
-	status = ApiResponseStatusJsendEnum.SUCCESS;
+export class SuccessResponse {
+	readonly status = ApiResponseStatusJsendEnum.SUCCESS;
+	readonly data: any | null;
 
-	@ApiProperty({
-		nullable: true,
-		required: false,
-		example: { post: { id: 1 } },
-	})
-	readonly data: T | null;
-
-	constructor(data: T) {
+	constructor(data: any | null) {
 		this.data = data || null;
 	}
 }
 
-export class FailResponse<T> {
-	@ApiProperty({ enum: ApiResponseStatusJsendEnum, example: ApiResponseStatusJsendEnum.FAIL })
-	status = ApiResponseStatusJsendEnum.FAIL;
+export class FailResponse {
+	readonly status = ApiResponseStatusJsendEnum.FAIL;
+	readonly data: any;
 
-	@ApiProperty({
-		nullable: true,
-		required: false,
-		example: { subErrors: [{ message: 'incorrect email' }] },
-	})
-	readonly data: T;
-
-	constructor(data: T) {
+	constructor(data: any) {
 		this.data = data;
 	}
 }
 
 export class ErrorResponse {
-	@ApiProperty({ enum: ApiResponseStatusJsendEnum, example: ApiResponseStatusJsendEnum.ERROR })
-	status = ApiResponseStatusJsendEnum.ERROR;
-
-	@ApiProperty({ type: String })
-	message: string;
+	readonly status = ApiResponseStatusJsendEnum.ERROR;
+	readonly message: string;
 
 	constructor(message: string) {
 		this.message = message;

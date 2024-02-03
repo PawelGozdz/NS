@@ -1,7 +1,7 @@
 import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 import { PinoLogger } from 'nestjs-pino';
-import { IUsersCommandRepository, User } from '../../domain';
-import { UserAlreadyExistsError } from '../../domain/users/errors/user-already-exists.error';
+
+import { IUsersCommandRepository, User, UserAlreadyExistsError } from '../../domain';
 import { CreateUserCommand, CreateUserResponse } from './create-user.command';
 
 @CommandHandler(CreateUserCommand)

@@ -1,9 +1,11 @@
+import { CannotCreateUserError } from '@app/core';
 import { createMock } from '@golevelup/ts-jest';
-import { CannotCreateUserError, ConflictError, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
+import { ConflictError, UnauthorizedError } from '@libs/common';
 import { TestLoggerModule, catchActError } from '@libs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { SignInDto, SignUpDto } from '../dtos';
 import { AuthUserFixture } from '../models/auth-user.fixture';
 import { ITokens } from '../types';
 import { AuthUsersService } from './auth-users.service';
@@ -112,8 +114,6 @@ describe('AuthService', () => {
 
 			it('should throw ConflictError if user with the same email already exists', async () => {
 				// Arrange
-				const err = { code: 'P2002' };
-
 				hashServiceMock.hashData.mockResolvedValueOnce(hashedPassword);
 				authUsersServiceMock.createIntegrationUser.mockRejectedValueOnce(new ConflictError('error'));
 

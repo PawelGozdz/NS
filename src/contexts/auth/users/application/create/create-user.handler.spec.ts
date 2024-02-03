@@ -1,9 +1,8 @@
 import { createMock } from '@golevelup/ts-jest';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 import { Test } from '@nestjs/testing';
-import { IUsersCommandRepository, User } from '../../domain';
-import { UserAlreadyExistsError } from '../../domain/users/errors/user-already-exists.error';
-import { UserAggregateRootFixtureFactory } from '../../domain/users/user.aggregate-root.fixture';
+
+import { IUsersCommandRepository, User, UserAggregateRootFixtureFactory, UserAlreadyExistsError } from '../../domain';
 import { CreateUserCommand } from './create-user.command';
 import { CreateUserHandler } from './create-user.handler';
 

@@ -50,7 +50,10 @@ describe('Template (e2e)', () => {
 
 	it('/user', async () => {
 		// Act
-		const response = await request(app.getHttpServer()).get('/user').set(['Authorization', `Bearer ZYX`]).set('Content-Type', 'application/json');
+		const response = await request(app.getHttpServer())
+			.get('/user')
+			.set(...['Authorization', `Bearer ZYX`])
+			.set('Content-Type', 'application/json');
 
 		// Assert
 		expect(response.statusCode).toBe(401);

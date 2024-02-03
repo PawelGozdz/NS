@@ -1,17 +1,12 @@
+import { CannotCreateUserError } from '@app/core';
 import { createMock } from '@golevelup/ts-jest';
+import { CreateUserIntegrationEvent, GetUserByEmailIntegrationEvent, GetUserByIdIntegrationEvent, IUser } from '@libs/common';
 import { TestLoggerModule, catchActError } from '@libs/testing';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import {
-	CannotCreateUserError,
-	CreateUserIntegrationEvent,
-	GetUserByEmailIntegrationEvent,
-	GetUserByIdIntegrationEvent,
-	IUser,
-	SignUpIntegrationDto,
-} from '@libs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AuthUserFixture } from '../models/auth-user.fixture';
+import { SignUpIntegrationDto } from '../dtos';
+import { AuthUserFixture } from '../models';
 import { IAuthUsersRepository } from '../repositories';
 import { AuthUsersService } from './auth-users.service';
 

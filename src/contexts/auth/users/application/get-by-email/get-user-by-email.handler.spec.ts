@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 import { Test } from '@nestjs/testing';
+
 import { IUsersQueryRepository, UserInfo, UserNotFoundError } from '../../domain';
 import { GetUserByEmailHandler } from './get-user-by-email.handler';
 import { GetUserByEmailQuery } from './get-user-by-email.query';

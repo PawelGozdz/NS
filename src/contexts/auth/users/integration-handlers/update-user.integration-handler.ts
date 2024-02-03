@@ -2,7 +2,8 @@ import { UpdateUserIntegrationEvent } from '@libs/common';
 import { CommandBus } from '@libs/cqrs';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { UpdateUserCommand } from '../application/update/update-user.command';
+
+import { UpdateUserCommand } from '../application';
 
 @Injectable()
 export class OnUpdateUserEventHandler {

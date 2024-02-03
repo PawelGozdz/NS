@@ -4,6 +4,7 @@ import { EventBus } from '@libs/cqrs';
 import { EntityRepository } from '@libs/ddd';
 import { Injectable } from '@nestjs/common';
 import { Transaction } from 'kysely';
+
 import { IUsersCommandRepository, User, UserCreatedEvent, UserSnapshot } from '../../../domain';
 import { UserDao } from '../../models';
 

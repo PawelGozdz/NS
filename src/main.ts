@@ -1,22 +1,31 @@
 import '@config/app';
 
 import config, { globalPrefix, globalVersioning } from '@config/app';
-import { VersioningType } from '@nestjs/common';
+import { INestApplication, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import { Logger } from 'nestjs-pino';
 
+import { ApiGatewayModule } from './api-gateway';
 import { AppModule } from './app.module';
+import { otelSDK } from './core';
 import { GracefulShutdownService } from './core/graceful-shutdown.service';
 import { nestApplicationOptions } from './nest-app-configuration';
 import { nestApplicationSecirityConfiguration } from './security-configuration';
+import { SwaggerBuilder } from './swagger-setup';
+
+async function buildSwaggers(app: INestApplication) {
+	await SwaggerBuilder.build(app, ApiGatewayModule, '/api-docs', config.APP_NAME, 'Rest API documentation', true);
+}
 
 async function bootstrap() {
-	// await otelSDK.start();
+	await otelSDK.start();
 
 	const app = await NestFactory.create(AppModule, {
 		...nestApplicationOptions,
 	});
+
+	await buildSwaggers(app);
 
 	app.use(cookieParser());
 

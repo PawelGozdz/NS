@@ -1,8 +1,8 @@
 import { createMock } from '@golevelup/ts-jest';
+import { EntityId } from '@libs/common';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 import { Test } from '@nestjs/testing';
 
-import { EntityId } from '@libs/common';
 import { IUsersCommandRepository, User, UserNotFoundError } from '../../domain';
 import { UpdateUserCommand } from './update-user.command';
 import { UpdateUserHandler } from './update-user.handler';

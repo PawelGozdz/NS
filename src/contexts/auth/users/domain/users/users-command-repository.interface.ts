@@ -1,4 +1,5 @@
 import { EntityId } from '@libs/common';
+
 import { User } from './user.aggregate-root';
 
 export abstract class IUsersCommandRepository {

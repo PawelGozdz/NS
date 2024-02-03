@@ -1,6 +1,7 @@
 import { EntityId } from '@libs/common';
 import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 import { PinoLogger } from 'nestjs-pino';
+
 import { IUsersCommandRepository, UserNotFoundError } from '../../domain';
 import { UpdateUserCommand } from './update-user.command';
 

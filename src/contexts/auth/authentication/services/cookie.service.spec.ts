@@ -1,6 +1,7 @@
 import { BadRequestError } from '@libs/common';
 import { catchActError } from '@libs/testing';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { CookiesService } from './cookie.service';
 
 describe('CookiesService', () => {

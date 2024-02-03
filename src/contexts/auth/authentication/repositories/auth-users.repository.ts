@@ -1,6 +1,7 @@
 import { Database, TableNames } from '@app/database';
 import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
+
 import { AuthUser, AuthUserDao } from '../models';
 import { IAuthUsersRepository } from './auth-users-repository.interface';
 

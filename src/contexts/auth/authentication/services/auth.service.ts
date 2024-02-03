@@ -1,8 +1,10 @@
 import config from '@config/app';
-import { ConflictError, SignInDto, SignUpDto, UnauthorizedError } from '@libs/common';
+import { ConflictError, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PinoLogger } from 'nestjs-pino';
+
+import { SignInDto, SignUpDto } from '../dtos';
 import { AuthUser } from '../models';
 import { ITokens } from '../types';
 import { AuthUsersService } from './auth-users.service';
