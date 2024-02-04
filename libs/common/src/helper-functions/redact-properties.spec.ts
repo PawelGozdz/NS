@@ -1,38 +1,55 @@
 import { redact } from './redact-properties';
+import { generateWildcardCombinations } from './wildcard-generator';
 
 describe('Redact', () => {
-	it('should mask email', () => {
-		const result = redact.email('test@example.com');
-		expect(result).toBe('te**@*********om');
-	});
+	it('should have correct defaultjsonMask2Configs', () => {
+		const redactInstance = redact;
 
-	it('should mask password', () => {
-		const result = redact.password('password123');
+		const configs = redactInstance.defaultjsonMask2Configs;
 
-		expect(result).toBe('***********');
-	});
+		expect(configs.emailMaskOptions).toEqual({
+			maskWith: '*',
+			unmaskedStartCharactersBeforeAt: 2,
+			unmaskedEndCharactersAfterAt: 3,
+			maskAtTheRate: false,
+		});
+		expect(configs.emailFields).toEqual(generateWildcardCombinations(['email'], ['dto', 'user', 'event']));
 
-	it('should mask hash', () => {
-		const result = redact.hash('1234567890abcdef');
+		expect(configs.passwordMaskOptions).toEqual({
+			maskWith: '*',
+			maxMaskedCharacters: 16,
+			unmaskedStartCharacters: 0,
+			unmaskedEndCharacters: 0,
+		});
+		expect(configs.passwordFields).toEqual(generateWildcardCombinations(['password'], ['dto', 'user', 'event']));
 
-		expect(result).toBe('123xxxxxxxxxxxxx');
-	});
+		expect(configs.uuidMaskOptions).toEqual({
+			maskWith: '*',
+			unmaskedStartCharacters: 0,
+			unmaskedEndCharacters: 0,
+		});
+		expect(configs.uuidFields).toEqual([]);
 
-	it('should mask specific words in text', () => {
-		const result = redact.specificWordsInText('Hello world', ['world']);
+		expect(configs.jwtMaskOptions).toEqual({
+			maskWith: '*',
+			maxMaskedCharacters: 512,
+			maskDot: true,
+			maskHeader: true,
+			maskPayload: true,
+			maskSignature: true,
+		});
+		expect(configs.jwtFields).toEqual(generateWildcardCombinations(['access_token', 'refresh_token']));
 
-		expect(result).toBe('Hello *****');
-	});
-
-	it('should mask jwt', () => {
-		const result = redact.jwt('jwt.token.here');
-
-		expect(result).toBe('***.token.****');
-	});
-
-	it('should mask uuid', () => {
-		const result = redact.uuid('123e4567-e89b-12d3-a456-426614174000');
-
-		expect(result).toBe('123e****-****-****-****-**********00');
+		expect(configs.genericStrings).toEqual([
+			{
+				config: {
+					maskWith: '*',
+					maxMaskedCharacters: 256,
+					unmaskedStartCharacters: 3,
+					unmaskedEndCharacters: 2,
+				},
+				fields: generateWildcardCombinations(['hash', 'hashedRt'], ['dto', 'user', 'event']),
+			},
+		]);
 	});
 });

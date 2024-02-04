@@ -3,7 +3,7 @@ import { context, trace } from '@opentelemetry/api';
 import { Request } from 'express';
 import { Params } from 'nestjs-pino';
 
-import { redact } from '@libs/common';
+import { mergePatch, redact } from '@libs/common';
 import config, { Environment } from './app';
 
 const isProduction = config.NODE_ENV === Environment.PRODUCTION;
@@ -41,36 +41,24 @@ const options: Params = {
 				delete objCopy.context;
 				const activeSpan = trace.getSpan(context.active());
 
-				const res: { [key: string]: any } = {
-					_context: object.context,
-					...objCopy,
-				};
+				const res: { [key: string]: any } = mergePatch({ _context: object.context }, objCopy);
+
+				const redacted = config.MASKING_ENABLED ? redact.json(res) : res;
 
 				if (!activeSpan) {
-					return res;
+					return redacted;
 				}
 
 				const ctx = trace.getSpan(context.active())?.spanContext();
 
-				res._spanId = ctx?.spanId;
-				res._traceId = ctx?.traceId;
+				redacted._spanId = ctx?.spanId;
+				redacted._traceId = ctx?.traceId;
 
-				activeSpan?.addEvent(JSON.stringify(res));
+				activeSpan?.addEvent(JSON.stringify(redacted));
 
-				return res;
+				return redacted;
 			},
 		},
-		...(!isDevelopment
-			? {
-					redact: {
-						paths: redactPaths,
-						censor: (value, a) => {
-							const prop = a.pop() as string;
-							return redact.redact(prop, value);
-						},
-					},
-				}
-			: {}),
 		transport: {
 			targets: [
 				{

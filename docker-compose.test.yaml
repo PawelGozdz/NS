@@ -38,7 +38,6 @@ services:
     depends_on:
       - backend-database-test
       - jaeger-test
-    command: npm run test:e2e:run:watch
     networks:
       - huntit_network_test
     mem_limit: 2048MB
