@@ -49,12 +49,14 @@ const options: Params = {
 					return redacted;
 				}
 
-				const ctx = trace.getSpan(context.active())?.spanContext();
+				if (redacted._context) {
+					const ctx = trace.getSpan(context.active())?.spanContext();
 
-				redacted._spanId = ctx?.spanId;
-				redacted._traceId = ctx?.traceId;
+					redacted._spanId = ctx?.spanId;
+					redacted._traceId = ctx?.traceId;
 
-				activeSpan?.addEvent(JSON.stringify(redacted));
+					activeSpan?.addEvent(JSON.stringify(redacted));
+				}
 
 				return redacted;
 			},

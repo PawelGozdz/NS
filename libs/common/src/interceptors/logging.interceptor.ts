@@ -1,5 +1,5 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -22,6 +22,7 @@ export class LoggingInterceptor implements NestInterceptor {
 		const { ip, method, path: url }: Request = request;
 		const correlationKey = uuidv4();
 		const userId = request.user?.userId;
+		const reqTime = Date.now();
 
 		this.logger.info(
 			`[${correlationKey}] [${context.getClass().name} --> ${context.getHandler().name}] ${method} ${url} ${
@@ -29,15 +30,31 @@ export class LoggingInterceptor implements NestInterceptor {
 			} ${userAgent} ${ip}`,
 		);
 
-		const now = Date.now();
 		return next.handle().pipe(
 			tap(() => {
-				const response = context.switchToHttp().getResponse();
+				const resTime = Date.now();
+				const response: Response = context.switchToHttp().getResponse();
 
 				const { statusCode } = response;
 				const contentLength = response.get('content-length');
 
-				this.logger.info(`[${correlationKey}] ${method} ${url} ${statusCode} ${contentLength ? contentLength : ''}: ${Date.now() - now}ms`);
+				const responseText = `[${correlationKey}] ${method} ${url} ${statusCode} ${contentLength ? contentLength : ''}: ${Date.now() - reqTime}ms`;
+
+				this.logger.info(
+					{
+						statusMessage: response.statusMessage,
+						ip,
+						method,
+						url,
+						userId,
+						correlationId: correlationKey,
+						statusCode,
+						contentLength,
+						reqTime,
+						resTime,
+					},
+					responseText,
+				);
 			}),
 		);
 	}
