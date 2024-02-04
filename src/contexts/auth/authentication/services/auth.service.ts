@@ -21,7 +21,7 @@ export class AuthService {
 		this.logger.setContext(this.constructor.name);
 	}
 	public async createUser(dto: SignUpDto): Promise<AuthUser> {
-		this.logger.info({ email: dto.email, password: '*' }, 'Creating user');
+		this.logger.info(dto, 'Creating user');
 		try {
 			const hash = await this.hashService.hashData(dto.password);
 
