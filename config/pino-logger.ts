@@ -3,6 +3,7 @@ import { context, trace } from '@opentelemetry/api';
 import { Request } from 'express';
 import { Params } from 'nestjs-pino';
 
+import { mergePatch, redact } from '@libs/common';
 import config, { Environment } from './app';
 
 const isProduction = config.NODE_ENV === Environment.PRODUCTION;
@@ -12,36 +13,32 @@ const options: Params = {
 		autoLogging: isProduction
 			? {
 					ignore: (req) => (req as Request).originalUrl === '/',
-			  }
+				}
 			: false,
 		formatters: {
 			log(object) {
 				const objCopy = { ...object };
-				const activeSpan = trace.getSpan(context.active());
-
-				if (!activeSpan) {
-					return objCopy;
-				}
 
 				delete objCopy.context;
+				const activeSpan = trace.getSpan(context.active());
+
+				const res: { [key: string]: any } = mergePatch({ _context: object.context }, objCopy);
+
+				const redacted = config.MASKING_ENABLED ? redact.json(res) : res;
+
+				if (!activeSpan) {
+					return redacted;
+				}
 
 				const ctx = trace.getSpan(context.active())?.spanContext();
 
-				const res = {
-					props: Object.keys(objCopy).length > 0 ? objCopy : undefined,
-					context: object.context,
-					spanId: ctx?.spanId,
-					traceId: ctx?.traceId,
-				};
+				redacted._spanId = ctx?.spanId;
+				redacted._traceId = ctx?.traceId;
 
-				activeSpan?.addEvent(JSON.stringify(res));
+				activeSpan?.addEvent(JSON.stringify(redacted));
 
-				return res;
+				return redacted;
 			},
-		},
-		redact: {
-			paths: ['user.password', 'password', 'props.password', '*.password'],
-			censor: '[REDACTED]',
 		},
 		transport: {
 			targets: [
@@ -52,7 +49,6 @@ const options: Params = {
 						colorize: true,
 						translateTime: 'yyyy-mm-dd HH:MM:ss',
 						levelFirst: true,
-
 						ignore: 'hostname,pid,res,req,responseTime',
 					},
 				},

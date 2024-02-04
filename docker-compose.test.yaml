@@ -38,13 +38,13 @@ services:
     depends_on:
       - backend-database-test
       - jaeger-test
-    command: npm run test:e2e:run:watch
     networks:
       - huntit_network_test
     mem_limit: 2048MB
 
   jaeger-test:
     image: jaegertracing/all-in-one:latest
+    container_name: jaeger-test
     ports:
       - 16687:16686
       - 4317:4317

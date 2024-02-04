@@ -47,6 +47,12 @@ const envSchema = z.object({
 
 	// JAEGER
 	JAEGER_URL: z.string().optional(),
+
+	// MASKING
+	MASKING_ENABLED: z
+		.string()
+		.transform((val) => val === 'true')
+		.default('true'),
 });
 
 export type Env = z.infer<typeof envSchema>;
