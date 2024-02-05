@@ -12,7 +12,6 @@ services:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
-      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ../volumes/huntit/backend-database:/var/lib/postgresql/data
     ports:
       - 5430:${DATABASE_PORT}
@@ -44,7 +43,8 @@ services:
     ports:
       - 9229:9299
       - 3000:3000
-    command: npm run start:debug
+    environment:
+      - FORCE_COLOR=1
     networks:
       - huniit_network
     mem_limit: 4096MB
@@ -64,3 +64,7 @@ services:
 networks:
   huniit_network:
     driver: bridge
+
+volumes:
+  dev-postgres-data:
+    external: true

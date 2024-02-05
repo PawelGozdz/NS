@@ -15,8 +15,6 @@ dotenv.config({
 	path: join(__dirname, '../', envFileName),
 });
 
-export const appName = 'hunt-it';
-
 export const globalVersioning = '1';
 export const v1 = 'v1';
 export const globalPrefix = `api`;
@@ -26,7 +24,7 @@ const envSchema = z.object({
 	PORT: z.coerce.number().positive().max(9999).default(3000),
 	DEBUG_PORT: z.coerce.number().positive().max(9999).default(9229),
 	NODE_ENV: z.nativeEnum(Environment),
-	APP_NAME: z.literal(appName),
+	APP_NAME: z.string(),
 	APP_VERSION: z.string(),
 	LOG_LEVEL: z.string().optional(),
 	NODE_VERSION: z.string().default(nodeVersion),

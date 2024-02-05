@@ -1,10 +1,10 @@
 version: '3.8'
-name: huntit-test
+name: huntit-e2e-test
 
 services:
-  backend-database-test:
+  backend-database-e2e:
     image: postgres:14
-    container_name: backend-database-test
+    container_name: backend-database-e2e
     env_file:
       - .env.test
     environment:
@@ -12,15 +12,20 @@ services:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     ports:
-      - 5432:5432
+      - 5441:${DATABASE_PORT}
     volumes:
-      - ./scripts/init.sql:/docker-entrypoint-initdb.d/scripts/init.sql
-      - ../volumes/huntit/database-test:/var/lib/postgresql/data
+      - ../volumes/huntit/database-e2e-test:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME} > /dev/null || exit 1']
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     networks:
-      - huntit_network_test
+      - huntit_network_e2e_test
 
-  api-service-test:
-    container_name: api-service-test
+  api-service-e2e:
+    container_name: api-service-e2e
     env_file:
       - .env.test
     environment:
@@ -36,15 +41,18 @@ services:
     volumes:
       - ./:/srv
     depends_on:
-      - backend-database-test
-      - jaeger-test
+      - backend-database-e2e
+      - jaeger-e2e
+    ports:
+      - 9229:9299
+      - 3000:3000
     networks:
-      - huntit_network_test
+      - huntit_network_e2e_test
     mem_limit: 2048MB
 
-  jaeger-test:
+  jaeger-e2e:
     image: jaegertracing/all-in-one:latest
-    container_name: jaeger-test
+    container_name: jaeger-e2e
     ports:
       - 16687:16686
       - 4317:4317
@@ -53,5 +61,9 @@ services:
       - LOG_LEVEL=debug
 
 networks:
-  huntit_network_test:
+  huntit_network_e2e_test:
     driver: bridge
+
+volumes:
+  dev-postgres-data:
+    external: true

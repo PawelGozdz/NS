@@ -1,0 +1,25 @@
+config:
+  target: 'http://localhost:3000/api/v1'
+  phases:
+    - duration: 5
+      arrivalRate: 25
+
+# before:
+#   flow:
+#     - log: 'Get auth token'
+#     - post:
+#         url: '/signup'
+#         json:
+#           email: 'a@test.com'
+#           password: 'password'
+#         capture:
+#           - json: $.data.access_token
+#             as: token
+scenarios:
+  - flow:
+      - get:
+          url: '/user/'
+      - post:
+          url: '/signin'
+          json:
+            productId: 'asdf'
