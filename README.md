@@ -1,3 +1,16 @@
+## Bootstrap
+
+Application starts in docker, initializing database, service and jeager
+`docker-compose up`
+
+Application is available on:
+
+- [localhost:3000/api/v1/](localhost:3000/api/v1/)
+
+Jeager logs
+
+- [localhost:16686](http://localhost:16686/)
+
 ## Migrations
 
 ENV file might be adjusted if docker-compose uses it.
@@ -37,3 +50,7 @@ e2e test
 e2e in watch node
 
 - npm run test:e2e:watch
+
+## Generating new ADR
+
+Is described in [this article](docs/adr.md)
