@@ -1,5 +1,11 @@
-import { CannotCreateUserError } from '@app/core';
-import { BaseError, CreateUserIntegrationEvent, GetUserByEmailIntegrationEvent, GetUserByIdIntegrationEvent, IntegrationEvent } from '@libs/common';
+import {
+	CannotCreateUserError,
+	CreateUserIntegrationEvent,
+	GetUserByEmailIntegrationEvent,
+	GetUserByIdIntegrationEvent,
+	IntegrationEvent,
+} from '@app/core';
+import { BaseError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 

@@ -1,5 +1,4 @@
 import { AuthService, CookiesService } from '@app/contexts/auth/authentication/services';
-import { Public } from '@libs/common';
 import { Controller, Get, Inject } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -12,7 +11,7 @@ export class UserController {
 	) {
 		this.logger.setContext(this.constructor.name);
 	}
-	@Public()
+	// @Public()
 	@Get()
 	findAll(): string {
 		this.logger.warn({ abc: 1, ddd: { asdf: '111' } }, 'Hello world!s');

@@ -23,7 +23,7 @@
 		"test:e2e:run": "jest --config jest/jest.e2e.config.js --runInBand",
 		"test:e2e": "docker-compose -f docker-compose.e2e-test.yaml down -v && docker-compose -f docker-compose.e2e-test.yaml run -p 3000:3000 --rm api-service-e2e npm run test:e2e:run && docker-compose -f docker-compose.e2e-test.yaml down",
 		"dev": "docker-compose down -v && docker-compose run -p 3000:3000 --rm api-service npm run start:debug && docker-compose down",
-		"test:e2e:watch": "docker-compose -f docker-compose.e2e-test.yaml down -v && docker-compose -f docker-compose.e2e-test.yaml run --rm api-service npm run test:e2e:run -- --watchAll && docker-compose -f docker-compose.e2e-test.yaml down",
+		"test:e2e:watch": "docker-compose -f docker-compose.e2e-test.yaml down -v && docker-compose -f docker-compose.e2e-test.yaml run --rm api-service-e2e npm run test:e2e:run -- --watchAll && docker-compose -f docker-compose.e2e-test.yaml down",
 		"migration:generate": "ts-node -r tsconfig-paths/register src/database/kysley/migration-generate.ts --",
 		"migration:run": "ts-node -r tsconfig-paths/register src/database/kysley/migration-runner.ts"
 	},
@@ -60,6 +60,7 @@
 		"dotenv": "^16.3.1",
 		"helmet": "^7.1.0",
 		"kysely": "^0.27.2",
+		"libphonenumber-js": "^1.10.55",
 		"lodash": "^4.17.21",
 		"maskdata": "^1.3.1",
 		"nanoid": "^5.0.3",

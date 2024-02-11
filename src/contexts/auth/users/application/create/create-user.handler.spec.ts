@@ -47,7 +47,8 @@ describe('CreateUserHandler', () => {
 
 			// Assert
 
-			expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(expect.any(User));
+			expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(saveduser!);
+			// expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(expect.any(User));
 			expect(result).toStrictEqual({ id: expect.any(String) });
 		});
 	});

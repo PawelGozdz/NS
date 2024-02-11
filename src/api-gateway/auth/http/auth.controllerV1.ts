@@ -1,3 +1,22 @@
+import { AuthService, CookiesService, ITokens } from '@app/contexts/auth';
+import { AuthUser, AuthUsersService } from '@app/contexts/auth/';
+import { AppRoutes } from '@app/core';
+import {
+	ApiJsendResponse,
+	ApiResponseStatusJsendEnum,
+	ConflictErrorResponse,
+	GetCurrentAuthUser,
+	GetRefreshToken,
+	Public,
+	RefreshTokenGuard,
+	UnauthorizedError,
+	UnauthorizedErrorResponse,
+} from '@libs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
+import { PinoLogger } from 'nestjs-pino';
+
 import {
 	RefreshTokensResponseDto,
 	SignInDto,
@@ -6,19 +25,7 @@ import {
 	SignUpDto,
 	SignUpResponseDto,
 	SignUpValidationErrorDto,
-} from '@app/contexts/auth';
-import { AuthUser } from '@app/contexts/auth/authentication/models';
-import { AuthService, CookiesService } from '@app/contexts/auth/authentication/services';
-import { AuthUsersService } from '@app/contexts/auth/authentication/services/auth-users.service';
-import { ITokens } from '@app/contexts/auth/authentication/types';
-import { AppRoutes } from '@app/core';
-import { ConflictErrorResponse, GetRefreshToken, Public, RefreshTokenGuard, UnauthorizedError, UnauthorizedErrorResponse } from '@libs/common';
-import { ApiJsendResponse, ApiResponseStatusJsendEnum } from '@libs/common/api';
-import { GetCurrentAuthUser } from '@libs/common/decorators/current-auth-user.decorator';
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
-import { PinoLogger } from 'nestjs-pino';
+} from './auth-dtos';
 
 @ApiTags('Auth')
 @Controller({

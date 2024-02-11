@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UsersControllerV1 -> update (e2e) /users/:id (PATCH) V1 FAILURE should throw ConflictError 1`] = `
+{
+  "data": {
+    "error": "Conflict",
+  },
+  "path": "/users/a6185a9f-8873-4f1b-b630-3729318bc636",
+  "status": "fail",
+  "statusCode": 409,
+  "timestamp": Any<String>,
+}
+`;

@@ -1,0 +1,34 @@
+import { TableNames } from '@app/database/table-names';
+import { Kysely, sql } from 'kysely';
+import { onUpdateTrigger } from '../helpers';
+
+const tableName = TableNames.PROFILES;
+const onUpdateTriggerQuery = onUpdateTrigger(tableName);
+
+export async function up(db: Kysely<any>): Promise<void> {
+	await db.schema
+		.createTable(tableName)
+		.addColumn('id', 'uuid', (col) => col.primaryKey())
+		.addColumn('userId', 'uuid', (col) => col.notNull().unique().references(`${TableNames.USERS}.id`).onDelete('cascade'))
+		.addColumn('firstName', 'varchar')
+		.addColumn('lastName', 'varchar')
+		.addColumn('dateOfBirth', 'date')
+		.addColumn('username', 'varchar')
+		.addColumn('phoneNumber', 'varchar')
+		.addColumn('gender', 'varchar')
+		.addColumn('bio', 'varchar')
+		.addColumn('hobbies', sql`text[]`, (col) => col.defaultTo('{}'))
+		.addColumn('languages', sql`text[]`, (col) => col.defaultTo('{}'))
+		.addColumn('profilePicture', 'varchar')
+		.addColumn('rodoAcceptanceDate', 'date')
+		.addColumn('address', 'jsonb')
+
+		.addColumn('createdAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
+		.addColumn('updatedAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
+		.execute()
+		.then(() => sql.raw(`${onUpdateTriggerQuery}`).execute(db));
+}
+
+export async function down(db: Kysely<any>): Promise<void> {
+	await db.schema.dropTable(tableName).execute();
+}

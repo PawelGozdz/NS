@@ -1,12 +1,14 @@
 import { TableNames } from '@app/database';
-import { IUserDao } from '@app/database/kysley';
+import { IUserModel } from '@libs/common';
 import { BaseModel } from '@libs/ddd';
+import { ProfileModel } from './profile.model';
 
-// small trick for the sake of simplicity of Kysely
-export class UserDao extends BaseModel implements IUserDao {
+export class UserModel extends BaseModel implements IUserModel {
 	id: string;
 
 	email: string;
+
+	profile: ProfileModel;
 
 	updatedAt: Date;
 

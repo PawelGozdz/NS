@@ -29,6 +29,7 @@ export class GetUserByEmailHandler implements IInferredQueryHandler<GetUserByEma
 		return {
 			id: userInfo.id,
 			email: userInfo.email,
+			profile: userInfo.profile,
 		};
 	}
 }

@@ -1,4 +1,4 @@
-import { GetUserByIdIntegrationEvent } from '@libs/common';
+import { GetUserByIdIntegrationEvent } from '@app/core';
 import { QueryBus } from '@libs/cqrs';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';

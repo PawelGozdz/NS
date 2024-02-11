@@ -1,4 +1,4 @@
-import { GetUserByEmailIntegrationEvent } from '@libs/common';
+import { GetUserByEmailIntegrationEvent } from '@app/core';
 import { QueryBus } from '@libs/cqrs';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';

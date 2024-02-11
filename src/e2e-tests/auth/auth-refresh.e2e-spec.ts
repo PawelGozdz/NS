@@ -25,7 +25,7 @@ describe('AuthJwtControllerV1 -> refresh (e2e)', () => {
 	let authenticationServer: AuthenticationServer;
 	let hashService: HashService;
 
-	const tablesInvolved = [TableNames.USERS, TableNames.USERS];
+	const tablesInvolved = [TableNames.USERS, TableNames.AUTH_USERS, TableNames.PROFILES];
 
 	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({

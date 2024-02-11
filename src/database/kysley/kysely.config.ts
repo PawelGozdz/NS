@@ -1,13 +1,13 @@
 import config from '@config/database';
+import { IDatabaseModels } from '@libs/common';
 import { ConfigurableModuleBuilder, Injectable } from '@nestjs/common';
 import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
-import { IDatabaseDaos } from './daos';
 
 export const { ConfigurableModuleClass: ConfigurableDatabaseModule } = new ConfigurableModuleBuilder().setClassMethodName('forRoot').build();
 
 @Injectable()
-export class Database extends Kysely<IDatabaseDaos> {}
+export class Database extends Kysely<IDatabaseModels> {}
 
 export const dialect = new PostgresDialect({
 	pool: new Pool({

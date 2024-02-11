@@ -1,12 +1,14 @@
-import { EntityId } from '@libs/common';
+import { EntityId, getNullOrValueField } from '@libs/common';
 import { AggregateRoot } from '@libs/ddd';
 
+import { IProfileCreateData, IProfileUpdateData, Profile } from '../profiles/profile.entity';
 import { UserCreatedEvent } from './events';
 import { UserUpdatedEvent } from './events/user-updated.event';
 import { UserSnapshot } from './user.snapshot';
 
 const events = {
 	UserCreatedEvent,
+	UserUpdatedEvent,
 };
 
 export type UserEvents = typeof events;
@@ -14,14 +16,17 @@ export type UserEvents = typeof events;
 export class User extends AggregateRoot {
 	id: EntityId;
 	email: string;
+	profile: Profile;
 
 	constructor(
 		{
 			id,
 			email,
+			profile,
 		}: {
 			id: EntityId;
 			email: string;
+			profile: Profile;
 		},
 		version?: number,
 	) {
@@ -29,15 +34,18 @@ export class User extends AggregateRoot {
 
 		this.id = id;
 		this.email = email;
+		this.profile = profile;
 	}
 
 	public static create(
 		{
 			email,
 			id,
+			profile,
 		}: {
 			id?: EntityId;
 			email: string;
+			profile: IProfileCreateData;
 		},
 		version?: number,
 	): User {
@@ -45,6 +53,7 @@ export class User extends AggregateRoot {
 			{
 				id: id ?? EntityId.createRandom(),
 				email,
+				profile: Profile.create(profile),
 			},
 			version,
 		);
@@ -53,30 +62,60 @@ export class User extends AggregateRoot {
 			new UserCreatedEvent({
 				id: user.id,
 				email: user.email,
+				profile: user.profile,
 			}),
 		);
 
 		return user;
 	}
 
-	update({ email }: { email?: string }) {
-		const potentialNewEmail = email ?? this.email;
+	update(user: UpdateUserData) {
+		const potentialNewEmail = user.email ?? this.email;
+		const potentialNewFirstName = getNullOrValueField(user.profile?.firstName, this.profile.firstName);
+		const potentialNewLastName = getNullOrValueField(user.profile?.lastName, this.profile.lastName);
+		const potentialNewUsername = getNullOrValueField(user.profile?.username, this.profile.username);
+		const potentialNewAddress = getNullOrValueField(user.profile?.address, this.profile.address);
+		const potentialNewBio = getNullOrValueField(user.profile?.bio, this.profile.bio);
+		const potentialNewDateOfBirth = getNullOrValueField(user.profile?.dateOfBirth, this.profile.dateOfBirth);
+		const potentialNewGender = getNullOrValueField(user.profile?.gender, this.profile.gender);
+		const potentialNewHobbies = user.profile?.hobbies ?? this.profile.hobbies;
+		const potentialNewLanguages = user.profile?.languages ?? this.profile.languages;
+		const potentialNewPhoneNumber = getNullOrValueField(user.profile?.phoneNumber, this.profile.phoneNumber);
+		const potentialNewProfilePicture = getNullOrValueField(user.profile?.profilePicture, this.profile.profilePicture);
+		const potentialNewRodoAcceptanceDate = getNullOrValueField(user.profile?.rodoAcceptanceDate, this.profile.rodoAcceptanceDate);
 
 		this.apply(
 			new UserUpdatedEvent({
 				id: this.id,
 				email: potentialNewEmail,
+				profile: {
+					id: this.profile.id,
+					userId: this.profile.userId,
+					firstName: potentialNewFirstName,
+					lastName: potentialNewLastName,
+					username: potentialNewUsername,
+					address: potentialNewAddress,
+					bio: potentialNewBio,
+					dateOfBirth: potentialNewDateOfBirth,
+					gender: potentialNewGender,
+					hobbies: potentialNewHobbies,
+					languages: potentialNewLanguages,
+					phoneNumber: potentialNewPhoneNumber,
+					profilePicture: potentialNewProfilePicture,
+					rodoAcceptanceDate: potentialNewRodoAcceptanceDate,
+				},
 			}),
 		);
 	}
 
-	public static restoreFromSnapshot(snapshot: UserSnapshot): User {
+	public static restoreFromSnapshot(dao: UserSnapshot): User {
 		const rentalPeriod = new User(
 			{
-				id: new EntityId(snapshot.id),
-				email: snapshot.email,
+				id: new EntityId(dao.id),
+				email: dao.email,
+				profile: Profile.restoreFromSnapshot(dao.profile),
 			},
-			snapshot.version,
+			dao.version,
 		);
 
 		return rentalPeriod;
@@ -89,14 +128,9 @@ export class User extends AggregateRoot {
 	getEmail(): string {
 		return this.email;
 	}
-
-	private onUserCreatedEvent(event: UserCreatedEvent) {
-		this.id = event.id;
-		this.email = event.email;
-	}
-
-	private onUserUpdatedEvent(event: UserUpdatedEvent) {
-		this.id = event.id;
-		this.email = event.email;
-	}
 }
+
+type UpdateUserData = {
+	email?: string;
+	profile?: IProfileUpdateData;
+};

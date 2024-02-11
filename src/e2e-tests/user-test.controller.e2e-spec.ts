@@ -1,16 +1,17 @@
+import { HashService } from '@app/contexts/auth';
+import { TestingE2EFunctions } from '@app/database/kysley';
+import { IDatabaseModels } from '@libs/common';
 import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-
-import { HashService } from '@app/contexts/auth';
-import { IDatabaseDaos, TestingE2EFunctions } from '@app/database/kysley';
 import { Kysely } from 'kysely';
 import request from 'supertest';
+
 import { AppModule } from '../app.module';
 import { TableNames, dialect, kyselyPlugins } from '../database';
 import { UserSeedBuilder } from './builders/builder';
 
-type IDdbDaos = IDatabaseDaos;
+type IDdbDaos = IDatabaseModels;
 
 describe('UserController (e2e)', () => {
 	const dbConnection = new Kysely<IDdbDaos>({

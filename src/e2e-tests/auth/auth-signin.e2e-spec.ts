@@ -23,7 +23,7 @@ describe('AuthJwtControllerV1 -> signin (e2e)', () => {
 	let app: INestApplication;
 	let authenticationServer: AuthenticationServer;
 
-	const tablesInvolved = [TableNames.USERS, TableNames.USERS];
+	const tablesInvolved = [TableNames.USERS, TableNames.AUTH_USERS, TableNames.PROFILES];
 
 	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({

@@ -1,6 +1,5 @@
-import { CannotCreateUserError } from '@app/core';
+import { CannotCreateUserError, CreateUserIntegrationEvent, GetUserByEmailIntegrationEvent, GetUserByIdIntegrationEvent } from '@app/core';
 import { createMock } from '@golevelup/ts-jest';
-import { CreateUserIntegrationEvent, GetUserByEmailIntegrationEvent, GetUserByIdIntegrationEvent, IUser } from '@libs/common';
 import { TestLoggerModule, catchActError } from '@libs/testing';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -44,7 +43,7 @@ describe('AuthService', () => {
 	});
 
 	const authUser = AuthUserFixture.create();
-	const user: IUser = {
+	const user = {
 		email: authUser.email,
 		id: authUser.userId,
 	};

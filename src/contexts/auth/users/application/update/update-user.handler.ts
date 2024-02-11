@@ -1,4 +1,4 @@
-import { EntityId } from '@libs/common';
+import { Address, ConflictError, EntityId } from '@libs/common';
 import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -18,6 +18,7 @@ export class UpdateUserHandler implements IInferredCommandHandler<UpdateUserComm
 		this.logger.info(command, 'Updating user:');
 
 		const userId = EntityId.create(command.id);
+		const address = command?.profile?.address ? Address.create(command.profile.address) : undefined;
 
 		const user = await this.userCommandRepository.getOneById(userId);
 
@@ -25,7 +26,21 @@ export class UpdateUserHandler implements IInferredCommandHandler<UpdateUserComm
 			throw UserNotFoundError.withEntityId(userId);
 		}
 
-		user.update(command);
+		if (command.email) {
+			const userWithEmail = await this.userCommandRepository.getOneByEmail(command.email);
+
+			if (userWithEmail && userWithEmail.id !== user.id) {
+				throw new ConflictError();
+			}
+		}
+
+		user.update({
+			email: command.email,
+			profile: {
+				...command.profile,
+				address,
+			},
+		});
 
 		await this.userCommandRepository.save(user);
 	}

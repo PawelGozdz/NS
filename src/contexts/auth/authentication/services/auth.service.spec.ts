@@ -5,7 +5,7 @@ import { TestLoggerModule, catchActError } from '@libs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { SignInDto, SignUpDto } from '../dtos';
+import { SignInDto, SignUpDto } from '../../../../api-gateway/auth/http/auth-dtos';
 import { AuthUserFixture } from '../models/auth-user.fixture';
 import { ITokens } from '../types';
 import { AuthUsersService } from './auth-users.service';

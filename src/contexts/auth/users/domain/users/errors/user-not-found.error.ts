@@ -4,7 +4,7 @@ export class UserNotFoundError extends DomainError {
 	static withEntityId(id: EntityId, data?: DomainErrorOptions): UserNotFoundError {
 		const message = `Entity with id ${id} doesn't exists`;
 		const options = {
-			code: DomainErrorCode.DuplicateEntry,
+			code: DomainErrorCode.NotFound,
 			data,
 		};
 		return new UserNotFoundError(message, options);
@@ -13,7 +13,7 @@ export class UserNotFoundError extends DomainError {
 	static withEntityEmail(email: string, data?: DomainErrorOptions): UserNotFoundError {
 		const message = `Entity with email ${email} doesn't exists`;
 		const options = {
-			code: DomainErrorCode.DuplicateEntry,
+			code: DomainErrorCode.NotFound,
 			data,
 		};
 		return new UserNotFoundError(message, options);

@@ -2,7 +2,7 @@ import { Database, TableNames } from '@app/database';
 import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 
-import { AuthUser, AuthUserDao } from '../models';
+import { AuthUser, AuthUserModel } from '../models';
 import { IAuthUsersRepository } from './auth-users-repository.interface';
 
 @Injectable()
@@ -56,7 +56,7 @@ export class AuthUsersRepository implements IAuthUsersRepository {
 		return this.mapResponse(userDao);
 	}
 
-	mapResponse(user: AuthUserDao): AuthUser {
+	mapResponse(user: AuthUserModel): AuthUser {
 		return AuthUser.create({
 			id: user.id,
 			email: user.email,

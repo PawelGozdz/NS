@@ -1,5 +1,5 @@
 import config from '@config/app';
-import { EntityId, IAuthUser, UnauthorizedError } from '@libs/common';
+import { EntityId, IAuthUserModel, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import * as cookie from 'cookie';
@@ -29,7 +29,7 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		return cookie.parse(cookieAsString || '');
 	}
 
-	async validate(req: Request, payload: JwtPayload): Promise<IAuthUser> {
+	async validate(req: Request, payload: JwtPayload): Promise<IAuthUserModel> {
 		const accessToken = req?.cookies?.Authentication || this.parseCookies(req.headers.cookie || '')?.Authentication;
 
 		if (!accessToken || typeof accessToken !== 'string' || accessToken === '') {

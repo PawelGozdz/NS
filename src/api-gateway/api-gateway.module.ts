@@ -5,7 +5,7 @@ import { CqrsModule } from '@libs/cqrs';
 import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { AuthJwtControllerV1 } from './auth';
+import { AuthJwtControllerV1, UsersControllerV1 } from './auth';
 import { UserController } from './user.controller';
 
 const interceptors = [
@@ -39,7 +39,7 @@ const pipes = [
 	},
 ];
 
-const controllers = [UserController, AuthJwtControllerV1];
+const controllers = [UserController, AuthJwtControllerV1, UsersControllerV1];
 
 @Module({
 	imports: [CqrsModule, AuthenticationModule],

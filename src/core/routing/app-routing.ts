@@ -1,8 +1,17 @@
-const UserRoutes: { [key: string]: any } = {};
+interface IUsersRoutes {
+	getUsers: string;
+	getUser: string;
+	update: string;
+}
 
-UserRoutes.root = `/users`;
-UserRoutes.v1 = {
-	getUsers: `${UserRoutes.root}/`,
+const usersRoot = `/users`;
+const UserRoutes: { root: string; v1: IUsersRoutes } = {
+	root: usersRoot,
+	v1: {
+		getUsers: `${usersRoot}/`,
+		getUser: `${usersRoot}/:id`,
+		update: `${usersRoot}/:id`,
+	},
 };
 
 interface IAuthRoutes {

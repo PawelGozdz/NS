@@ -1,4 +1,4 @@
-import { UpdateUserIntegrationEvent } from '@libs/common';
+import { UpdateUserIntegrationEvent } from '@app/core';
 import { CommandBus } from '@libs/cqrs';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -10,12 +10,15 @@ export class OnUpdateUserEventHandler {
 	constructor(private readonly commandBus: CommandBus) {}
 
 	@OnEvent(UpdateUserIntegrationEvent.eventName)
-	async onUserCreated({ payload: { id, email } }: UpdateUserIntegrationEvent): Promise<void> {
+	async onUserUpdated(data: UpdateUserIntegrationEvent): Promise<void> {
+		const { id, email, profile } = data.payload;
+
 		try {
 			return await this.commandBus.execute(
 				new UpdateUserCommand({
 					id,
 					email,
+					profile,
 				}),
 			);
 		} catch (error) {

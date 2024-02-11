@@ -1,9 +1,9 @@
 import { createMock } from '@golevelup/ts-jest';
-import { EntityId } from '@libs/common';
+import { ConflictError, EntityId } from '@libs/common';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 import { Test } from '@nestjs/testing';
 
-import { IUsersCommandRepository, User, UserNotFoundError } from '../../domain';
+import { IUsersCommandRepository, User, UserAggregateRootFixtureFactory, UserNotFoundError, UserUpdatedEvent } from '../../domain';
 import { UpdateUserCommand } from './update-user.command';
 import { UpdateUserHandler } from './update-user.handler';
 
@@ -40,9 +40,9 @@ describe('UpdateUserHandler', () => {
 		email,
 	});
 
-	const user = new User({
-		id: userId,
+	const user = UserAggregateRootFixtureFactory.create({
 		email,
+		id: userId.value,
 	});
 
 	describe('Success', () => {
@@ -51,6 +51,8 @@ describe('UpdateUserHandler', () => {
 			let copyUser: User;
 			const newEmail = 'newemail@gmail.com';
 			userCommandRepositoryMock.getOneById.mockResolvedValueOnce(user);
+			userCommandRepositoryMock.getOneByEmail.mockResolvedValueOnce(user);
+
 			userCommandRepositoryMock.save.mockImplementationOnce(async (aggregate) => {
 				copyUser = aggregate;
 			});
@@ -65,11 +67,8 @@ describe('UpdateUserHandler', () => {
 			const events = user.getUncommittedEvents();
 
 			expect(events.length).toBe(1);
-			expect(userCommandRepositoryMock.save).toHaveBeenCalledWith({
-				...user,
-				email: newEmail,
-			});
-			expect(copyUser!.email).toBe(newEmail);
+			expect(events[0]).toBeInstanceOf(UserUpdatedEvent);
+			expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(user);
 		});
 	});
 
@@ -88,6 +87,32 @@ describe('UpdateUserHandler', () => {
 			// Assert
 			expect(userCommandRepositoryMock.save).toHaveBeenCalledTimes(0);
 			expect(error).toBeInstanceOf(UserNotFoundError);
+		});
+
+		it('should throw ConflictError', async () => {
+			// Arrange
+			const takenEmail = 'taken@email.com';
+			const otherUser = UserAggregateRootFixtureFactory.create({
+				email: takenEmail,
+			});
+			let copyUser: User;
+			userCommandRepositoryMock.getOneById.mockResolvedValueOnce(user);
+			userCommandRepositoryMock.getOneByEmail.mockResolvedValueOnce(otherUser);
+			userCommandRepositoryMock.save.mockImplementationOnce(async (aggregate) => {
+				copyUser = aggregate;
+			});
+
+			// Act
+			const { error } = await catchActError(() =>
+				handler.execute({
+					...command,
+					email: takenEmail,
+				}),
+			);
+
+			// Assert
+			expect(userCommandRepositoryMock.save).toHaveBeenCalledTimes(0);
+			expect(error).toBeInstanceOf(ConflictError);
 		});
 	});
 });

@@ -1,4 +1,4 @@
-export abstract class IUserDao {
+export abstract class IUserModel {
 	id: string;
 
 	email: string;

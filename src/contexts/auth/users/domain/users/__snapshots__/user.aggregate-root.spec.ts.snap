@@ -4,5 +4,21 @@ exports[`User create Success should apply UserCreatedEvent with property values 
 {
   "email": "test@test.pl",
   "id": Any<EntityId>,
+  "profile": {
+    "address": null,
+    "bio": null,
+    "dateOfBirth": null,
+    "firstName": "test",
+    "gender": null,
+    "hobbies": [],
+    "id": Any<EntityId>,
+    "languages": [],
+    "lastName": null,
+    "phoneNumber": null,
+    "profilePicture": null,
+    "rodoAcceptanceDate": null,
+    "userId": Any<EntityId>,
+    "username": null,
+  },
 }
 `;

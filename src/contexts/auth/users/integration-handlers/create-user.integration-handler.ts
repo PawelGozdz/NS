@@ -1,4 +1,4 @@
-import { CreateUserIntegrationEvent } from '@libs/common';
+import { CreateUserIntegrationEvent } from '@app/core';
 import { CommandBus } from '@libs/cqrs';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';

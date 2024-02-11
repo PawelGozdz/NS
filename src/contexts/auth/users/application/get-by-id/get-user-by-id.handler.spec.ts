@@ -16,6 +16,22 @@ describe('GetUserByIdQuery', () => {
 	const UserInfo: UserInfo = {
 		id: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
 		email: 'test@test.com',
+		profile: {
+			id: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
+			userId: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
+			firstName: 'test',
+			lastName: 'test',
+			username: 'some-name',
+			address: null,
+			bio: null,
+			gender: null,
+			dateOfBirth: null,
+			hobbies: [],
+			languages: [],
+			phoneNumber: null,
+			profilePicture: null,
+			rodoAcceptanceDate: null,
+		},
 	};
 
 	beforeEach(async () => {
