@@ -9,7 +9,8 @@ import request from 'supertest';
 
 import { AppModule } from '../app.module';
 import { TableNames, dialect, kyselyPlugins } from '../database';
-import { UserSeedBuilder } from './builders/builder';
+import { DataSeeder } from './builders/builder-next';
+import { AuthUserFixtureFactory, UserFixtureFactory } from './fixtures';
 
 type IDdbDaos = IDatabaseModels;
 
@@ -55,12 +56,59 @@ describe('UserController (e2e)', () => {
 		await dbConnection.transaction().execute(async (trx) => {
 			await dbUtils.truncateTables(tablesInvolved, trx);
 
-			const seedBuilder = await UserSeedBuilder.create(trx);
-			seedBuilder.withUser().withAuthUser({
-				hashedRt: await hashService.hashData(cookieTokens[1]),
-			});
-			await seedBuilder.build();
+			// const seedBuilder = await UserSeedBuilder.create(trx);
+			// seedBuilder.withUser().withAuthUser({
+			// 	hashedRt: await hashService.hashData(cookieTokens[1]),
+			// });
+			// await seedBuilder.build();
 		});
+		const seeder = new DataSeeder(dbConnection);
+		const ck = await hashService.hashData(cookieTokens[1]);
+
+		await seeder.seed([
+			{
+				table: TableNames.USERS,
+				data: () =>
+					UserFixtureFactory.create({
+						email: 'abc@co',
+					}),
+				quantity: 1,
+				return: ['id', 'email'],
+				order: 1,
+				relations: [
+					{
+						config: {
+							table: TableNames.AUTH_USERS,
+							data: async () =>
+								AuthUserFixtureFactory.create({
+									hashedRt: ck,
+								}),
+							quantity: 1,
+							return: ['id', 'email'],
+							order: 2,
+						},
+						relation: {
+							foreignKey: 'userId',
+							primaryKey: 'id',
+							parentEntity: TableNames.USERS,
+						},
+					},
+					// {
+					// 	config: {
+					// 		table: TableNames.PROFILES,
+					// 		data: () => ProfileFixtureFactory.create(),
+					// 		quantity: 15,
+					// 		order: 1,
+					// 	},
+					// 	relation: {
+					// 		foreignKey: 'userId',
+					// 		primaryKey: 'id',
+					// 		parentEntity: TableNames.USERS,
+					// 	},
+					// },
+				],
+			},
+		]);
 	});
 
 	it('/user', async () => {
