@@ -1,4 +1,4 @@
-import { GracefulShutdownService, OpenTelemetryModuleModule } from '@app/core';
+import { GracefulShutdownService, OpenTelemetryModuleModule, OutboxModule } from '@app/core';
 import config from '@config/app';
 import loggerOptions from '@config/pino-logger';
 import { CqrsModule } from '@libs/cqrs';
@@ -30,6 +30,7 @@ const providers = [GracefulShutdownService];
 		LoggerModule.forRoot(loggerOptions),
 		ContextModule,
 		OpenTelemetryModuleModule,
+		OutboxModule,
 	],
 	providers: [...providers],
 })

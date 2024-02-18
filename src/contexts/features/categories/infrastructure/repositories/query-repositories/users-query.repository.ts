@@ -2,10 +2,9 @@ import { Database, TableNames } from '@app/database';
 import { EntityId } from '@libs/common';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 
+import { IUsersQueryRepository, UserInfo, UserModel } from '@app/contexts/auth';
 import { IUsersQueryParams } from '@app/core';
 import { Injectable } from '@nestjs/common';
-import { IUsersQueryRepository, UserInfo } from '../../../domain';
-import { UserModel } from '../../models';
 
 @Injectable()
 export class UsersQueryRepository implements IUsersQueryRepository {

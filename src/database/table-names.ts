@@ -10,4 +10,5 @@ export enum TableNames {
 
 	// Event Sourcing
 	EVENT_LOG = 'eventLog',
+	OUTBOX = 'outbox',
 }
