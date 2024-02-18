@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-import { UpdateUserDto } from '@app/api-gateway/auth/http/users-dtos';
+import { UpdateUserDto } from '@app/api-gateway/auth/http/user-dtos';
 import { HashService } from '@app/contexts/auth';
 import { AppModule } from '../../app.module';
 import { TableNames, dialect, kyselyPlugins } from '../../database';
@@ -24,7 +24,7 @@ describe('UsersControllerV1 -> update (e2e)', () => {
 	let authenticationServer: AuthenticationServer;
 	let hashService: HashService;
 
-	const tablesInvolved = [TableNames.USERS, TableNames.AUTH_USERS, TableNames.PROFILES];
+	const tablesInvolved = [TableNames.USERS, TableNames.AUTH_USERS, TableNames.USER_PROFILES];
 
 	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({

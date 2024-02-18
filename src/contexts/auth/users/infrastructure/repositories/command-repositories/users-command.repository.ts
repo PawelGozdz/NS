@@ -81,7 +81,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
 				'u.updatedAt',
 				jsonObjectFrom(
 					eb
-						.selectFrom(`${TableNames.PROFILES} as p`)
+						.selectFrom(`${TableNames.USER_PROFILES} as p`)
 						.select([
 							'p.id',
 							'p.userId',
@@ -115,7 +115,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
 			.executeTakeFirstOrThrow();
 
 		await trx
-			.updateTable(TableNames.PROFILES)
+			.updateTable(TableNames.USER_PROFILES)
 			.set({
 				firstName: event.profile.firstName,
 				lastName: event.profile.lastName,
@@ -137,6 +137,6 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
 
 	public async handleUserCreatedEvent(event: UserCreatedEvent, trx: Transaction<any>) {
 		await trx.insertInto(TableNames.USERS).values({ id: event.id.value, email: event.email }).execute();
-		await trx.insertInto(TableNames.PROFILES).values({ id: event.profile.id.value, userId: event.profile.userId.value }).execute();
+		await trx.insertInto(TableNames.USER_PROFILES).values({ id: event.profile.id.value, userId: event.profile.userId.value }).execute();
 	}
 }

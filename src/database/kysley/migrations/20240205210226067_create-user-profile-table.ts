@@ -1,9 +1,7 @@
 import { TableNames } from '@app/database/table-names';
 import { Kysely, sql } from 'kysely';
-import { onUpdateTrigger } from '../helpers';
 
-const tableName = TableNames.PROFILES;
-const onUpdateTriggerQuery = onUpdateTrigger(tableName);
+const tableName = TableNames.USER_PROFILES;
 
 export async function up(db: Kysely<any>): Promise<void> {
 	await db.schema
@@ -25,8 +23,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 		.addColumn('createdAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
 		.addColumn('updatedAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
-		.execute()
-		.then(() => sql.raw(`${onUpdateTriggerQuery}`).execute(db));
+		.execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {

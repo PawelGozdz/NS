@@ -1,5 +1,26 @@
+import { AppContext } from '../enums';
+
 export const systemVariables = {
 	dtos: {
+		categories: {
+			name: {
+				MIN_LENGTH: 2,
+				MAX_LENGTH: 30,
+				example1: 'Grocery',
+			},
+			context: {
+				AVAILABLE_OPTIONS: Object.values(AppContext),
+				example1: AppContext.CATEGORIES,
+			},
+			parentId: {
+				example1: 1,
+			},
+			description: {
+				MIN_LENGTH: 2,
+				MAX_LENGTH: 60,
+				example1: 'This is a grocery category',
+			},
+		},
 		password: {
 			MIN_LENGTH: 8,
 			MAX_LENGTH: 25,

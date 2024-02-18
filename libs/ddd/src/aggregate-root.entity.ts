@@ -17,5 +17,5 @@ export abstract class AggregateRoot extends AggregateRootBase {
 		this.version += 1;
 	}
 
-	abstract getId(): string;
+	abstract getId(): string | number;
 }

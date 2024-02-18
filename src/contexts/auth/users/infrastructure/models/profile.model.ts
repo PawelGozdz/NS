@@ -1,8 +1,8 @@
 import { TableNames } from '@app/database';
-import { Address, IProfileModel } from '@libs/common';
+import { Address, IUserProfileModel } from '@libs/common';
 import { BaseModel } from '@libs/ddd';
 
-export class ProfileModel extends BaseModel implements IProfileModel {
+export class UserProfileModel extends BaseModel implements IUserProfileModel {
 	id: string;
 
 	userId: string;
@@ -35,5 +35,5 @@ export class ProfileModel extends BaseModel implements IProfileModel {
 
 	createdAt: Date;
 
-	static tableName = TableNames.PROFILES;
+	static tableName = TableNames.USER_PROFILES;
 }

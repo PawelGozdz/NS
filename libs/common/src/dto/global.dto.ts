@@ -3,10 +3,14 @@ import {
 	IsDateString,
 	IsDefined,
 	IsEmail,
+	IsEnum,
 	IsIn,
 	IsNotEmpty,
+	IsNotIn,
+	IsNumber,
 	IsOptional,
 	IsPhoneNumber,
+	IsPositive,
 	IsString,
 	IsUUID,
 	IsUrl,
@@ -14,7 +18,7 @@ import {
 	ValidateNested,
 } from 'class-validator';
 
-import { CountryCode } from '../enums';
+import { AppContext, CountryCode } from '../enums';
 import { systemVariables } from '../system-variables';
 
 class AddressDto {
@@ -218,4 +222,45 @@ export class GlobalDto {
 	@IsDefined()
 	@ValidateNested()
 	address: AddressDto;
+
+	// CATEGORIES
+	@ApiProperty({
+		example: systemVariables.dtos.categories.name.example1,
+		minLength: systemVariables.dtos.categories.name.MIN_LENGTH,
+		maxLength: systemVariables.dtos.categories.name.MAX_LENGTH,
+	})
+	@IsNotIn([null])
+	@IsDefined()
+	@Length(systemVariables.dtos.categories.name.MIN_LENGTH, systemVariables.dtos.categories.name.MAX_LENGTH)
+	name: string;
+
+	@ApiProperty({
+		example: systemVariables.dtos.categories.description.example1,
+		minLength: systemVariables.dtos.categories.description.MIN_LENGTH,
+		maxLength: systemVariables.dtos.categories.description.MAX_LENGTH,
+		nullable: true,
+	})
+	@IsOptional()
+	@Length(systemVariables.dtos.categories.description.MIN_LENGTH, systemVariables.dtos.categories.description.MAX_LENGTH)
+	description: string;
+
+	@ApiProperty({
+		example: systemVariables.dtos.categories.context.example1,
+		enum: systemVariables.dtos.categories.context.AVAILABLE_OPTIONS,
+	})
+	@IsNotIn([null])
+	@IsDefined()
+	@IsEnum(AppContext)
+	context: AppContext;
+
+	@ApiProperty({
+		example: systemVariables.dtos.categories.parentId.example1,
+		nullable: true,
+	})
+	@IsOptional()
+	@IsPositive()
+	@IsNotIn([null])
+	@Length(0, 10000000)
+	@IsNumber({ allowInfinity: false, allowNaN: false, maxDecimalPlaces: 0 })
+	parentId: number;
 }

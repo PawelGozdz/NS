@@ -1,4 +1,4 @@
-import { ProfileModel, UserModel } from '@app/contexts/auth';
+import { UserModel, UserProfileModel } from '@app/contexts/auth';
 import { AppUtils } from '@libs/common';
 import { testingDefaults } from '@libs/testing';
 import _ from 'lodash';
@@ -18,8 +18,8 @@ export class UserFixtureFactory {
 }
 
 export class ProfileFixtureFactory {
-	public static create(overrides?: Partial<ProfileModel>): ProfileModel {
-		const userDao = new ProfileModel();
+	public static create(overrides?: Partial<UserProfileModel>): UserProfileModel {
+		const userDao = new UserProfileModel();
 
 		const defaults = {
 			id: AppUtils.getUUID(),

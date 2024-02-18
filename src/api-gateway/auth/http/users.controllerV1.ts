@@ -6,7 +6,7 @@ import { CommandBus, QueryBus } from '@libs/cqrs';
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PinoLogger } from 'nestjs-pino';
-import { UpdateUserDto, UpdateUserValidationErrorDto, UserQueryParamsDto, UserResponseDto } from './users-dtos';
+import { UpdateUserDto, UpdateUserValidationErrorDto, UserQueryParamsDto, UserResponseDto } from './user-dtos';
 
 @ApiTags('Users')
 @Controller({

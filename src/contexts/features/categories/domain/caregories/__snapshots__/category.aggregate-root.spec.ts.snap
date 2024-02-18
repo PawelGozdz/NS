@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Category create Success should apply CategoryCreatedEvent with property values and ID 1`] = `
+{
+  "context": "test-context",
+  "description": "Grocery category",
+  "id": Any<Number>,
+  "name": "Grocery",
+  "parentId": null,
+}
+`;
+
+exports[`Category create Success should apply CategoryCreatedEvent with property values and no ID 1`] = `
+{
+  "context": "test-context",
+  "description": "Grocery category",
+  "id": undefined,
+  "name": "Grocery",
+  "parentId": null,
+}
+`;
+
+exports[`Category update should apply CategoryUpdatedEvent with properties to be updated 1`] = `
+CategoryUpdatedEvent {
+  "context": "new-context",
+  "description": "Grocery category",
+  "id": undefined,
+  "name": "Grocery",
+  "parentId": null,
+}
+`;

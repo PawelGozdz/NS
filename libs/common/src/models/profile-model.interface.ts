@@ -1,6 +1,6 @@
 import { CountryCode } from '@libs/common';
 
-export abstract class IProfileModel {
+export abstract class IUserProfileModel {
 	id: string;
 
 	userId: string;

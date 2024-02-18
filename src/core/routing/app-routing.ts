@@ -1,3 +1,23 @@
+interface ICategoriesRoutes {
+	create: string;
+	update: string;
+	delete: string;
+	getCategory: string;
+	getCategories: string;
+}
+
+const categoriesRoot = `/categories`;
+const CategoryRoutes: { root: string; v1: ICategoriesRoutes } = {
+	root: categoriesRoot,
+	v1: {
+		create: `${categoriesRoot}/`,
+		getCategories: `${categoriesRoot}/`,
+		getCategory: `${categoriesRoot}/:id`,
+		update: `${categoriesRoot}/:id`,
+		delete: `${categoriesRoot}/:id`,
+	},
+};
+
 interface IUsersRoutes {
 	getUsers: string;
 	getUser: string;
@@ -35,4 +55,5 @@ const AuthRoutes: { root: string; v1: IAuthRoutes } = {
 export const AppRoutes = {
 	USERS: UserRoutes,
 	AUTH: AuthRoutes,
+	CATEGORIES: CategoryRoutes,
 };
