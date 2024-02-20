@@ -2,7 +2,7 @@ import { Event } from '@libs/cqrs';
 
 export interface IOutboxInput<T = any> {
 	eventName: string;
-	context: string;
+	ctx: string;
 	payload: Event<T>;
 }
 

@@ -10,5 +10,6 @@ const interceptors = [];
 @Module({
 	imports: [...modules],
 	providers: [...interceptors],
+	exports: [...modules],
 })
 export class ContextModule {}

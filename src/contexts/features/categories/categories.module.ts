@@ -2,25 +2,25 @@ import { DatabaseModule } from '@app/database/kysley';
 import { CqrsModule } from '@libs/cqrs';
 import { Module } from '@nestjs/common';
 
-import { CreateCategoryHandler } from './application';
-import { ICategoriesCommandRepository } from './domain';
-import { CategoriesCommandRepository } from './infrastructure';
+import { CreateCategoryHandler, GetManyCategoriesHandler, UpdateCategoryHandler } from './application';
+import { ICategoriesCommandRepository, ICategoriesQueryRepository } from './domain';
+import { CategoriesCommandRepository, CategoriesQueryRepository } from './infrastructure';
 
 const providers = [
 	{
 		provide: ICategoriesCommandRepository,
 		useClass: CategoriesCommandRepository,
 	},
-	// {
-	// 	provide: ICategoryQueryRepository,
-	// 	useClass: CategoriesQueryRepository,
-	// },
+	{
+		provide: ICategoriesQueryRepository,
+		useClass: CategoriesQueryRepository,
+	},
 ];
-const queries = [];
-const commands = [CreateCategoryHandler];
-
+const queries = [GetManyCategoriesHandler];
+const commands = [CreateCategoryHandler, UpdateCategoryHandler];
 @Module({
 	imports: [CqrsModule, DatabaseModule],
 	providers: [...providers, ...queries, ...commands],
+	exports: [...providers, ...queries, ...commands],
 })
 export class CategoriesModule {}

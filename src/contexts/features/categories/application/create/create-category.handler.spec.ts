@@ -1,79 +1,76 @@
-import {
-	CreateUserCommand,
-	CreateUserHandler,
-	IUsersCommandRepository,
-	User,
-	UserAggregateRootFixtureFactory,
-	UserAlreadyExistsError,
-} from '@app/contexts/auth';
 import { createMock } from '@golevelup/ts-jest';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 import { Test } from '@nestjs/testing';
 
-describe('CreateUserHandler', () => {
-	let handler: CreateUserHandler;
-	let userCommandRepositoryMock: jest.Mocked<IUsersCommandRepository>;
+import { CategoryAlreadyExistsError, CategoryEntityFixtureFactory, ICategoriesCommandRepository } from '../../domain';
+import { CreateCategoryCommand } from './create-category.command';
+import { CreateCategoryHandler } from './create-category.handler';
+
+describe('CreateCategoryHandler', () => {
+	let handler: CreateCategoryHandler;
+	let categoryCommandRepositoryMock: jest.Mocked<ICategoriesCommandRepository>;
 
 	beforeEach(async () => {
-		userCommandRepositoryMock = createMock();
+		categoryCommandRepositoryMock = createMock();
 
 		const app = await Test.createTestingModule({
 			imports: [TestLoggerModule.forRoot(), TestCqrsModule],
 			providers: [
-				CreateUserHandler,
+				CreateCategoryHandler,
 				{
-					provide: IUsersCommandRepository,
-					useValue: userCommandRepositoryMock,
+					provide: ICategoriesCommandRepository,
+					useValue: categoryCommandRepositoryMock,
 				},
 			],
 		}).compile();
 
-		handler = app.get(CreateUserHandler);
+		handler = app.get(CreateCategoryHandler);
 	});
 
-	const command = new CreateUserCommand({
-		email: 'test@test.com',
+	const name = 'test';
+	const ctx = 'test-ctx';
+	const id = 1;
+	const command = new CreateCategoryCommand({
+		name,
+		ctx,
 	});
 
-	const user = UserAggregateRootFixtureFactory.create();
+	const categoryEntity = CategoryEntityFixtureFactory.create();
 
 	describe('Success', () => {
-		it('should create new user', async () => {
+		it('should create new category', async () => {
 			// Arrange
-			userCommandRepositoryMock.getOneByEmail.mockResolvedValueOnce(undefined);
-			let saveduser: User;
-			userCommandRepositoryMock.save.mockImplementationOnce(async (aggregate) => {
-				saveduser = aggregate;
-			});
+			categoryCommandRepositoryMock.getOneByNameAndContext.mockResolvedValueOnce(undefined);
+			categoryCommandRepositoryMock.save.mockResolvedValueOnce({ id });
 
 			// Act
 			const result = await handler.execute(command);
 
 			// Assert
 
-			expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(saveduser!);
-			// expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(expect.any(User));
-			expect(result).toStrictEqual({ id: expect.any(String) });
+			expect(categoryCommandRepositoryMock.save).toHaveBeenCalledWith({
+				name,
+				ctx,
+				description: undefined,
+				parentId: undefined,
+			});
+			expect(result).toMatchSnapshot();
 		});
 	});
 
 	describe('failure', () => {
-		it('should throw UserAlreadyExistsError', async () => {
+		it('should throw CategoryAlreadyExistsError', async () => {
 			// Arrange
-			userCommandRepositoryMock.getOneByEmail.mockResolvedValueOnce(user);
-			let saveduser: User;
-			userCommandRepositoryMock.save.mockImplementationOnce(async (aggregate) => {
-				saveduser = aggregate;
-			});
+			categoryCommandRepositoryMock.getOneByNameAndContext.mockResolvedValueOnce(categoryEntity);
 
 			// Act
-			// const result = await handler.execute(command);
 			const { error } = await catchActError(() => handler.execute(command));
 
 			// Assert
 
-			expect(userCommandRepositoryMock.save).toHaveBeenCalledTimes(0);
-			expect(error).toBeInstanceOf(UserAlreadyExistsError);
+			expect(categoryCommandRepositoryMock.save).toHaveBeenCalledTimes(0);
+			expect(error).toBeInstanceOf(CategoryAlreadyExistsError);
+			expect(error).toMatchSnapshot();
 		});
 	});
 });

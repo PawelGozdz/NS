@@ -1,1 +1,1 @@
-export * from './users-query.repository';
+export * from './category-query.repository';

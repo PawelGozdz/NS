@@ -71,7 +71,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
 					.send({
 						name: 'test category',
 						description: 'default-category',
-						context: 'users',
+						ctx: 'users',
 					});
 
 				// Assert

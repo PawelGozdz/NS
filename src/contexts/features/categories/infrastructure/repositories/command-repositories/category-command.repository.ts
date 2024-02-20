@@ -1,92 +1,76 @@
 import { Database, TableNames } from '@app/database';
-import { EventBus } from '@libs/cqrs';
-import { EntityRepository } from '@libs/ddd';
 import { Injectable } from '@nestjs/common';
-import { Transaction } from 'kysely';
 
-import { AppContext } from '@libs/common';
-import { Category, CategoryCreatedEvent, CategorySnapshot, CategoryUpdatedEvent, ICategoriesCommandRepository } from '../../../domain';
+import { Category, ICategoriesCommandRepository, ICategoryCreateData, ICategoryUpdateData } from '../../../domain';
 import { CategoryModel } from '../../models';
 
 @Injectable()
-export class CategoriesCommandRepository extends EntityRepository implements ICategoriesCommandRepository {
-	constructor(
-		eventBus: EventBus,
-		readonly db: Database,
-	) {
-		super(eventBus, CategoryModel, db);
-	}
+export class CategoriesCommandRepository implements ICategoriesCommandRepository {
+	constructor(readonly db: Database) {}
 
 	async getOneById(id: number): Promise<Category | undefined> {
-		const entity = (await this.getCategory().where('c.id', '=', id).executeTakeFirst()) as CategoryModel | undefined;
+		const entity = await this.getCategory().where('c.id', '=', id).executeTakeFirst();
 
 		if (!entity) {
 			return undefined;
 		}
 
-		const snapshot = this.categoryToSnapshot(entity);
-
-		return Category.restoreFromSnapshot(snapshot);
+		return this.mapResponse(entity);
 	}
 
-	async getOneByNameAndContext(name: string, context: AppContext): Promise<Category | undefined> {
-		const entity = (await this.getCategory().where('c.name', '=', name).where('c.context', '=', context).executeTakeFirst()) as
-			| CategoryModel
-			| undefined;
+	async getOneByNameAndContext(name: string, context: string): Promise<Category | undefined> {
+		const entity = await this.getCategory().where('c.name', '=', name).where('c.ctx', '=', context).executeTakeFirst();
 
 		if (!entity) {
 			return undefined;
 		}
 
-		const snapshot = this.categoryToSnapshot(entity);
-
-		return Category.restoreFromSnapshot(snapshot);
+		return this.mapResponse(entity);
 	}
 
-	public save(category: Category): Promise<void> {
-		return this.handleUncommittedEvents(category);
-	}
+	public async save(category: ICategoryCreateData): Promise<{ id: number }> {
+		const model = await this.db
+			.insertInto(TableNames.CATEGORIES)
+			.values({
+				name: category.name,
+				description: category.description,
+				ctx: category.ctx,
+				parentId: category.parentId,
+			} as CategoryModel)
+			.returning('id')
+			.executeTakeFirstOrThrow();
 
-	private categoryToSnapshot(model: CategoryModel): CategorySnapshot {
 		return {
+			id: model.id,
+		};
+	}
+
+	public async update(category: ICategoryUpdateData): Promise<void> {
+		const results = await this.db
+			.updateTable(TableNames.CATEGORIES)
+			.set({
+				name: category.name,
+				description: category.description,
+				ctx: category.ctx,
+				parentId: category.parentId,
+			})
+			.where('id', '=', category.id)
+			.execute();
+	}
+
+	mapResponse(model: CategoryModel): Category {
+		return new Category({
 			id: model.id,
 			name: model.name,
 			description: model.description,
-			context: model.context,
 			parentId: model.parentId,
-			version: model.version,
-		};
+			ctx: model.ctx,
+		});
 	}
 
 	private getCategory() {
 		return this.db
 			.selectFrom(`${TableNames.CATEGORIES} as c`)
-			.select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
-	}
-
-	public async handleCategoryUpdatedEvent(event: CategoryUpdatedEvent, trx: Transaction<any>) {
-		await trx
-			.updateTable(TableNames.CATEGORIES)
-			.set({
-				id: event.id,
-				name: event.name,
-				description: event.description,
-				parentId: event.parentId,
-			})
-			.where('id', '=', event.id)
-			.executeTakeFirstOrThrow();
-	}
-
-	public async handleCategoryCreatedEvent(event: CategoryCreatedEvent, trx: Transaction<any>) {
-		await trx
-			.insertInto(TableNames.CATEGORIES)
-			.values({
-				name: event.name,
-				description: event.description,
-				context: event.context,
-				parentId: event.parentId,
-			})
-			.returning('id')
-			.executeTakeFirstOrThrow();
+			.select((_eb) => ['c.id', 'c.name', 'c.description', 'c.ctx', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
 	}
 }

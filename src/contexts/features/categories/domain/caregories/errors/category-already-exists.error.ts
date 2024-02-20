@@ -9,4 +9,13 @@ export class CategoryAlreadyExistsError extends DomainError {
 		};
 		return new CategoryAlreadyExistsError(message, options);
 	}
+
+	static withId(id: number, data?: DomainErrorOptions): CategoryAlreadyExistsError {
+		const message = `Entity with id ${id} already exists`;
+		const options = {
+			code: DomainErrorCode.DuplicateEntry,
+			data,
+		};
+		return new CategoryAlreadyExistsError(message, options);
+	}
 }

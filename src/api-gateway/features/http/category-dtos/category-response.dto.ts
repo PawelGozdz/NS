@@ -1,7 +1,4 @@
-export class CategoryResponseDto {
-	id: number;
-	name: string;
-	description: string | null;
-	context: string;
-	parentId: number | null;
-}
+import { CategoryGlobalDto } from '@app/core';
+import { PickType } from '@nestjs/swagger';
+
+export class CategoryResponseDto extends PickType(CategoryGlobalDto, ['id', 'name', 'description', 'ctx', 'parentId']) {}

@@ -1,5 +1,3 @@
-import { AppContext } from '@libs/common';
-
 export abstract class ICategoryModel {
 	id: number;
 
@@ -7,7 +5,7 @@ export abstract class ICategoryModel {
 
 	description: string | null;
 
-	context: AppContext;
+	ctx: string;
 
 	parentId: number | null;
 

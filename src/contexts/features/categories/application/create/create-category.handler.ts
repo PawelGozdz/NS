@@ -1,11 +1,12 @@
-import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
+import { IInferredCommandHandler } from '@libs/cqrs';
 import { PinoLogger } from 'nestjs-pino';
 
-import { Category, CategoryAlreadyExistsError } from '../../domain';
+import { Injectable } from '@nestjs/common';
+import { CategoryAlreadyExistsError } from '../../domain';
 import { ICategoriesCommandRepository } from '../../domain/caregories/category-command-repository.interface';
 import { CreateCategoryCommand, CreateCategoryResponseDto } from './create-category.command';
 
-@CommandHandler(CreateCategoryCommand)
+@Injectable()
 export class CreateCategoryHandler implements IInferredCommandHandler<CreateCategoryCommand> {
 	constructor(
 		private readonly categoryCommandRepository: ICategoriesCommandRepository,
@@ -17,29 +18,25 @@ export class CreateCategoryHandler implements IInferredCommandHandler<CreateCate
 	async execute(command: CreateCategoryCommand): Promise<CreateCategoryResponseDto> {
 		this.logger.info(command, 'Creating category:');
 
-		const currentEntity = await this.categoryCommandRepository.getOneByNameAndContext(command.name, command.context);
+		const currentEntity = await this.categoryCommandRepository.getOneByNameAndContext(command.name, command.ctx);
 
 		if (currentEntity) {
-			throw CategoryAlreadyExistsError.withNameAndContext(command.name, command.context);
+			throw CategoryAlreadyExistsError.withNameAndContext(command.name, command.ctx);
 		}
 
-		const category = this.createUserInstance(command);
-
-		await this.categoryCommandRepository.save(category);
-
-		const savedEntity = (await this.categoryCommandRepository.getOneByNameAndContext(command.name, command.context)) as Category;
+		const category = await this.categoryCommandRepository.save(this.createCategoryInstance(command));
 
 		return {
-			id: savedEntity.id,
+			id: category.id,
 		};
 	}
 
-	private createUserInstance(command: CreateCategoryCommand) {
-		return Category.create({
+	private createCategoryInstance(command: CreateCategoryCommand) {
+		return {
 			name: command.name,
-			context: command.context,
+			ctx: command.ctx,
 			description: command.description,
 			parentId: command.parentId,
-		});
+		};
 	}
 }

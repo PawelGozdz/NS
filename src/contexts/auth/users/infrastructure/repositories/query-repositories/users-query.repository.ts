@@ -1,9 +1,9 @@
+import { IUsersQueryParams } from '@app/core';
 import { Database, TableNames } from '@app/database';
 import { EntityId } from '@libs/common';
+import { Injectable } from '@nestjs/common';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 
-import { IUsersQueryParams } from '@app/core';
-import { Injectable } from '@nestjs/common';
 import { IUsersQueryRepository, UserInfo } from '../../../domain';
 import { UserModel } from '../../models';
 

@@ -7,25 +7,6 @@ import { mergePatch, redact } from '@libs/common';
 import config, { Environment } from './app';
 
 const isProduction = config.NODE_ENV === Environment.PRODUCTION;
-const isDevelopment = config.NODE_ENV === Environment.DEVELOPMENT;
-
-const redactPaths = [
-	'password',
-	'password.*.*',
-	'*.password',
-	'password.*',
-	'*.hash',
-	'hash.*',
-	'email',
-	'*.email',
-	'email.*',
-	'*.hashedRt',
-	'hashedRt.*',
-	'*.access_token',
-	'access_token.*',
-	'*.refresh_token',
-	'refresh_token.*',
-];
 
 const options: Params = {
 	pinoHttp: {
@@ -41,7 +22,7 @@ const options: Params = {
 				delete objCopy.context;
 				const activeSpan = trace.getSpan(context.active());
 
-				const res: { [key: string]: any } = mergePatch({ _context: object.context }, objCopy);
+				const res: { [key: string]: any } = mergePatch({ __context: object.context }, objCopy);
 
 				const redacted = config.MASKING_ENABLED ? redact.json(res) : res;
 
@@ -49,11 +30,11 @@ const options: Params = {
 					return redacted;
 				}
 
-				if (redacted._context) {
+				if (redacted.__context) {
 					const ctx = trace.getSpan(context.active())?.spanContext();
 
-					redacted._spanId = ctx?.spanId;
-					redacted._traceId = ctx?.traceId;
+					redacted.__spanId = ctx?.spanId;
+					redacted.__traceId = ctx?.traceId;
 
 					activeSpan?.addEvent(JSON.stringify(redacted));
 				}

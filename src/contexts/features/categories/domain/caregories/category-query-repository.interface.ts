@@ -1,11 +1,13 @@
+import { ICategoriesQueryParams } from '@app/core';
+
 export type CategoryInfo = {
 	id: number;
 	name: string;
-	description?: string;
-	parentId?: number;
-	context: string;
+	ctx: string;
+	parentId: number | null;
+	description: string | null;
 };
 
 export abstract class ICategoriesQueryRepository {
-	abstract getOneById(id: number): Promise<CategoryInfo | undefined>;
+	abstract getManyBy(query: ICategoriesQueryParams): Promise<CategoryInfo[]>;
 }

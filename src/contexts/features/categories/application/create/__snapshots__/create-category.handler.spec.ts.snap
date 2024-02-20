@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateCategoryHandler Success should create new category 1`] = `
+{
+  "id": 1,
+}
+`;
+
+exports[`CreateCategoryHandler failure should throw CategoryAlreadyExistsError 1`] = `[CategoryAlreadyExistsError: Entity with name test and context test-ctx already exists]`;

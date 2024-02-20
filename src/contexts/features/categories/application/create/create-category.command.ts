@@ -1,11 +1,12 @@
+import { CategoryGlobalDto } from '@app/core';
 import { Command } from '@libs/cqrs';
-import { ApiProperty } from '@nestjs/swagger';
+import { PickType } from '@nestjs/swagger';
 
 export class CreateCategoryCommand extends Command<CreateCategoryCommand, CreateCategoryResponseDto> {
 	name: string;
 	description?: string;
 	parentId?: number;
-	context: string;
+	ctx: string;
 
 	constructor(command: CreateCategoryCommand) {
 		super(command);
@@ -14,9 +15,4 @@ export class CreateCategoryCommand extends Command<CreateCategoryCommand, Create
 	}
 }
 
-export class CreateCategoryResponseDto {
-	@ApiProperty({
-		example: 'a6185a9f-8873-4f1b-b630-3729318bc600',
-	})
-	id: number;
-}
+export class CreateCategoryResponseDto extends PickType(CategoryGlobalDto, ['id']) {}

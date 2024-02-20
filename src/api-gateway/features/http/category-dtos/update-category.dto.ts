@@ -1,8 +1,8 @@
-import { AppContext, GlobalDto } from '@libs/common';
+import { CategoryGlobalDto } from '@app/core';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
 
-export class UpdateCategoryDto extends PickType(GlobalDto, ['name', 'description', 'parentId', 'context']) {
+export class UpdateCategoryDto extends PickType(CategoryGlobalDto, ['name', 'description', 'parentId', 'ctx']) {
 	@ApiProperty({
 		nullable: false,
 		required: false,
@@ -15,19 +15,21 @@ export class UpdateCategoryDto extends PickType(GlobalDto, ['name', 'description
 		required: false,
 	})
 	@IsOptional()
-	description: string;
+	description: string | null;
 
 	@ApiProperty({
 		nullable: true,
 		required: false,
 	})
 	@IsOptional()
-	context: AppContext;
+	ctx: string;
 
 	@ApiProperty({
 		nullable: true,
 		required: false,
 	})
 	@IsOptional()
-	parentId: number;
+	parentId: number | null;
 }
+
+export class UpdateCategoryParamDto extends PickType(CategoryGlobalDto, ['id']) {}

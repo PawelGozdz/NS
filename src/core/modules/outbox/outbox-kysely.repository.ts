@@ -10,10 +10,7 @@ export class OutboxKyselyRepository implements IOutboxRepository {
 	async store(outboxInput: IOutboxInput) {
 		await this.withTransaction().execute(async (trx) => {
 			trx.insertInto(TableNames.EVENT_LOG).values({ eventName: outboxInput.eventName, data: outboxInput.payload }).execute();
-			trx
-				.insertInto(TableNames.OUTBOX)
-				.values({ eventName: outboxInput.eventName, context: outboxInput.context, data: outboxInput.payload })
-				.execute();
+			trx.insertInto(TableNames.OUTBOX).values({ eventName: outboxInput.eventName, ctx: outboxInput.ctx, data: outboxInput.payload }).execute();
 		});
 	}
 
@@ -33,7 +30,7 @@ export class OutboxKyselyRepository implements IOutboxRepository {
 		return new Outbox({
 			id: outbox.id,
 			eventName: outbox.eventName,
-			context: outbox.context,
+			ctx: outbox.ctx,
 			payload: outbox.payload,
 			createdAt: outbox.createdAt,
 			publishedOn: outbox.publishedOn,

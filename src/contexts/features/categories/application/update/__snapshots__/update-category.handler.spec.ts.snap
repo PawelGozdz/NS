@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UpdateCategoryHandler failure should throw CategoryNotFoundError 1`] = `[CategoryNotFoundError: Entity with id 1 doesn't exists]`;

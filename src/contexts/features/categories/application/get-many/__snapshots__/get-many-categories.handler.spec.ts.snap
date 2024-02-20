@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GetManyCategoriesHandler should get many categories 1`] = `
+[
+  {
+    "ctx": "ctx",
+    "description": "description",
+    "id": 2,
+    "name": "name",
+    "parentId": 1,
+  },
+]
+`;

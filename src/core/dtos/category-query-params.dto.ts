@@ -1,36 +1,41 @@
-import { GlobalDto } from '@libs/common';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsOptional, ValidateNested } from 'class-validator';
 
-export type IQueryParams = {
-	_filter?: {
-		email?: string;
-		id?: string;
-	};
-};
+import { ICategoriesQueryParams } from '../interfaces';
+import { CategoryGlobalDto } from './category-global.dto';
 
-class Filter extends PickType(GlobalDto, ['email', 'id']) {
+class Filter extends PickType(CategoryGlobalDto, ['id', 'name', 'ctx', 'parentId']) {
 	@ApiProperty({
 		required: false,
-		description: 'Filter by email',
 	})
 	@IsOptional()
-	email: string;
+	id: number;
 
 	@ApiProperty({
 		required: false,
-		description: 'Filter by id',
 	})
 	@IsOptional()
-	id: string;
+	name: string;
+
+	@ApiProperty({
+		required: false,
+	})
+	@IsOptional()
+	ctx: string;
+
+	@ApiProperty({
+		required: false,
+	})
+	@IsOptional()
+	parentId: number;
 }
 
-export class QueryParamsDto implements IQueryParams {
+export class CategoriesQueryParamsDto implements ICategoriesQueryParams {
 	@ApiProperty({
 		required: false,
 		type: Filter,
-		example: '[email]=test@test.com',
+		example: '[name]=title&[ctx]=users&[parentId]=1&[id]=1',
 	})
 	@IsOptional()
 	@Type(() => Filter)

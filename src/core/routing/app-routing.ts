@@ -2,7 +2,6 @@ interface ICategoriesRoutes {
 	create: string;
 	update: string;
 	delete: string;
-	getCategory: string;
 	getCategories: string;
 }
 
@@ -12,7 +11,6 @@ const CategoryRoutes: { root: string; v1: ICategoriesRoutes } = {
 	v1: {
 		create: `${categoriesRoot}/`,
 		getCategories: `${categoriesRoot}/`,
-		getCategory: `${categoriesRoot}/:id`,
 		update: `${categoriesRoot}/:id`,
 		delete: `${categoriesRoot}/:id`,
 	},

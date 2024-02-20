@@ -1,5 +1,5 @@
 import { TableNames } from '@app/database';
-import { AppContext, ICategoryModel } from '@libs/common';
+import { ICategoryModel } from '@libs/common';
 import { BaseModel } from '@libs/ddd';
 
 export class CategoryModel extends BaseModel implements ICategoryModel {
@@ -9,15 +9,13 @@ export class CategoryModel extends BaseModel implements ICategoryModel {
 
 	description: string | null;
 
-	context: AppContext;
+	ctx: string;
 
 	parentId: number | null;
 
 	updatedAt: Date;
 
 	createdAt: Date;
-
-	version: number;
 
 	static tableName = TableNames.CATEGORIES;
 }
