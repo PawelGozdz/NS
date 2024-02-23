@@ -1,7 +1,7 @@
 import { ErrorOptions, FrameworkErrorCode } from '@libs/common';
 import { BaseError } from './base.error';
 
-type FrameworkErrorOptions = ErrorOptions & {
+export type FrameworkErrorOptions = ErrorOptions & {
 	module?: string;
 	data?: any;
 	error?: Error;

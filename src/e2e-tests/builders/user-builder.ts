@@ -1,5 +1,6 @@
 import { AuthUserModel, UserModel, UserProfileModel } from '@app/contexts/auth';
 import { Kysely } from 'kysely';
+
 import { TableNames, dialect, kyselyPlugins } from '../../database';
 import { AuthUserFixtureFactory, ProfileFixtureFactory, UserFixtureFactory } from '../fixtures';
 
@@ -53,12 +54,7 @@ export class UserSeedBuilder {
 			throw new Error('UserDao is not defined');
 		}
 
-		await this.dbConnection.insertInto(TableNames.USERS).values(this.daos.userDaoObj).execute();
-		this.userDao = (await this.dbConnection
-			.selectFrom(TableNames.USERS)
-			.selectAll()
-			.where('id', '=', this.daos.userDaoObj.id)
-			.executeTakeFirst()) as UserModel;
+		this.userDao = (await this.dbConnection.insertInto(TableNames.USERS).values(this.daos.userDaoObj).returningAll().executeTakeFirst()) as UserModel;
 	}
 
 	withUser(user?: Partial<UserModel>): this {
@@ -76,11 +72,10 @@ export class UserSeedBuilder {
 			throw new Error('AuthUserDao is not defined');
 		}
 
-		await this.dbConnection.insertInto(TableNames.AUTH_USERS).values(this.daos.authUserDaoObj).execute();
 		this.authUserDao = (await this.dbConnection
-			.selectFrom(TableNames.AUTH_USERS)
-			.selectAll()
-			.where('userId', '=', this.daos.authUserDaoObj.userId)
+			.insertInto(TableNames.AUTH_USERS)
+			.values(this.daos.authUserDaoObj)
+			.returningAll()
 			.executeTakeFirst()) as AuthUserModel;
 
 		return this;
@@ -106,11 +101,10 @@ export class UserSeedBuilder {
 			throw new Error('UserDao is not defined');
 		}
 
-		await this.dbConnection.insertInto(TableNames.USER_PROFILES).values(this.daos.profileDaoObj).execute();
 		this.profileDao = (await this.dbConnection
-			.selectFrom(TableNames.USER_PROFILES)
-			.selectAll()
-			.where('id', '=', this.daos.profileDaoObj.id)
+			.insertInto(TableNames.USER_PROFILES)
+			.values(this.daos.profileDaoObj)
+			.returningAll()
 			.executeTakeFirst()) as UserProfileModel;
 	}
 

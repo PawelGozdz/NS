@@ -13,6 +13,8 @@ export const systemVariables = {
 				example1: AppContext.CATEGORIES,
 			},
 			parentId: {
+				MIN_VALUE: 1,
+				MAX_VALUE: 10000000000000000000,
 				example1: 1,
 			},
 			description: {

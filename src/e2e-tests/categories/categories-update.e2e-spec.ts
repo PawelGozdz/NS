@@ -12,7 +12,7 @@ import { CategorySeedBuilder } from '../builders/csategory-builder';
 
 type IDdbDaos = any;
 
-describe('CategoriesControllerV1 -> create (e2e)', () => {
+describe('CategoriesControllerV1 -> update (e2e)', () => {
 	const dbConnection = new Kysely<IDdbDaos>({
 		dialect,
 		plugins: kyselyPlugins,
@@ -37,6 +37,11 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
 	});
 
 	let cookies: [string, string];
+	let builder: CategorySeedBuilder;
+	let categoryInsertedId: number;
+
+	const ctx = 'users';
+	const name = 'test category';
 
 	beforeEach(async () => {
 		cookies = getCookies();
@@ -44,74 +49,81 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
 		await dbConnection.transaction().execute(async (trx) => {
 			await dbUtils.truncateTables(tablesInvolved, trx);
 			await loginUser(trx);
+
+			builder = await CategorySeedBuilder.create(trx);
+			builder.withCategory({
+				name,
+				description: 'default-category',
+				ctx,
+			});
+			await builder.build();
+			categoryInsertedId = builder.categoryDao.id;
 		});
 	});
 
-	const ctx = 'users';
-	const name = 'test category';
-
-	describe('/categories (POST) V1', () => {
+	describe('/categories (PATCH) V1', () => {
 		describe('SUCCESS', () => {
-			it('should create category without parent and return id', async () => {
+			it('should update category without parentId', async () => {
 				// Arrange
+				const newName = 'new-name';
 
 				// Act
 				const response = await request(app.getHttpServer())
-					.post(`/caregories`)
+					.patch(`/categories/${categoryInsertedId}`)
 					.set(...cookies)
 					.set('Content-Type', 'application/json')
 					.send({
-						name,
+						name: newName,
 						description: 'default-category',
 						ctx,
 					});
 
-				// Assert
-				expect(response.statusCode).toBe(201);
-				expect(response.body).toEqual({
-					...response.body,
-					data: {
-						id: expect.any(Number),
-					},
-				});
-			});
-
-			it('should create category with parent and return id', async () => {
-				// Arrange
-				const seedBuilder = await CategorySeedBuilder.create(dbConnection);
-				seedBuilder.withCategory({
-					name,
-					description: 'default-category',
-					ctx,
-				});
-				await seedBuilder.build();
-				const categoryInsertedId = seedBuilder.categoryDao.id;
-
-				const newCategoryName = 'test category2';
-				const newCtx = 'users';
-
-				// Act
-				const response = await request(app.getHttpServer())
-					.post(`/caregories`)
-					.set(...cookies)
-					.set('Content-Type', 'application/json')
-					.send({
-						name: newCategoryName,
-						description: 'default-category2',
-						ctx: newCtx,
-						parentId: categoryInsertedId,
-					});
-
-				const insertedCategory = await dbConnection
+				const updatedCategory = await dbConnection
 					.selectFrom(TableNames.CATEGORIES)
 					.selectAll()
-					.where('name', '=', newCategoryName)
-					.where('ctx', '=', newCtx)
+					.where('id', '=', categoryInsertedId)
 					.executeTakeFirst();
 
 				// Assert
-				expect(response.statusCode).toBe(201);
-				expect(insertedCategory!.parentId).toBe(categoryInsertedId);
+				expect(response.statusCode).toBe(200);
+				expect(updatedCategory!.name).toBe(newName);
+			});
+
+			it('should update category without parentId', async () => {
+				// Arrange
+				const name2 = 'test category 2';
+				const seedBuilder2 = await CategorySeedBuilder.create(dbConnection);
+				seedBuilder2.withCategory({
+					name: name2,
+					description: 'default-category',
+					ctx,
+				});
+				await seedBuilder2.build();
+				const categoryInsertedId2 = seedBuilder2.categoryDao.id;
+
+				const newName = 'new-name';
+
+				// Act
+				const response = await request(app.getHttpServer())
+					.patch(`/categories/${categoryInsertedId2}`)
+					.set(...cookies)
+					.set('Content-Type', 'application/json')
+					.send({
+						name: newName,
+						description: 'default-category',
+						ctx,
+						parentId: categoryInsertedId,
+					});
+
+				const updatedCategory = await dbConnection
+					.selectFrom(TableNames.CATEGORIES)
+					.selectAll()
+					.where('id', '=', categoryInsertedId2)
+					.executeTakeFirst();
+
+				// Assert
+				expect(response.statusCode).toBe(200);
+				expect(updatedCategory!.parentId).toBe(categoryInsertedId);
 			});
 		});
 
@@ -119,18 +131,20 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
 			it('should throw 409 if category with provided name and ctx exists', async () => {
 				// Arrange
 				const name = 'test category';
+				const name2 = 'test category2';
 				const ctx = 'users';
 				const seedBuilder = await CategorySeedBuilder.create(dbConnection);
 				seedBuilder.withCategory({
-					name,
+					name: name2,
 					description: 'default-category',
 					ctx,
 				});
 				await seedBuilder.build();
+				const categoryInsertedId2 = seedBuilder.categoryDao.id;
 
 				// Act
 				const response = await request(app.getHttpServer())
-					.post(`/caregories`)
+					.patch(`/categories/${categoryInsertedId2}`)
 					.set(...cookies)
 					.set('Content-Type', 'application/json')
 					.send({
@@ -141,14 +155,11 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
 
 				// Assert
 				expect(response.statusCode).toBe(409);
-				expect(response.body.data).toEqual({
-					error: expect.any(String),
-				});
 			});
 
 			it('should throw error if incorrect parentId', async () => {
 				// Arrange
-				const name = 'test category';
+				const name = 'test category2';
 				const ctx = 'users';
 
 				const seedBuilder = await CategorySeedBuilder.create(dbConnection);
@@ -158,22 +169,22 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
 					ctx,
 				});
 				await seedBuilder.build();
-				const categoryInsertedId = seedBuilder.categoryDao.id + 1;
+				const categoryInsertedId2 = seedBuilder.categoryDao.id;
 
 				// Act
 				const response = await request(app.getHttpServer())
-					.post(`/caregories`)
+					.patch(`/categories/${categoryInsertedId2}`)
 					.set(...cookies)
 					.set('Content-Type', 'application/json')
 					.send({
-						name: 'new-name',
+						name,
 						description: 'default-category',
 						ctx,
-						parentId: categoryInsertedId,
+						parentId: categoryInsertedId + 5,
 					});
 
 				// Assert
-				expect(response.statusCode).toBe(400);
+				expect(response.statusCode).toBe(409);
 				expect(response.body).toMatchObject({
 					status: 'fail',
 					data: {

@@ -6,11 +6,13 @@ import {
 	DomainErrorCode,
 	FrameworkError,
 	FrameworkErrorCode,
+	PostgresErrorCode,
 	UserErrorCode,
 } from '@libs/common';
 import { ApiResponseBase, ApiResponseStatusJsendEnum, createJsendResponse } from '@libs/common/api';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { isNumberString } from 'class-validator';
 import { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -62,6 +64,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
 		if (error instanceof ApplicationError) {
 			return this.mapApplicationCodeToHttpStatusCode(error.code);
+		}
+
+		if (error instanceof FrameworkError && isNumberString(error.code)) {
+			return this.mapPostgreskCodeToHttpStatusCode(error.code!);
 		}
 
 		if (error instanceof FrameworkError) {
@@ -155,6 +161,36 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 				return 403;
 			default:
 				return 500;
+		}
+	}
+
+	private mapPostgreskCodeToHttpStatusCode(code: string) {
+		switch (code) {
+			case PostgresErrorCode.UniqueViolation:
+			case PostgresErrorCode.ForeignKeyViolation:
+				return 409; // Conflict
+			case PostgresErrorCode.NotNullViolation:
+			case PostgresErrorCode.CheckViolation:
+			case PostgresErrorCode.InvalidTextRepresentation:
+			case PostgresErrorCode.NumericValueOutOfRange:
+			case PostgresErrorCode.DivisionByZero:
+			case PostgresErrorCode.DataException:
+			case PostgresErrorCode.IntegrityConstraintViolation:
+			case PostgresErrorCode.SyntaxErrorOrAccessRuleViolation:
+			case PostgresErrorCode.UndefinedTable:
+			case PostgresErrorCode.UndefinedColumn:
+				return 400; // Bad Request
+			case PostgresErrorCode.InsufficientResources:
+			case PostgresErrorCode.DiskFull:
+			case PostgresErrorCode.OutOfMemory:
+			case PostgresErrorCode.TooManyConnections:
+			case PostgresErrorCode.ConfigurationLimitExceeded:
+			case PostgresErrorCode.OperatorIntervention:
+			case PostgresErrorCode.SystemError:
+			case PostgresErrorCode.IoError:
+				return 500; // Internal Server Error
+			default:
+				return 500; // Internal Server Error
 		}
 	}
 

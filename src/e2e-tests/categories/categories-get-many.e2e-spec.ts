@@ -1,39 +1,34 @@
-import { HashService } from '@app/contexts/auth';
-import { AppRoutes } from '@app/core';
 import { TestingE2EFunctions } from '@app/database/kysley';
-import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
+import { TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
 import { AppModule } from '../../app.module';
-import { dialect, kyselyPlugins } from '../../database';
+import { TableNames, dialect, kyselyPlugins } from '../../database';
 import { getCookies, loginUser } from '../builders/auth-user';
+import { CategorySeedBuilder } from '../builders/csategory-builder';
 
 type IDdbDaos = any;
 
-describe('UsersControllerV1 -> getMany (e2e)', () => {
+describe('CategoriesControllerV1 -> getMany (e2e)', () => {
 	const dbConnection = new Kysely<IDdbDaos>({
 		dialect,
 		plugins: kyselyPlugins,
 	});
 	const dbUtils = new TestingE2EFunctions(dbConnection);
 	let app: INestApplication;
-	let authenticationServer: AuthenticationServer;
-	let hashService: HashService;
+
+	const tablesInvolved = [TableNames.CATEGORIES];
 
 	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
 			imports: [AppModule, TestLoggerModule.forRoot()],
-			providers: [HashService],
 		}).compile();
 
 		app = moduleFixture.createNestApplication();
 		await app.init();
-
-		authenticationServer = new AuthenticationServer();
-		hashService = app.get(HashService);
 	});
 
 	afterAll(async () => {
@@ -42,43 +37,66 @@ describe('UsersControllerV1 -> getMany (e2e)', () => {
 	});
 
 	let cookies: [string, string];
+	let parentId: number;
 
 	beforeEach(async () => {
 		cookies = getCookies();
 
 		await dbConnection.transaction().execute(async (trx) => {
+			await dbUtils.truncateTables(tablesInvolved, trx);
 			await loginUser(trx);
+
+			const seedBuilder = await CategorySeedBuilder.create(trx);
+			seedBuilder.withCategory({
+				name,
+				description: 'default-category',
+				ctx,
+			});
+			await seedBuilder.build();
+
+			parentId = seedBuilder.categoryDao.id;
+
+			seedBuilder.withCategory({
+				name: 'new-name',
+				ctx,
+				parentId,
+			});
+			await seedBuilder.build();
 		});
 	});
 
-	describe('/users (GET) V1', () => {
+	const ctx = 'users';
+	const name = 'test category';
+
+	describe('/categories (GET) V1', () => {
 		describe('SUCCESS', () => {
-			it('should return a list of users with at least one record', async () => {
+			it('should return array of categories', async () => {
 				// Arrange
 
 				// Act
 				const response = await request(app.getHttpServer())
-					.get(AppRoutes.USERS.v1.getUsers)
+					.get(`/categories`)
 					.set(...cookies)
-					.set('Content-Type', 'application/json')
-					.send();
+					.set('Content-Type', 'application/json');
+
+				// Assert
+				expect(response.statusCode).toBe(200);
+				expect(response.body.data.length).toBe(2);
+			});
+
+			it('should return array of categories filtered by parentId', async () => {
+				// Arrange
+
+				// Act
+				const response = await request(app.getHttpServer())
+					.get(`/categories?_filter[parentId]=${parentId}`)
+					.set(...cookies)
+					.set('Content-Type', 'application/json');
 
 				// Assert
 				expect(response.statusCode).toBe(200);
 				expect(response.body.data.length).toBe(1);
-			});
-
-			it('should return an empty list of users if not found any', async () => {
-				// Act
-				const response = await request(app.getHttpServer())
-					.get(`${AppRoutes.USERS.v1.getUsers}?_filter[email]=t@test.com`)
-					.set(...cookies)
-					.set('Content-Type', 'application/json')
-					.send();
-
-				// Assert
-				expect(response.statusCode).toBe(200);
-				expect(response.body.data.length).toBe(0);
+				expect(response.body.data[0].parentId).toBe(parentId);
 			});
 		});
 	});

@@ -8,7 +8,6 @@ export class CategoryGlobalDto {
 		example: systemVariables.dtos.categories.parentId.example1,
 	})
 	@Type(() => Number)
-	@IsPositive()
 	@Min(1)
 	@Max(10000)
 	@IsNumber({ allowInfinity: false, allowNaN: false, maxDecimalPlaces: 0 })
@@ -47,10 +46,10 @@ export class CategoryGlobalDto {
 		example: systemVariables.dtos.categories.parentId.example1,
 		nullable: true,
 	})
-	@IsOptional()
 	@IsPositive()
-	@Min(1)
-	@Max(10000)
+	@Type(() => Number)
+	@Min(systemVariables.dtos.categories.parentId.MIN_VALUE)
+	@Max(systemVariables.dtos.categories.parentId.MAX_VALUE)
 	@IsNumber({ allowInfinity: false, allowNaN: false, maxDecimalPlaces: 0 })
 	parentId: number | null;
 }

@@ -11,7 +11,8 @@ import { AppRoutes } from '@app/core';
 import { UnauthorizedError } from '@libs/common';
 import { AppModule } from '../../app.module';
 import { TableNames, dialect, kyselyPlugins } from '../../database';
-import { UserSeedBuilder } from '../builders/builder';
+import { getCookies, getRefreshToken } from '../builders/auth-user';
+import { UserSeedBuilder } from '../builders/user-builder';
 
 type IDdbDaos = any;
 
@@ -45,22 +46,17 @@ describe('AuthJwtControllerV1 -> refresh (e2e)', () => {
 		await app.close();
 	});
 
-	let cookieTokens: [string, string];
 	let cookies: [string, string];
 
 	beforeEach(async () => {
-		cookieTokens = [authenticationServer.generateAccessToken(), authenticationServer.generateRefreshToken()];
-		cookies = authenticationServer.getTokensAsCookie({
-			accessToken: cookieTokens[0],
-			refreshToken: cookieTokens[1],
-		});
+		cookies = getCookies();
 
 		await dbConnection.transaction().execute(async (trx) => {
 			await dbUtils.truncateTables(tablesInvolved, trx);
 
 			const seedBuilder = await UserSeedBuilder.create(trx);
 			seedBuilder.withUser().withAuthUser({
-				hashedRt: await hashService.hashData(cookieTokens[1]),
+				hashedRt: await hashService.hashData(getRefreshToken()),
 			});
 			await seedBuilder.build();
 		});

@@ -9,7 +9,8 @@ import { UpdateUserDto } from '@app/api-gateway/auth/http/user-dtos';
 import { HashService } from '@app/contexts/auth';
 import { AppModule } from '../../app.module';
 import { TableNames, dialect, kyselyPlugins } from '../../database';
-import { UserSeedBuilder } from '../builders/builder';
+import { getCookies, loginUser } from '../builders/auth-user';
+import { UserSeedBuilder } from '../builders/user-builder';
 // import { UpdateUserDto } from '@app/api-gateway/auth';
 
 type IDdbDaos = any;
@@ -44,27 +45,16 @@ describe('UsersControllerV1 -> update (e2e)', () => {
 		await app.close();
 	});
 
-	let cookieTokens: [string, string];
 	let cookies: [string, string];
+	let builder: UserSeedBuilder;
 
 	beforeEach(async () => {
-		cookieTokens = [authenticationServer.generateAccessToken(), authenticationServer.generateRefreshToken()];
-		cookies = authenticationServer.getTokensAsCookie({
-			accessToken: cookieTokens[0],
-			refreshToken: cookieTokens[1],
-		});
+		cookies = getCookies();
 
 		await dbConnection.transaction().execute(async (trx) => {
-			await dbUtils.truncateTables(tablesInvolved, trx);
-
-			const seedBuilder = await UserSeedBuilder.create(trx);
-			seedBuilder.withUser().withAuthUser().withProfile();
-
-			builder = await seedBuilder.build();
+			builder = await loginUser(trx);
 		});
 	});
-
-	let builder: UserSeedBuilder;
 
 	describe('/users/:id (PATCH) V1', () => {
 		describe('SUCCESS', () => {

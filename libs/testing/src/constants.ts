@@ -1,4 +1,4 @@
-import { Address, CountryCode } from '@libs/common';
+import { Address, AppContext, CountryCode } from '@libs/common';
 
 const defaultSecret: string = 'secret';
 const defaultRefreshSecret: string = 'refreshSecret';
@@ -26,6 +26,13 @@ const defaultPhoneNumber = '123456789';
 const defaultProfilePicture = 'test';
 const defaultRodoAcceptanceDate = new Date('2024-01-01');
 
+// Category
+const defaultCategoryName = 'Test category';
+const defaultCategoryDescription = 'Test description';
+
+// Context
+const defaultCtx = AppContext.CATEGORIES;
+
 export const testingDefaults = {
 	userId: defaultUserId,
 	refreshSecret: defaultRefreshSecret,
@@ -42,10 +49,15 @@ export const testingDefaults = {
 		bio: defaultBio,
 		dateOfBirth: defaultDateOfBirth,
 		gender: defaultGender,
-		// hobbies: defaultHobbies,
-		// languages: defaultLanguages,
+		hobbies: defaultHobbies,
+		languages: defaultLanguages,
 		phoneNumber: defaultPhoneNumber,
 		profilePicture: defaultProfilePicture,
 		rodoAcceptanceDate: defaultRodoAcceptanceDate,
+	},
+	category: {
+		name: defaultCategoryName,
+		description: defaultCategoryDescription,
+		ctx: defaultCtx,
 	},
 };

@@ -9,8 +9,8 @@ const categoriesRoot = `/categories`;
 const CategoryRoutes: { root: string; v1: ICategoriesRoutes } = {
 	root: categoriesRoot,
 	v1: {
-		create: `${categoriesRoot}/`,
-		getCategories: `${categoriesRoot}/`,
+		create: `${categoriesRoot}`,
+		getCategories: `${categoriesRoot}`,
 		update: `${categoriesRoot}/:id`,
 		delete: `${categoriesRoot}/:id`,
 	},
@@ -26,7 +26,7 @@ const usersRoot = `/users`;
 const UserRoutes: { root: string; v1: IUsersRoutes } = {
 	root: usersRoot,
 	v1: {
-		getUsers: `${usersRoot}/`,
+		getUsers: `${usersRoot}`,
 		getUser: `${usersRoot}/:id`,
 		update: `${usersRoot}/:id`,
 	},

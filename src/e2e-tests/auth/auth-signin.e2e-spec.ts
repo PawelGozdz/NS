@@ -10,7 +10,7 @@ import { AppRoutes } from '@app/core';
 import { UnauthorizedError } from '@libs/common';
 import { AppModule } from '../../app.module';
 import { TableNames, dialect, kyselyPlugins } from '../../database';
-import { UserSeedBuilder } from '../builders/builder';
+import { UserSeedBuilder } from '../builders/user-builder';
 
 type IDdbDaos = any;
 
