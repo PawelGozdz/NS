@@ -1,4 +1,4 @@
-import config from '@config/app';
+import config from '@app/config/app';
 import { CqrsModule } from '@libs/cqrs';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';

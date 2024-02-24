@@ -1,5 +1,4 @@
-import { ContextModule } from '@app/contexts';
-import { AuthenticationModule } from '@app/contexts/auth';
+import { AuthenticationModule, ContextModule } from '@app/contexts';
 import { GlobalExceptionFilter } from '@app/core';
 import { AccessTokenGuard, JsendTransformSuccessInterceptor, LoggingInterceptor } from '@libs/common';
 import { CqrsModule } from '@libs/cqrs';

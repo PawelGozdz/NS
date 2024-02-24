@@ -1,5 +1,4 @@
 import { Kysely, Transaction, sql } from 'kysely';
-
 import { TableNames } from '../table-names';
 
 export class TestingE2EFunctions {

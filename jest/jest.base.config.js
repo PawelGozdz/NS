@@ -8,8 +8,6 @@ module.exports = {
   moduleNameMapper: {
     "@app/(.*)": "<rootDir>/src/$1",
     "@app": '<rootDir>/src',
-    "@config/(.*)": "<rootDir>/config/$1",
-    "@config": '<rootDir>/config',
     '@libs/common/(.*)': '<rootDir>/libs/common/src/$1',
     '@libs/common': '<rootDir>/libs/common/src',
     '@libs/ddd/(.*)': '<rootDir>/libs/ddd/src/$1',

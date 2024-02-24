@@ -1,4 +1,4 @@
-import { AuthUserModel, UserModel, UserProfileModel } from '@app/contexts/auth';
+import { AuthUserModel, UserModel, UserProfileModel } from '@app/contexts';
 import { TableNames, dialect, kyselyPlugins } from '@app/core';
 import { Kysely } from 'kysely';
 

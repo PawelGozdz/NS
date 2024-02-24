@@ -1,4 +1,4 @@
-import config from '@config/app';
+import config from '@app/config/app';
 import { EntityId, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';

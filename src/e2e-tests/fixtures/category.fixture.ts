@@ -1,4 +1,4 @@
-import { CategoryModel } from '@app/contexts/features';
+import { CategoryModel } from '@app/contexts';
 import { testingDefaults } from '@libs/testing';
 import _ from 'lodash';
 

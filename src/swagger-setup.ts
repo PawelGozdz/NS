@@ -1,4 +1,4 @@
-import config, { globalPrefix, globalVersioning } from '@config/app';
+import config, { globalPrefix, globalVersioning } from '@app/config/app';
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 

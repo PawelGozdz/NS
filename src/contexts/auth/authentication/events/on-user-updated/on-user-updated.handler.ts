@@ -1,7 +1,7 @@
-import { UserUpdatedEvent } from '@app/contexts/auth/users';
 import { EventsHandler, IEventHandler } from '@libs/cqrs';
 import { PinoLogger } from 'nestjs-pino';
 
+import { UserUpdatedEvent } from '../../../users';
 import { IAuthUsersRepository } from '../../repositories';
 
 @EventsHandler(UserUpdatedEvent)

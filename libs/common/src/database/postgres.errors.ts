@@ -1,4 +1,4 @@
-import { FrameworkError, FrameworkErrorOptions } from '../errors/framework.errors';
+import { FrameworkError, FrameworkErrorOptions } from '../errors';
 import { PostgresErrorCode } from './postgres-error.enum';
 
 export class UniqueViolationError extends FrameworkError {

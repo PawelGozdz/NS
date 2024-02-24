@@ -15,22 +15,29 @@ module.exports = {
         "dist"
       ]
     },
+    maxDepth: 16,
 
-    includeOnly: "^src/[^/]+",
+    // includeOnly: ["^libs/[^/]+", "^src/[^/]+"],
+    // includeOnly: ["^src/[^/]+"],
     // focus: {
-    //   "path": "^src/[^/]+",
+    //   "path": "^src/api-gateway/[^/]+",
+    // "path": "^src/api-gateway/auth/[^/]+",
     // "depth": 3
     // },
-    // reaches: "^src/core/exception-filters/exception.filter.ts+",
+    reaches: "^src/contexts/[^/]+",
+    // reaches: "^src/api-gateway/[^/]+",
+    // reaches: "^libs/common/src/decorators/[^/]+",
+    // prefix: `vscode://file/${process.cwd()}/`,
+    tsPreCompilationDeps: true,
 
-    tsPreCompilationDeps: false,
-
-    tsConfig: {
-      fileName: "./tsconfig.json",
-    },
+    tsConfig: {},
+    // tsConfig: {
+    //   fileName: "./tsconfig.json",
+    // },
 
     exclude: {
-      path: "^(e2e-tests|node_modules)"
+      path: "^(src/e2e-tests|node_modules+)"
+      // path: "^(src/e2e-tests|node_modules|src/contexts/categories/[^/]+)"
     },
 
     /* How to resolve external modules - use "yarn-pnp" if you're using yarn's Plug'n'Play.
@@ -71,22 +78,56 @@ module.exports = {
     //   }
     // }
     "reporterOptions": {
-      "dot": {
-        "theme": {
-          "graph": {
-            "splines": "ortho"
-          },
-          "modules": [
-            {
-              "criteria": { "matchesHighlight": true },
-              "attributes": {
-                "fillcolor": "yellow",
-                "penwidth": 2
-              }
-            },
-          ]
-        }
+      "archi": {
+        // "theme": {
+        //   "graph": {
+        //     "splines": "ortho"
+        //   },
+        //   "modules": [
+        //     {
+        //       "criteria": { "matchesHighlight": true },
+        //       "attributes": {
+        //         "fillcolor": "blue",
+        //         "penwidth": 2
+        //       }
+        //     },
+        //   ]
+        // }
+        collapsePattern: "^(node_modules/[^/]+)",
+        showMetrics: true,
+        // theme: {
+        //   modules: [
+        //     {
+        //       criteria: { collapsed: true },
+        //       attributes: { shape: "tab" }
+        //     }
+        //   ]
+        // }
       }
     }
+    // "reporterOptions": {
+    //   "dot": {
+    //     "theme": {
+    //       "graph": {
+    //         "splines": "ortho"
+    //       },
+    //       "modules": [
+    //         {
+    //           "criteria": { "matchesReaches": true },
+    //           "attributes": {
+    //             "fillcolor": "lime"
+    //           }
+    //         },
+    //         {
+    //           "criteria": { "matchesReaches": false },
+    //           "attributes": {
+    //             "fillcolor": "lightgray",
+    //             "fontcolor": "gray"
+    //           }
+    //         }
+    //       ]
+    //     }
+    //   }
+    // }
   },
 };

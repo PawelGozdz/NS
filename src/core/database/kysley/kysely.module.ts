@@ -1,4 +1,4 @@
-import config from '@config/app';
+import config from '@app/config';
 import { Global, Module } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -12,7 +12,7 @@ const providers = [
 				dialect,
 				log(event) {
 					logger.info('Query:', event.query.sql);
-					if (config.DATABASE_LOGGING && event.level === config?.DATABASE_LOGGING_LEVEL) {
+					if (config.app.DATABASE_LOGGING && event.level === config.app?.DATABASE_LOGGING_LEVEL) {
 						logger.info('Parameters:', event.query.parameters);
 					}
 				},

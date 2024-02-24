@@ -1,4 +1,4 @@
-import { UserUpdatedEvent } from '@app/contexts/auth/users';
+import { UserUpdatedEvent } from '@app/contexts';
 import { createMock } from '@golevelup/ts-jest';
 import { EntityId } from '@libs/common';
 import { TestLoggerModule } from '@libs/testing';

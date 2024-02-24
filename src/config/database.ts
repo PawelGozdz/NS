@@ -1,4 +1,4 @@
-import appConfig from '@config/app';
+import appConfig from './app';
 
 const { DATABASE_NAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USER, DATABASE_HOST, DATABASE_LOGGING, DATABASE_SCHEMA } = appConfig;
 
@@ -12,7 +12,7 @@ export interface IDatabaseOptions {
 	charset: string;
 }
 
-export default {
+export const dbConfig = {
 	connection: {
 		host: DATABASE_HOST,
 		port: DATABASE_PORT,

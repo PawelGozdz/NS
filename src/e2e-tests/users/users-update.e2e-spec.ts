@@ -1,5 +1,5 @@
 import { UpdateUserDto } from '@app/api-gateway/auth';
-import { HashService } from '@app/contexts/auth';
+import { HashService } from '@app/contexts';
 import { TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';

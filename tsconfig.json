@@ -29,11 +29,10 @@
 			"@libs/ddd/*": ["libs/ddd/src/*"],
 			"@libs/cqrs": ["libs/cqrs/src"],
 			"@libs/cqrs/*": ["libs/cqrs/src/*"],
-			"@config/*": ["config/*"],
 			"@libs/testing": ["libs/testing/src"],
 			"@libs/testing/*": ["libs/testing/src/*"],
 			"@libs/common": ["libs/common/src"],
-			"@libs/common/*": ["libs/common/src/*"]
-		}
-	}
+			"@libs/common/*": ["libs/common/src/*"],
+		},
+	},
 }

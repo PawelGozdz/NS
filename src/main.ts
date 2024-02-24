@@ -1,9 +1,8 @@
+import config, { globalPrefix, globalVersioning } from '@app/config/app';
 import { INestApplication, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import { Logger } from 'nestjs-pino';
-
-import config, { globalPrefix, globalVersioning } from '@config/app';
 
 import { ApiGatewayModule } from './api-gateway';
 import { AppModule } from './app.module';

@@ -1,6 +1,6 @@
-import { UserAlreadyExistsError } from '@app/contexts/auth';
+import { UserAlreadyExistsError } from '@app/contexts';
 import { AppRoutes, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { ApiResponseStatusJsendEnum } from '@libs/common/api';
+import { ApiResponseStatusJsendEnum } from '@libs/common';
 import { AuthenticationServer, TestLoggerModule, testingDefaults } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

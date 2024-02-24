@@ -1,4 +1,4 @@
-import { UserModel, UserProfileModel } from '@app/contexts/auth';
+import { UserModel, UserProfileModel } from '@app/contexts';
 import { AppUtils } from '@libs/common';
 import { testingDefaults } from '@libs/testing';
 import _ from 'lodash';

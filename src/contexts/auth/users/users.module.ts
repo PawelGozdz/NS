@@ -5,9 +5,12 @@ import { Module } from '@nestjs/common';
 import { CreateUserHandler, GetUserByEmailHandler, GetUserByIdHandler, GetUsersHandler, UpdateUserHandler } from './application';
 import { IUsersCommandRepository, IUsersQueryRepository } from './domain';
 import { UsersCommandRepository, UsersQueryRepository } from './infrastructure';
-import { OnUGetUserByEmailEventHandler, OnUpdateUserEventHandler } from './integration-handlers';
-import { OnCreateUserEventHandler } from './integration-handlers/create-user.integration-handler';
-import { OnUGetUserByIdEventHandler } from './integration-handlers/get-user-by-id.integration-handler';
+import {
+	OnCreateUserEventHandler,
+	OnUGetUserByEmailEventHandler,
+	OnUGetUserByIdEventHandler,
+	OnUpdateUserEventHandler,
+} from './integration-handlers';
 
 const providers = [
 	{

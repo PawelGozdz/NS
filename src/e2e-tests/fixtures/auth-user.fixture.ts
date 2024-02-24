@@ -1,6 +1,5 @@
-import { AuthUserModel } from '@app/contexts/auth';
-import { dayjs } from '@libs/common';
-import { AppUtils } from '@libs/common/utils/app-utils';
+import { AuthUserModel } from '@app/contexts';
+import { AppUtils, dayjs } from '@libs/common';
 import { testingDefaults } from '@libs/testing';
 import _ from 'lodash';
 

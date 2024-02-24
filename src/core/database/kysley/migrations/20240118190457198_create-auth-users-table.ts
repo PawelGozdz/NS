@@ -1,7 +1,7 @@
 // eslint-disable @typescript-eslint/no-explicit-any
-
-import { TableNames } from '@app/core';
 import { Kysely, sql } from 'kysely';
+
+import { TableNames } from '../../table-names';
 
 const tableName = TableNames.AUTH_USERS;
 

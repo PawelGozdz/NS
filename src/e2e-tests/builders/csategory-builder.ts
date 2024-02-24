@@ -1,4 +1,4 @@
-import { CategoryModel } from '@app/contexts/features';
+import { CategoryModel } from '@app/contexts';
 import { TableNames, dialect, kyselyPlugins } from '@app/core';
 import { Kysely } from 'kysely';
 

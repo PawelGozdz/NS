@@ -1,7 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { AuthService, CookiesService } from '@app/contexts/auth/authentication/services';
+import { AuthService, CookiesService } from '@app/contexts';
 
 @Controller('user')
 export class UserController {

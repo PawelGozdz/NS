@@ -12,7 +12,7 @@ export enum Environment {
 const envFileName = process.env.NODE_ENV === Environment.TEST ? '.env.test' : '.env';
 
 dotenv.config({
-	path: join(__dirname, '../', envFileName),
+	path: join(process.cwd(), envFileName),
 });
 
 export const globalVersioning = '1';

@@ -1,9 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
-import { PinoLogger } from 'nestjs-pino';
-
-import { AuthService, AuthUser, AuthUsersService, CookiesService, ITokens, SignInDto, SignUpDto } from '@app/contexts/auth';
+import { AuthService, AuthUser, AuthUsersService, CookiesService, ITokens, SignInDto, SignUpDto } from '@app/contexts';
 import { AppRoutes } from '@app/core';
 import {
 	ApiJsendResponse,
@@ -16,6 +11,10 @@ import {
 	UnauthorizedError,
 	UnauthorizedErrorResponse,
 } from '@libs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
+import { PinoLogger } from 'nestjs-pino';
 
 import { RefreshTokensResponseDto, SignInResponseDto, SignInValidationErrorDto, SignUpResponseDto, SignUpValidationErrorDto } from './auth-dtos';
 

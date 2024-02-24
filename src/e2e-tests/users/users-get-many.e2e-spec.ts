@@ -1,5 +1,5 @@
 import { AppModule } from '@app/app.module';
-import { HashService } from '@app/contexts/auth';
+import { HashService } from '@app/contexts';
 import { AppRoutes, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';

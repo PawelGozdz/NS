@@ -1,4 +1,4 @@
-import config from '@config/app';
+import config from '@app/config/app';
 import { ConflictError, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';

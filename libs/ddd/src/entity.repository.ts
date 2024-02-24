@@ -1,10 +1,11 @@
-import { TableNames } from '@app/core';
 import { ConflictError } from '@libs/common';
 import { EventBus, IEvent } from '@libs/cqrs';
 import { AggregateRoot, BaseModel } from '@libs/ddd';
 import { Kysely, Transaction } from 'kysely';
 
 export type EventHandler = <T extends unknown>(event: IEvent, trx: Transaction<T>) => Promise<void> | void;
+
+const eventLogTableName = 'eventLog';
 
 export abstract class EntityRepository {
 	protected constructor(
@@ -43,7 +44,7 @@ export abstract class EntityRepository {
 				}
 
 				await Promise.all([
-					trx.insertInto(TableNames.EVENT_LOG).values({ eventName: event.constructor.name, data: event }).execute(),
+					trx.insertInto(eventLogTableName).values({ eventName: event.constructor.name, data: event }).execute(),
 					handler.call(this, event, trx),
 				]);
 			}

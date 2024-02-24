@@ -2,7 +2,6 @@ import { TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/co
 import { AuthenticationServer } from '@libs/testing';
 import { Kysely, Transaction } from 'kysely';
 
-
 import { UserSeedBuilder } from './user-builder';
 
 const tablesInvolved = [TableNames.USERS, TableNames.AUTH_USERS, TableNames.USER_PROFILES];

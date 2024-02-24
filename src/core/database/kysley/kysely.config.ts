@@ -1,4 +1,4 @@
-import config from '@config/database';
+import config from '@app/config';
 import { IDatabaseModels } from '@libs/common';
 import { ConfigurableModuleBuilder, Injectable } from '@nestjs/common';
 import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely';
@@ -11,11 +11,11 @@ export class Database extends Kysely<IDatabaseModels> {}
 
 export const dialect = new PostgresDialect({
 	pool: new Pool({
-		host: config.connection.host,
-		port: config.connection.port,
-		user: config.connection.user,
-		password: config.connection.password,
-		database: config.connection.database,
+		host: config.dbConfig.connection.host,
+		port: config.dbConfig.connection.port,
+		user: config.dbConfig.connection.user,
+		password: config.dbConfig.connection.password,
+		database: config.dbConfig.connection.database,
 	}),
 });
 
