@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 import { PinoLogger } from 'nestjs-pino';
+
 import { CategoryInfo, ICategoriesQueryRepository } from '../../domain';
 import { GetManyCategoriesHandler } from './get-many-categories.handler';
 import { GetManyCategoriesQuery } from './get-many-categories.query';

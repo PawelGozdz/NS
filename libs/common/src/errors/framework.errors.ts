@@ -1,4 +1,5 @@
 import { ErrorOptions, FrameworkErrorCode } from '@libs/common';
+
 import { BaseError } from './base.error';
 
 export type FrameworkErrorOptions = ErrorOptions & {
@@ -9,10 +10,15 @@ export type FrameworkErrorOptions = ErrorOptions & {
 
 export class FrameworkError extends BaseError implements FrameworkErrorOptions {
 	statusCode: number;
+
 	module?: string;
+
 	code?: FrameworkErrorCode;
+
 	data?: any;
+
 	timestamp?: Date;
+
 	error?: Error;
 
 	constructor(statusCode: number, message: string, options: FrameworkErrorOptions | Error = {}) {
@@ -39,6 +45,7 @@ export class FrameworkError extends BaseError implements FrameworkErrorOptions {
 
 export class NotFoundError extends FrameworkError {
 	static statusCode: number = 404;
+
 	static message: string = 'Not Found';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -51,6 +58,7 @@ export class NotFoundError extends FrameworkError {
 
 export class UnauthorizedError extends FrameworkError {
 	static statusCode: number = 401;
+
 	static message: string = 'Unauthorized';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -63,6 +71,7 @@ export class UnauthorizedError extends FrameworkError {
 
 export class ForbiddenError extends FrameworkError {
 	static statusCode: number = 403;
+
 	static message: string = 'Forbidden';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -75,6 +84,7 @@ export class ForbiddenError extends FrameworkError {
 
 export class ConflictError extends FrameworkError {
 	static statusCode: number = 409;
+
 	static message: string = 'Conflict';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -87,6 +97,7 @@ export class ConflictError extends FrameworkError {
 
 export class BadRequestError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'BadRequest';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -99,6 +110,7 @@ export class BadRequestError extends FrameworkError {
 
 export class InternalServerError extends FrameworkError {
 	static statusCode: number = 500;
+
 	static message: string = 'InternalServer';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {

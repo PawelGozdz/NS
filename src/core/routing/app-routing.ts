@@ -5,7 +5,7 @@ interface ICategoriesRoutes {
 	getCategories: string;
 }
 
-const categoriesRoot = `/categories`;
+const categoriesRoot = '/categories';
 const CategoryRoutes: { root: string; v1: ICategoriesRoutes } = {
 	root: categoriesRoot,
 	v1: {
@@ -22,7 +22,7 @@ interface IUsersRoutes {
 	update: string;
 }
 
-const usersRoot = `/users`;
+const usersRoot = '/users';
 const UserRoutes: { root: string; v1: IUsersRoutes } = {
 	root: usersRoot,
 	v1: {
@@ -39,7 +39,7 @@ interface IAuthRoutes {
 	refresh: string;
 }
 
-const authRoot = `auth`;
+const authRoot = 'auth';
 const AuthRoutes: { root: string; v1: IAuthRoutes } = {
 	root: authRoot,
 	v1: {

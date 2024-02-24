@@ -1,9 +1,9 @@
-import { Database, TableNames } from '@app/database';
+import { Database, TableNames } from '@app/core';
 import { throwErrorBasedOnPostgresErrorCode } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 
-import { Category, ICategoriesCommandRepository, ICategoryCreateData, ICategoryUpdateData } from '../../../domain';
-import { CategoryModel } from '../../models';
+import { Category, ICategoriesCommandRepository, ICategoryCreateData, ICategoryUpdateData } from '../../domain';
+import { CategoryModel } from '../models';
 
 @Injectable()
 export class CategoriesCommandRepository implements ICategoriesCommandRepository {

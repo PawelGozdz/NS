@@ -1,4 +1,3 @@
-import { GracefulShutdownService, OpenTelemetryModuleModule, OutboxModule } from '@app/core';
 import config from '@config/app';
 import loggerOptions from '@config/pino-logger';
 import { CqrsModule } from '@libs/cqrs';
@@ -6,11 +5,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
-import { ApiGatewayModule } from './api-gateway';
 
+import { ApiGatewayModule } from './api-gateway';
 import { ContextModule } from './contexts';
-import { EnvModule } from './core/modules/environment/environmental.module';
-import { DatabaseModule } from './database/kysley';
+import { DatabaseModule, EnvModule, GracefulShutdownService, OpenTelemetryModuleModule, OutboxModule } from './core';
 
 const providers = [GracefulShutdownService];
 

@@ -1,12 +1,10 @@
+import { AppModule } from '@app/app.module';
+import { TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-
-import { TestingE2EFunctions } from '@app/database/kysley';
 import { Kysely } from 'kysely';
 import request from 'supertest';
-import { AppModule } from '../app.module';
-import { dialect, kyselyPlugins } from '../database';
 
 type IDdbDaos = any;
 
@@ -52,7 +50,7 @@ describe('Template (e2e)', () => {
 		// Act
 		const response = await request(app.getHttpServer())
 			.get('/user')
-			.set(...['Authorization', `Bearer ZYX`])
+			.set(...['Authorization', 'Bearer ZYX'])
 			.set('Content-Type', 'application/json');
 
 		// Assert

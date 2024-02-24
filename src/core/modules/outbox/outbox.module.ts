@@ -1,5 +1,6 @@
-import { DatabaseModule } from '@app/database/kysley';
+import { DatabaseModule } from '@app/core/';
 import { Global, Module } from '@nestjs/common';
+
 import { OutboxKyselyRepository } from './outbox-kysely.repository';
 import { IOutboxRepository } from './outbox-repository.interface';
 

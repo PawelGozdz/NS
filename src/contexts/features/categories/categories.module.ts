@@ -1,4 +1,4 @@
-import { DatabaseModule } from '@app/database/kysley';
+import { DatabaseModule } from '@app/core';
 import { CqrsModule } from '@libs/cqrs';
 import { Module } from '@nestjs/common';
 

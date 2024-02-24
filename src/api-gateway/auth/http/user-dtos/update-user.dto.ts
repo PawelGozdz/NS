@@ -1,6 +1,7 @@
 import { GlobalDto } from '@libs/common';
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { IsOptional, ValidateIf, ValidateNested } from 'class-validator';
+
 import { ProfileDto } from './profile.dto';
 
 class PartialUpdateProfileDto extends PartialType(ProfileDto) {}

@@ -1,11 +1,16 @@
 import { ApplicationErrorCode, ErrorOptions } from '@libs/common';
+
 import { BaseError } from './base.error';
 
 export class ApplicationError extends BaseError implements ApplicationErrorOptions {
 	module?: string;
+
 	code?: ApplicationErrorCode;
+
 	data?: any;
+
 	timestamp?: Date;
+
 	error?: Error;
 
 	constructor(message: string, options: ApplicationErrorOptions | Error = {}) {

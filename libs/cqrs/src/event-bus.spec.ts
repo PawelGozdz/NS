@@ -1,8 +1,10 @@
 /* eslint-disable no-restricted-imports */
-import { catchActError } from '@libs/testing';
 import { EventsHandler, IEvent, IEventHandler } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 import util from 'util';
+
+import { catchActError } from '@libs/testing';
+
 import { CqrsModule } from './cqrs.module';
 import { EventBus } from './event-bus';
 
@@ -66,6 +68,6 @@ describe('EventBus', () => {
 		const { error } = await catchActError(() => eventBus.publish(event));
 
 		// assert
-		expect(error).toMatchInlineSnapshot(`[Error: Test error]`);
+		expect(error).toMatchInlineSnapshot('[Error: Test error]');
 	});
 });

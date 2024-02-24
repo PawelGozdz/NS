@@ -1,9 +1,8 @@
 import { EntityId, getNullOrValueField } from '@libs/common';
 import { AggregateRoot } from '@libs/ddd';
 
-import { IProfileCreateData, IProfileUpdateData, Profile } from '../profiles/profile.entity';
-import { UserCreatedEvent } from './events';
-import { UserUpdatedEvent } from './events/user-updated.event';
+import { IProfileCreateData, IProfileUpdateData, Profile } from '../profiles';
+import { UserCreatedEvent, UserUpdatedEvent } from './events';
 import { UserSnapshot } from './user.snapshot';
 
 const events = {
@@ -15,7 +14,9 @@ export type UserEvents = typeof events;
 
 export class User extends AggregateRoot {
 	id: EntityId;
+
 	email: string;
+
 	profile: Profile;
 
 	constructor(

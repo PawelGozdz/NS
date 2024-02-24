@@ -38,7 +38,7 @@ export class Address {
 			throw new MissingValueError('Address.city');
 		}
 
-		if (!countryCode) {
+		if (countryCode == null) {
 			throw new MissingValueError('Address.countryCode');
 		}
 

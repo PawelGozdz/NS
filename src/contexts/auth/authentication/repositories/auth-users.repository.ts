@@ -1,4 +1,4 @@
-import { Database, TableNames } from '@app/database';
+import { Database, TableNames } from '@app/core';
 import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 
@@ -46,6 +46,7 @@ export class AuthUsersRepository implements IAuthUsersRepository {
 
 		return this.mapResponse(userDao);
 	}
+
 	async getByUserEmail(email: string): Promise<AuthUser | undefined> {
 		const userDao = await this.db.selectFrom(TableNames.AUTH_USERS).selectAll().where('email', '=', email).executeTakeFirst();
 

@@ -1,12 +1,11 @@
-import { TestingE2EFunctions } from '@app/database/kysley';
+import { AppModule } from '@app/app.module';
+import { TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-import { AppModule } from '../../app.module';
-import { TableNames, dialect, kyselyPlugins } from '../../database';
 import { getCookies, loginUser } from '../builders/auth-user';
 import { CategorySeedBuilder } from '../builders/csategory-builder';
 
@@ -75,7 +74,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
 
 				// Act
 				const response = await request(app.getHttpServer())
-					.get(`/categories`)
+					.get('/categories')
 					.set(...cookies)
 					.set('Content-Type', 'application/json');
 

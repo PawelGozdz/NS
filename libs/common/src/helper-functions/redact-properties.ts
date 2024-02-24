@@ -1,4 +1,5 @@
 import maskdata from 'maskdata';
+
 import { generateWildcardCombinations } from './wildcard-generator';
 
 class Redact {

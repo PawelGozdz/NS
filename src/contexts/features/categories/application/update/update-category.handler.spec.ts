@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 import { Test } from '@nestjs/testing';
+
 import { CategoryEntityFixtureFactory, CategoryNotFoundError, ICategoriesCommandRepository } from '../../domain';
 import { UpdateCategoryCommand } from './update-category.command';
 import { UpdateCategoryHandler } from './update-category.handler';

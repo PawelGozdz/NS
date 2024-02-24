@@ -2,6 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { PinoLogger } from 'nestjs-pino';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { ApiResponseStatusJsendEnum, createJsendResponse } from '../api';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class JsendTransformSuccessInterceptor implements NestInterceptor {
 		const ctx = context.switchToHttp();
 		const response = ctx.getResponse();
 		const request = ctx.getRequest();
-		const statusCode = response.statusCode;
+		const { statusCode } = response;
 
 		const jsend = createJsendResponse(ApiResponseStatusJsendEnum.SUCCESS, responseData);
 

@@ -1,17 +1,15 @@
-import { TestingE2EFunctions } from '@app/database/kysley';
+import { UpdateUserDto } from '@app/api-gateway/auth';
+import { HashService } from '@app/contexts/auth';
+import { TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-import { UpdateUserDto } from '@app/api-gateway/auth/http/user-dtos';
-import { HashService } from '@app/contexts/auth';
 import { AppModule } from '../../app.module';
-import { TableNames, dialect, kyselyPlugins } from '../../database';
 import { getCookies, loginUser } from '../builders/auth-user';
 import { UserSeedBuilder } from '../builders/user-builder';
-// import { UpdateUserDto } from '@app/api-gateway/auth';
 
 type IDdbDaos = any;
 

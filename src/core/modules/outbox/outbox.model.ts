@@ -1,12 +1,18 @@
 import { Event } from '@libs/cqrs';
+
 import { IOutbox } from './types';
 
 export class Outbox {
 	public id: number;
+
 	public eventName: string;
+
 	public ctx: string;
+
 	public payload: Event<any>;
+
 	public createdAt: Date;
+
 	public publishedOn: Date | null;
 
 	constructor(props: { id: number; eventName: string; ctx: string; payload: Event<any>; createdAt: Date; publishedOn: Date | null }) {
@@ -21,10 +27,15 @@ export class Outbox {
 
 export class OutboxModel implements IOutbox {
 	public id: number;
+
 	public eventName: string;
+
 	public ctx: string;
+
 	public payload: Event<any>;
+
 	public createdAt: Date;
+
 	public publishedOn: Date | null;
 
 	constructor(props: { id: number; eventName: string; ctx: string; payload: Event<any>; createdAt: Date; publishedOn: Date | null }) {

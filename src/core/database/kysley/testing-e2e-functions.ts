@@ -1,4 +1,5 @@
 import { Kysely, Transaction, sql } from 'kysely';
+
 import { TableNames } from '../table-names';
 
 export class TestingE2EFunctions {
@@ -7,8 +8,8 @@ export class TestingE2EFunctions {
 	async truncateTables(givenTables?: string[], trx?: Transaction<any>) {
 		const tables = !givenTables?.length ? Object.values(TableNames) : givenTables;
 
-		for (const tableName of tables) {
-			await sql.raw(`TRUNCATE TABLE ${this.convertCamelToSnakeCase(tableName)} CASCADE`).execute(trx || this.connection);
+		for await (const tableName of tables) {
+			await sql.raw(`TRUNCATE TABLE ${this.convertCamelToSnakeCase(tableName)} CASCADE`).execute(trx ?? this.connection);
 		}
 	}
 

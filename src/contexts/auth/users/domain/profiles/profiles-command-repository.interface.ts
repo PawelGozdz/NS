@@ -1,4 +1,5 @@
 import { EntityId } from '@libs/common';
+
 import { Profile } from './profile.entity';
 
 export abstract class IProfilesCommandRepository {

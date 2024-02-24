@@ -1,5 +1,6 @@
-import { AppUtils, InvalidParameterError, MissingValueError } from '@libs/common';
 import { isUUID } from 'class-validator';
+
+import { AppUtils, InvalidParameterError, MissingValueError } from '@libs/common';
 
 export class EntityId {
 	constructor(readonly value: string) {}

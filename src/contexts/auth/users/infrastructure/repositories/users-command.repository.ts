@@ -1,4 +1,4 @@
-import { Database, TableNames } from '@app/database';
+import { Database, TableNames } from '@app/core';
 import { EntityId } from '@libs/common';
 import { EventBus } from '@libs/cqrs';
 import { EntityRepository } from '@libs/ddd';
@@ -6,8 +6,8 @@ import { Injectable } from '@nestjs/common';
 import { Transaction } from 'kysely';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 
-import { IUsersCommandRepository, User, UserCreatedEvent, UserSnapshot } from '../../../domain';
-import { UserModel } from '../../models';
+import { IUsersCommandRepository, User, UserCreatedEvent, UserSnapshot } from '../../domain';
+import { UserModel } from '../models';
 
 @Injectable()
 export class UsersCommandRepository extends EntityRepository implements IUsersCommandRepository {

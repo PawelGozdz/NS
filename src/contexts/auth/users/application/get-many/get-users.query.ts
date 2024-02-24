@@ -1,6 +1,6 @@
+import { IUsersQueryParams } from '@app/core';
 import { Query } from '@libs/cqrs';
 
-import { IUsersQueryParams } from '@app/core';
 import { UserInfo } from '../../domain';
 
 export class GetUsersQuery extends Query<GetUsersQuery, GetUsersQueryResult> {

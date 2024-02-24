@@ -6,7 +6,7 @@ import { Injectable } from '@nestjs/common';
 export class CookiesService {
 	public getCookieWithJwtAccessToken(accessToken: string) {
 		if (!accessToken) {
-			throw new BadRequestError(`Provide all the data!`);
+			throw new BadRequestError('Provide all the data!');
 		}
 
 		return {
@@ -20,7 +20,7 @@ export class CookiesService {
 
 	public getCookieWithJwtRefreshToken(refreshToken: string) {
 		if (!refreshToken) {
-			throw new BadRequestError(`Provide all the data!`);
+			throw new BadRequestError('Provide all the data!');
 		}
 
 		return {
@@ -29,6 +29,6 @@ export class CookiesService {
 	}
 
 	public getCookieForLogOut() {
-		return [`Authentication=; HttpOnly; Path=/; Max-Age=0`, `Refresh=; HttpOnly; Path=/; Max-Age=0`];
+		return ['Authentication=; HttpOnly; Path=/; Max-Age=0', 'Refresh=; HttpOnly; Path=/; Max-Age=0'];
 	}
 }

@@ -1,12 +1,17 @@
 import * as jwt from 'jsonwebtoken';
+
 import { testingDefaults } from './constants';
 
 export class AuthenticationServer {
-	private secret: string = testingDefaults.secret;
-	private refreshSecret: string = testingDefaults.refreshSecret;
+	private readonly secret: string = testingDefaults.secret;
+
+	private readonly refreshSecret: string = testingDefaults.refreshSecret;
+
 	public userId = testingDefaults.userId;
-	private accessTokenExpirationTime = process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME || '2m';
-	private refreshTokenExpirationTime = process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || '15m';
+
+	private readonly accessTokenExpirationTime = process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME || '2m';
+
+	private readonly refreshTokenExpirationTime = process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME || '15m';
 
 	constructor(
 		props: {

@@ -5,12 +5,12 @@ import { PinoLogger } from 'nestjs-pino';
 import { IAuthUsersRepository } from '../../repositories';
 
 @EventsHandler(UserUpdatedEvent)
-export class OnUserDeletedHandler implements IEventHandler<UserUpdatedEvent> {
+export class OnUserUpdatedHandler implements IEventHandler<UserUpdatedEvent> {
 	constructor(
 		private readonly authRepository: IAuthUsersRepository,
 		private readonly logger: PinoLogger,
 	) {
-		this.logger.setContext(OnUserDeletedHandler.name);
+		this.logger.setContext(OnUserUpdatedHandler.name);
 	}
 
 	async handle(event: UserUpdatedEvent): Promise<void> {

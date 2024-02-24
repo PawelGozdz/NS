@@ -1,7 +1,8 @@
-import { Database } from '@app/database';
+import { Database } from '@app/core';
 import { INestApplication, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { sql } from 'kysely';
 import { PinoLogger } from 'nestjs-pino';
+
 import { otelSDK } from './modules';
 
 export interface GracefulShutDownConfig {
@@ -12,6 +13,7 @@ export interface GracefulShutDownConfig {
 @Injectable()
 export class GracefulShutdownService implements OnApplicationShutdown {
 	app: INestApplication;
+
 	config: GracefulShutDownConfig;
 
 	constructor(
@@ -30,13 +32,13 @@ export class GracefulShutdownService implements OnApplicationShutdown {
 
 		await this.shutdownOT();
 
-		this.logger.info(`****** All processes successfuly shut down ******`);
+		this.logger.info('****** All processes successfuly shut down ******');
 	}
 
 	setConfig(config: GracefulShutDownConfig) {
 		if (!config.app || !config.applicationName) {
-			this.logger.error(`Invalid GracefulShutDown configuration`);
-			throw new Error(`Invalid GracefulShutDown configuration`);
+			this.logger.error('Invalid GracefulShutDown configuration');
+			throw new Error('Invalid GracefulShutDown configuration');
 		}
 		this.config = config;
 	}
@@ -46,12 +48,11 @@ export class GracefulShutdownService implements OnApplicationShutdown {
 
 		try {
 			await sql`SELECT 1`.execute(this.db);
-			this.logger.info(`Shutting down database connection`);
+			this.logger.info('Shutting down database connection');
 			await this.db.destroy();
-			this.logger.info(`Database connection closed`);
+			this.logger.info('Database connection closed');
 		} catch (error) {
-			this.logger.info(`Database connection is already closed`);
-			return;
+			this.logger.info('Database connection is already closed');
 		}
 	}
 

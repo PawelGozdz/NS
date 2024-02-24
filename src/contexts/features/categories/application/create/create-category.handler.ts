@@ -1,9 +1,8 @@
 import { IInferredCommandHandler } from '@libs/cqrs';
+import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { Injectable } from '@nestjs/common';
-import { CategoryAlreadyExistsError } from '../../domain';
-import { ICategoriesCommandRepository } from '../../domain/caregories/category-command-repository.interface';
+import { CategoryAlreadyExistsError, ICategoriesCommandRepository } from '../../domain';
 import { CreateCategoryCommand, CreateCategoryResponseDto } from './create-category.command';
 
 @Injectable()

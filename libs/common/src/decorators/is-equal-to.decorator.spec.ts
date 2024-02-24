@@ -1,5 +1,7 @@
-import { catchActError } from '@libs/testing';
 import { validate } from 'class-validator';
+
+import { catchActError } from '@libs/testing';
+
 import { IsEqualTo } from './is-equal-to.decorator';
 
 class TestClass {

@@ -1,6 +1,7 @@
-import { AuthService, CookiesService } from '@app/contexts/auth/authentication/services';
 import { Controller, Get, Inject } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
+
+import { AuthService, CookiesService } from '@app/contexts/auth/authentication/services';
 
 @Controller('user')
 export class UserController {
@@ -11,6 +12,7 @@ export class UserController {
 	) {
 		this.logger.setContext(this.constructor.name);
 	}
+
 	// @Public()
 	@Get()
 	findAll(): string {

@@ -1,15 +1,18 @@
 import { AuthUserModel, UserModel, UserProfileModel } from '@app/contexts/auth';
+import { TableNames, dialect, kyselyPlugins } from '@app/core';
 import { Kysely } from 'kysely';
 
-import { TableNames, dialect, kyselyPlugins } from '../../database';
 import { AuthUserFixtureFactory, ProfileFixtureFactory, UserFixtureFactory } from '../fixtures';
 
 type IDatabaseDaos = any;
 
 export class UserSeedBuilder {
 	public dbConnection: Kysely<IDatabaseDaos>;
+
 	public userDao: UserModel;
+
 	public authUserDao: AuthUserModel;
+
 	public profileDao: UserProfileModel;
 
 	daos: {
@@ -23,6 +26,7 @@ export class UserSeedBuilder {
 	};
 
 	actions: { method: string }[] = [];
+
 	cookies: string[] = [];
 
 	private constructor(dbConnection: Kysely<IDatabaseDaos>) {
@@ -39,7 +43,7 @@ export class UserSeedBuilder {
 
 	static async create(db?: Kysely<IDatabaseDaos>): Promise<UserSeedBuilder> {
 		const builder = new UserSeedBuilder(
-			db ||
+			db ??
 				new Kysely<IDatabaseDaos>({
 					dialect,
 					plugins: kyselyPlugins,

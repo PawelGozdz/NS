@@ -1,14 +1,12 @@
+import { AppModule } from '@app/app.module';
 import { HashService } from '@app/contexts/auth';
-import { AppRoutes } from '@app/core';
-import { TestingE2EFunctions } from '@app/database/kysley';
+import { AppRoutes, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-import { AppModule } from '../../app.module';
-import { dialect, kyselyPlugins } from '../../database';
 import { getCookies, loginUser } from '../builders/auth-user';
 
 type IDdbDaos = any;

@@ -1,11 +1,10 @@
-import { IUsersQueryParams } from '@app/core';
-import { Database, TableNames } from '@app/database';
+import { Database, IUsersQueryParams, TableNames } from '@app/core';
 import { EntityId } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 
-import { IUsersQueryRepository, UserInfo } from '../../../domain';
-import { UserModel } from '../../models';
+import { IUsersQueryRepository, UserInfo } from '../../domain';
+import { UserModel } from '../models';
 
 @Injectable()
 export class UsersQueryRepository implements IUsersQueryRepository {
@@ -44,7 +43,7 @@ export class UsersQueryRepository implements IUsersQueryRepository {
 
 		const users = (await query.execute()) as UserModel[];
 
-		return await users.map((user) => this.userToUserInfo(user));
+		return users.map((user) => this.userToUserInfo(user));
 	}
 
 	private userToUserInfo(userModel: UserModel): UserInfo {

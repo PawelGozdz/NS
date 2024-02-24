@@ -1,4 +1,4 @@
-import { ProfileSnapshot } from '../profiles/profile.snapshot';
+import { ProfileSnapshot } from '../profiles';
 
 export type UserSnapshot = {
 	id: string;

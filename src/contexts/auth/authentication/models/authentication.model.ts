@@ -1,4 +1,4 @@
-import { TableNames } from '@app/database';
+import { TableNames } from '@app/core';
 import { EntityId, IAuthUserModel } from '@libs/common';
 
 export class AuthUserModel extends IAuthUserModel {
@@ -7,11 +7,17 @@ export class AuthUserModel extends IAuthUserModel {
 
 export class AuthUser {
 	id: string;
+
 	email: string;
+
 	userId: string;
+
 	hash: string;
+
 	hashedRt: string | null;
+
 	lastLogin: Date | null;
+
 	tokenRefreshedAt: Date | null;
 
 	constructor({

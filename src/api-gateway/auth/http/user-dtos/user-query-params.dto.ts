@@ -1,8 +1,9 @@
-import { IUsersQueryParams } from '@app/core';
-import { GlobalDto } from '@libs/common';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsOptional, ValidateNested } from 'class-validator';
+
+import { IUsersQueryParams } from '@app/core';
+import { GlobalDto } from '@libs/common';
 
 class Filter extends PickType(GlobalDto, ['email', 'id']) {
 	@ApiProperty({

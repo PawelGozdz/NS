@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { AggregateRoot, IEvent } from '@nestjs/cqrs';
+
 import { EventBus } from './event-bus';
 
-export interface Constructor<T> {
-	new (...args: any[]): T;
-}
+export type Constructor<T> = new (...args: any[]) => T;
 
 @Injectable()
 export class EventPublisher<EventBase extends IEvent = IEvent> {
@@ -25,13 +24,9 @@ export class EventPublisher<EventBase extends IEvent = IEvent> {
 
 	mergeObjectContext<T extends AggregateRoot<EventBase>>(object: T): T {
 		const { eventBus } = this;
-		object.publish = (event: EventBase) => {
-			return eventBus.publish(event);
-		};
+		object.publish = (event: EventBase) => eventBus.publish(event);
 
-		object.publishAll = (events: EventBase[]) => {
-			return eventBus.publishAll(events);
-		};
+		object.publishAll = (events: EventBase[]) => eventBus.publishAll(events);
 		return object;
 	}
 }

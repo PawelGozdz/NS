@@ -2,6 +2,7 @@ import { ApiResponseStatusJsendEnum } from './api.interfaces';
 
 export class SuccessResponse {
 	readonly status = ApiResponseStatusJsendEnum.SUCCESS;
+
 	readonly data: any | null;
 
 	constructor(data: any | null) {
@@ -11,6 +12,7 @@ export class SuccessResponse {
 
 export class FailResponse {
 	readonly status = ApiResponseStatusJsendEnum.FAIL;
+
 	readonly data: any;
 
 	constructor(data: any) {
@@ -20,6 +22,7 @@ export class FailResponse {
 
 export class ErrorResponse {
 	readonly status = ApiResponseStatusJsendEnum.ERROR;
+
 	readonly message: string;
 
 	constructor(message: string) {

@@ -1,7 +1,7 @@
 import { IInferredQueryHandler } from '@libs/cqrs';
+import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { Injectable } from '@nestjs/common';
 import { ICategoriesQueryRepository } from '../../domain';
 import { GetManyCategoriesQuery, GetManyCategoriesResponseDto } from './get-many-categories.query';
 

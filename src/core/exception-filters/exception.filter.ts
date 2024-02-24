@@ -45,11 +45,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 	private baseErrors(exception: BaseError) {
 		return exception.message;
 	}
+
 	private httpErrors(exception: HttpException) {
 		return exception.message;
 	}
+
 	private otherErrors(exception: unknown) {
-		const message = (exception as Error).message;
+		const { message } = exception as Error;
 		return message || FrameworkErrorCode.UnknownError;
 	}
 
@@ -217,7 +219,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		const isFail = this.isFail(statusCode);
 
 		if (exception instanceof HttpException) {
-			const subErrors = Array.isArray(exception?.['response']?.message) ? exception['response'].message : undefined;
+			const res = exception.getResponse();
+			let subErrors: string[] | undefined = undefined;
+
+			if (typeof res === 'object' && 'message' in res) {
+				subErrors = Array.isArray(res?.message) ? res.message : undefined;
+			}
+
 			data = isFail ? { subErrors, error: message } : null;
 		} else if (exception instanceof BaseError) {
 			data = isFail ? { error: message } : null;

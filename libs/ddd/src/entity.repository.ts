@@ -1,4 +1,4 @@
-import { TableNames } from '@app/database';
+import { TableNames } from '@app/core';
 import { ConflictError } from '@libs/common';
 import { EventBus, IEvent } from '@libs/cqrs';
 import { AggregateRoot, BaseModel } from '@libs/ddd';
@@ -8,7 +8,7 @@ export type EventHandler = <T extends unknown>(event: IEvent, trx: Transaction<T
 
 export abstract class EntityRepository {
 	protected constructor(
-		private eventBus: EventBus,
+		private readonly eventBus: EventBus,
 		protected model: typeof BaseModel,
 		protected db: Kysely<any>,
 	) {}

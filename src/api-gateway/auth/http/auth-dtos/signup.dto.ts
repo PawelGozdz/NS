@@ -1,9 +1,6 @@
-import { GlobalDto } from '@libs/common';
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { TokensResponseDto } from './tokens-response.dto';
-
-export class SignUpDto extends PickType(GlobalDto, ['email', 'password']) {}
 
 export class SignUpResponseDto extends TokensResponseDto {}
 

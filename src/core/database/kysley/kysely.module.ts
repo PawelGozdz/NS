@@ -7,8 +7,8 @@ import { ConfigurableDatabaseModule, Database, dialect, kyselyPlugins } from './
 const providers = [
 	{
 		provide: Database,
-		useFactory: (logger: PinoLogger) => {
-			return new Database({
+		useFactory: (logger: PinoLogger) =>
+			new Database({
 				dialect,
 				log(event) {
 					logger.info('Query:', event.query.sql);
@@ -17,8 +17,7 @@ const providers = [
 					}
 				},
 				plugins: kyselyPlugins,
-			});
-		},
+			}),
 		inject: [PinoLogger],
 	},
 ];

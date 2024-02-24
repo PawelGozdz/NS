@@ -1,5 +1,8 @@
-import { TableNames } from '@app/database/table-names';
+// eslint-disable @typescript-eslint/no-explicit-any
+
+import { TableNames } from '@app/core';
 import { Kysely, sql } from 'kysely';
+
 import { onUpdateTrigger } from '../helpers';
 
 const tableName = TableNames.USERS;

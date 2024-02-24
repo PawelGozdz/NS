@@ -10,9 +10,13 @@ export type DomainErrorOptions = ErrorOptions & {
 
 export abstract class DomainError extends BaseError implements DomainErrorOptions {
 	domain?: DomainErrorType;
+
 	code: DomainErrorCode;
+
 	data?: any;
+
 	timestamp?: Date;
+
 	error?: Error;
 
 	constructor(message: string, options: DomainErrorOptions | Error = {}) {
@@ -22,7 +26,7 @@ export abstract class DomainError extends BaseError implements DomainErrorOption
 			this.error = options;
 		} else if (options && 'code' in options) {
 			this.domain = options?.domain;
-			this.code = options?.code || DomainErrorCode.Default;
+			this.code = options?.code != null ? options?.code : DomainErrorCode.Default;
 			this.data = options?.data || {};
 			this.error = options?.error;
 		}

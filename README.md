@@ -54,3 +54,15 @@ e2e in watch node
 ## Generating new ADR
 
 Is described in [this article](docs/adr.md)
+
+## Dependency Cruiser
+
+- `sudo apt install graphviz` - some errors might occure, if so run:
+  - `sudo do-release-upgrade` - updated whole distribution
+  - `sudo apt-get update`
+
+Then run `sudo apt install graphviz`
+
+Generating graph:
+
+- npx depcruise src --include-only "^src" --output-type dot | dot -T svg > ./dependency-graphs/dependency-graph.svg

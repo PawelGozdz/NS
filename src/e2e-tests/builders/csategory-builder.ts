@@ -1,13 +1,14 @@
+import { CategoryModel } from '@app/contexts/features';
+import { TableNames, dialect, kyselyPlugins } from '@app/core';
 import { Kysely } from 'kysely';
 
-import { CategoryModel } from '@app/contexts/features';
-import { TableNames, dialect, kyselyPlugins } from '../../database';
 import { CategoryFixtureFactory } from '../fixtures';
 
 type IDatabaseDaos = any;
 
 export class CategorySeedBuilder {
 	public dbConnection: Kysely<IDatabaseDaos>;
+
 	public categoryDao: CategoryModel;
 
 	daos: {
@@ -34,7 +35,7 @@ export class CategorySeedBuilder {
 
 	static async create(db?: Kysely<IDatabaseDaos>): Promise<CategorySeedBuilder> {
 		const builder = new CategorySeedBuilder(
-			db ||
+			db ??
 				new Kysely<IDatabaseDaos>({
 					dialect,
 					plugins: kyselyPlugins,

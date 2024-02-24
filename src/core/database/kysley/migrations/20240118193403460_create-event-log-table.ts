@@ -1,18 +1,17 @@
-import { TableNames } from '@app/database/table-names';
+// eslint-disable @typescript-eslint/no-explicit-any
+
+import { TableNames } from '@app/core';
 import { Kysely, sql } from 'kysely';
 
-const tableName = TableNames.OUTBOX;
+const tableName = TableNames.EVENT_LOG;
 
 export async function up(db: Kysely<any>): Promise<void> {
 	await db.schema
 		.createTable(tableName)
-		.addColumn('id', 'serial', (col) => col.primaryKey())
-		.addColumn('eventName', 'text', (col) => col.notNull())
-		.addColumn('ctx', 'varchar(15)', (col) => col.notNull())
+		.addColumn('id', 'bigint', (col) => col.primaryKey().generatedAlwaysAsIdentity())
 		.addColumn('data', 'jsonb', (col) => col.notNull())
-		.addColumn('publishedOn', 'date')
-
 		.addColumn('createdAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
+		.addColumn('eventName', 'text', (col) => col.notNull())
 		.execute();
 }
 

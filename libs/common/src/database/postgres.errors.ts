@@ -3,6 +3,7 @@ import { PostgresErrorCode } from './postgres-error.enum';
 
 export class UniqueViolationError extends FrameworkError {
 	static statusCode: number = 409;
+
 	static message: string = 'Unique Violation';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -15,6 +16,7 @@ export class UniqueViolationError extends FrameworkError {
 
 export class ForeignKeyViolationError extends FrameworkError {
 	static statusCode: number = 409;
+
 	static message: string = 'Foreign Key Violation';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -27,6 +29,7 @@ export class ForeignKeyViolationError extends FrameworkError {
 
 export class NotNullViolationError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Not Null Violation';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -39,6 +42,7 @@ export class NotNullViolationError extends FrameworkError {
 
 export class CheckViolationError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Check Violation';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -51,6 +55,7 @@ export class CheckViolationError extends FrameworkError {
 
 export class InvalidTextRepresentationError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Invalid Text Representation';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -63,6 +68,7 @@ export class InvalidTextRepresentationError extends FrameworkError {
 
 export class NumericValueOutOfRangeError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Numeric Value Out Of Range';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -75,6 +81,7 @@ export class NumericValueOutOfRangeError extends FrameworkError {
 
 export class DivisionByZeroError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Division By Zero';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -87,6 +94,7 @@ export class DivisionByZeroError extends FrameworkError {
 
 export class DataExceptionError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Data Exception';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -99,6 +107,7 @@ export class DataExceptionError extends FrameworkError {
 
 export class IntegrityConstraintViolationError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Integrity Constraint Violation';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -111,6 +120,7 @@ export class IntegrityConstraintViolationError extends FrameworkError {
 
 export class SyntaxErrorOrAccessRuleViolationError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Syntax Error Or Access Rule Violation';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -123,6 +133,7 @@ export class SyntaxErrorOrAccessRuleViolationError extends FrameworkError {
 
 export class InsufficientResourcesError extends FrameworkError {
 	static statusCode: number = 500;
+
 	static message: string = 'Insufficient Resources';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -135,6 +146,7 @@ export class InsufficientResourcesError extends FrameworkError {
 
 export class DiskFullError extends FrameworkError {
 	static statusCode: number = 500;
+
 	static message: string = 'Disk Full';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -147,6 +159,7 @@ export class DiskFullError extends FrameworkError {
 
 export class OutOfMemoryError extends FrameworkError {
 	static statusCode: number = 500;
+
 	static message: string = 'Out Of Memory';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -159,6 +172,7 @@ export class OutOfMemoryError extends FrameworkError {
 
 export class TooManyConnectionsError extends FrameworkError {
 	static statusCode: number = 500;
+
 	static message: string = 'Too Many Connections';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -171,6 +185,7 @@ export class TooManyConnectionsError extends FrameworkError {
 
 export class ConfigurationLimitExceededError extends FrameworkError {
 	static statusCode: number = 500;
+
 	static message: string = 'Configuration Limit Exceeded';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -183,6 +198,7 @@ export class ConfigurationLimitExceededError extends FrameworkError {
 
 export class OperatorInterventionError extends FrameworkError {
 	static statusCode: number = 500;
+
 	static message: string = 'Operator Intervention';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -195,6 +211,7 @@ export class OperatorInterventionError extends FrameworkError {
 
 export class SystemError extends FrameworkError {
 	static statusCode: number = 500;
+
 	static message: string = 'System Error';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -207,6 +224,7 @@ export class SystemError extends FrameworkError {
 
 export class IoError extends FrameworkError {
 	static statusCode: number = 500;
+
 	static message: string = 'IO Error';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -219,6 +237,7 @@ export class IoError extends FrameworkError {
 
 export class UndefinedTableError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Undefined Table';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {
@@ -231,6 +250,7 @@ export class UndefinedTableError extends FrameworkError {
 
 export class UndefinedColumnError extends FrameworkError {
 	static statusCode: number = 400;
+
 	static message: string = 'Undefined Column';
 
 	constructor(message?: string, options: FrameworkErrorOptions | Error = {}) {

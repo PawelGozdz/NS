@@ -1,5 +1,9 @@
-import { AuthService, CookiesService, ITokens } from '@app/contexts/auth';
-import { AuthUser, AuthUsersService } from '@app/contexts/auth/';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
+import { PinoLogger } from 'nestjs-pino';
+
+import { AuthService, AuthUser, AuthUsersService, CookiesService, ITokens, SignInDto, SignUpDto } from '@app/contexts/auth';
 import { AppRoutes } from '@app/core';
 import {
 	ApiJsendResponse,
@@ -12,20 +16,8 @@ import {
 	UnauthorizedError,
 	UnauthorizedErrorResponse,
 } from '@libs/common';
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
-import { PinoLogger } from 'nestjs-pino';
 
-import {
-	RefreshTokensResponseDto,
-	SignInDto,
-	SignInResponseDto,
-	SignInValidationErrorDto,
-	SignUpDto,
-	SignUpResponseDto,
-	SignUpValidationErrorDto,
-} from './auth-dtos';
+import { RefreshTokensResponseDto, SignInResponseDto, SignInValidationErrorDto, SignUpResponseDto, SignUpValidationErrorDto } from './auth-dtos';
 
 @ApiTags('Auth')
 @Controller({
@@ -145,8 +137,6 @@ export class AuthJwtControllerV1 {
 		await this.authService.logout(user.userId);
 
 		req.res!.setHeader('Set-Cookie', this.cookieService.getCookieForLogOut());
-
-		return;
 	}
 
 	@ApiOperation({

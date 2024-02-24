@@ -3,6 +3,7 @@ import { ModuleRef } from '@nestjs/core';
 import { IEvent, IEventBus, IEventHandler } from '@nestjs/cqrs';
 import { EVENTS_HANDLER_METADATA } from '@nestjs/cqrs/dist/decorators/constants';
 import { defaultGetEventId, defaultReflectEventId } from '@nestjs/cqrs/dist/helpers/default-get-event-id';
+
 import { IEventPublisher } from './event-publisher.interface';
 
 export type EventHandlerType<EventBase extends IEvent = IEvent> = Type<IEventHandler<EventBase>>;

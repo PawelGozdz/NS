@@ -1,4 +1,9 @@
 module.exports = {
+  settings: {
+    'import/resolver': {
+      "typescript": {}
+    },
+  },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: 'tsconfig.json',
@@ -11,7 +16,7 @@ module.exports = {
     'airbnb-base',
     'airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',
-    'plugin:security/recommended',
+    'plugin:security/recommended-legacy',
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',

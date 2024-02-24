@@ -1,10 +1,9 @@
+import { getCoalescedField, getNullOrValueField } from '@libs/common';
 import { IInferredCommandHandler } from '@libs/cqrs';
+import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { getCoalescedField, getNullOrValueField } from '@libs/common';
-import { Injectable } from '@nestjs/common';
-import { Category, CategoryNotFoundError } from '../../domain';
-import { ICategoriesCommandRepository } from '../../domain/caregories/category-command-repository.interface';
+import { Category, CategoryNotFoundError, ICategoriesCommandRepository } from '../../domain';
 import { UpdateCategoryCommand } from './update-category.command';
 
 @Injectable()
@@ -26,8 +25,6 @@ export class UpdateCategoryHandler implements IInferredCommandHandler<UpdateCate
 		}
 
 		await this.categoryCommandRepository.update(this.updateCategoryInstance(command, currentEntity));
-
-		return;
 	}
 
 	private updateCategoryInstance(command: UpdateCategoryCommand, currentEntity: Category) {

@@ -38,7 +38,7 @@ export class CreateUserHandler implements IInferredCommandHandler<CreateUserComm
 			email: command.email,
 			profile: {
 				id: EntityId.createRandom(),
-				userId: userId,
+				userId,
 			},
 		});
 	}

@@ -1,11 +1,13 @@
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Query } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { PinoLogger } from 'nestjs-pino';
+
 import { AuthUsersService, GetUsersQuery, UpdateUserCommand } from '@app/contexts/auth';
 import { AppRoutes } from '@app/core';
 import { ConflictErrorResponse, IdDto, NotFoundErrorResponse, UnauthorizedErrorResponse } from '@libs/common';
 import { ApiJsendResponse, ApiResponseStatusJsendEnum } from '@libs/common/api';
 import { CommandBus, QueryBus } from '@libs/cqrs';
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { PinoLogger } from 'nestjs-pino';
+
 import { UpdateUserDto, UpdateUserValidationErrorDto, UserQueryParamsDto, UserResponseDto } from './user-dtos';
 
 @ApiTags('Users')
@@ -14,8 +16,8 @@ import { UpdateUserDto, UpdateUserValidationErrorDto, UserQueryParamsDto, UserRe
 })
 export class UsersControllerV1 {
 	constructor(
-		private queryBus: QueryBus,
-		private commandBus: CommandBus,
+		private readonly queryBus: QueryBus,
+		private readonly commandBus: CommandBus,
 		private readonly authUsersService: AuthUsersService,
 		private readonly logger: PinoLogger,
 	) {

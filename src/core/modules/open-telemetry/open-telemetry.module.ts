@@ -11,7 +11,7 @@ const OpenTelemetryModuleConfig = OpenTelemetryModule.forRoot({
 				custom: 'label',
 			},
 			ignoreRoutes: [], // You can ignore specific routes (See https://docs.nestjs.com/middleware#excluding-routes for options)
-			ignoreUndefinedRoutes: false, //Records metrics for all URLs, even undefined ones
+			ignoreUndefinedRoutes: false, // Records metrics for all URLs, even undefined ones
 		},
 	},
 });

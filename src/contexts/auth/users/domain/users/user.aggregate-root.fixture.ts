@@ -1,8 +1,10 @@
 import { Address, CountryCode, EntityId } from '@libs/common';
+
 import { User } from './user.aggregate-root';
 
 export class UserAggregateRootFixtureFactory {
 	public static defaultFromDate = new Date('2021-10-20T16:00:00.000Z');
+
 	public static defaultToDate = new Date('2021-10-27T16:00:00.000Z');
 
 	public static create(overrides?: { id?: string; email?: string }): User {
@@ -11,10 +13,10 @@ export class UserAggregateRootFixtureFactory {
 
 		return new User({
 			id: userId,
-			email: email,
+			email,
 			profile: {
 				id: new EntityId('b83c6426-6863-4347-8356-d60e516fa3d3'),
-				userId: userId,
+				userId,
 				firstName: 'John',
 				lastName: 'Doe',
 				username: 'johndoe',

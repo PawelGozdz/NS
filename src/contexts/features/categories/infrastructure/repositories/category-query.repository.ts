@@ -1,9 +1,8 @@
-import { Database, TableNames } from '@app/database';
+import { Database, ICategoriesQueryParams, TableNames } from '@app/core';
 import { Injectable } from '@nestjs/common';
 
-import { ICategoriesQueryParams } from '@app/core';
-import { CategoryInfo, ICategoriesQueryRepository } from '../../../domain';
-import { CategoryModel } from '../../models';
+import { CategoryInfo, ICategoriesQueryRepository } from '../../domain';
+import { CategoryModel } from '../models';
 
 @Injectable()
 export class CategoriesQueryRepository implements ICategoriesQueryRepository {

@@ -3,7 +3,9 @@ import { Event } from '@libs/cqrs';
 
 export class UserCreatedEvent extends Event<UserCreatedEvent> {
 	id: EntityId;
+
 	email: string;
+
 	profile: {
 		id: EntityId;
 		userId: EntityId;

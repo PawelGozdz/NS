@@ -26,11 +26,11 @@ interface IUserCreated {
 export class AuthUsersService {
 	constructor(
 		private readonly authUsersRepository: IAuthUsersRepository,
-		private eventEmitter: EventEmitter2,
+		private readonly eventEmitter: EventEmitter2,
 	) {}
 
 	async create(userData: AuthUser): Promise<IUserCreated> {
-		return await this.authUsersRepository.create({
+		return this.authUsersRepository.create({
 			id: userData.id,
 			email: userData.email,
 			hash: userData.hash,
@@ -46,15 +46,15 @@ export class AuthUsersService {
 	}
 
 	async delete(userId: string): Promise<void> {
-		return await this.authUsersRepository.delete(userId);
+		return this.authUsersRepository.delete(userId);
 	}
 
 	async getByUserId(userId: string): Promise<AuthUser | undefined> {
-		return await this.authUsersRepository.getByUserId(userId);
+		return this.authUsersRepository.getByUserId(userId);
 	}
 
 	async getByUserEmail(email: string): Promise<AuthUser | undefined> {
-		return await this.authUsersRepository.getByUserEmail(email);
+		return this.authUsersRepository.getByUserEmail(email);
 	}
 
 	public async getIntegrationUserById(userId: string): Promise<IUserInfo | undefined> {

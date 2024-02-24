@@ -1,5 +1,6 @@
-import { TableNames } from '@app/database';
+import { TableNames } from '@app/core';
 import { Kysely } from 'kysely';
+
 import { IOutboxRepository } from './outbox-repository.interface';
 import { Outbox, OutboxModel } from './outbox.model';
 import { IOutboxInput } from './types';

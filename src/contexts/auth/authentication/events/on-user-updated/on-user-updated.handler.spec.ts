@@ -1,17 +1,17 @@
-import { createMock } from '@golevelup/ts-jest';
-import { Test } from '@nestjs/testing';
-
 import { UserUpdatedEvent } from '@app/contexts/auth/users';
+import { createMock } from '@golevelup/ts-jest';
 import { EntityId } from '@libs/common';
 import { TestLoggerModule } from '@libs/testing';
+import { Test } from '@nestjs/testing';
+
 import { AuthUserFixture } from '../../models';
 import { IAuthUsersRepository } from '../../repositories';
-import { OnUserDeletedHandler } from './on-user-updated.handler';
+import { OnUserUpdatedHandler } from './on-user-updated.handler';
 
 const userId = '4e16697f-8ea1-5d0a-b9c5-d2d358ee8ebe';
 
-describe('OnUserDeletedHandler', () => {
-	let handler: OnUserDeletedHandler;
+describe('OnUserUpdatedHandler', () => {
+	let handler: OnUserUpdatedHandler;
 	let authUserRepositoryMock: jest.Mocked<IAuthUsersRepository>;
 
 	beforeEach(async () => {
@@ -20,7 +20,7 @@ describe('OnUserDeletedHandler', () => {
 		const app = await Test.createTestingModule({
 			imports: [TestLoggerModule.forRoot()],
 			providers: [
-				OnUserDeletedHandler,
+				OnUserUpdatedHandler,
 				{
 					provide: IAuthUsersRepository,
 					useValue: authUserRepositoryMock,
@@ -28,7 +28,7 @@ describe('OnUserDeletedHandler', () => {
 			],
 		}).compile();
 
-		handler = app.get(OnUserDeletedHandler);
+		handler = app.get(OnUserUpdatedHandler);
 	});
 
 	const authUser = AuthUserFixture.create({

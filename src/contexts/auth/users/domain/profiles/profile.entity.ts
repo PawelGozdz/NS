@@ -1,4 +1,5 @@
 import { Address, EntityId } from '@libs/common';
+
 import { ProfileSnapshot } from './profile.snapshot';
 
 export type IProfileCreateData = {
@@ -35,18 +36,31 @@ export type IProfileUpdateData = {
 
 export class Profile {
 	id: EntityId;
+
 	userId: EntityId;
+
 	firstName: string | null;
+
 	lastName: string | null;
+
 	username: string | null;
+
 	address: Address | null;
+
 	bio: string | null;
+
 	dateOfBirth: Date | null;
+
 	gender: string | null;
+
 	hobbies: string[];
+
 	languages: string[];
+
 	phoneNumber: string | null;
+
 	profilePicture: string | null;
+
 	rodoAcceptanceDate: Date | null;
 
 	constructor(props: IProfileCreateData) {
@@ -89,18 +103,18 @@ export class Profile {
 		return new Profile({
 			id: new EntityId(dao.id),
 			userId: new EntityId(dao.userId),
-			firstName: dao.firstName || undefined,
-			lastName: dao.lastName || undefined,
-			username: dao.username || undefined,
-			dateOfBirth: dao.dateOfBirth || undefined,
+			firstName: dao.firstName ?? undefined,
+			lastName: dao.lastName ?? undefined,
+			username: dao.username ?? undefined,
+			dateOfBirth: dao.dateOfBirth ?? undefined,
 			address: dao.address ? Address.create(dao.address) : undefined,
-			bio: dao.bio || undefined,
-			gender: dao.gender || undefined,
+			bio: dao.bio ?? undefined,
+			gender: dao.gender ?? undefined,
 			hobbies: dao.hobbies,
 			languages: dao.languages,
-			phoneNumber: dao.phoneNumber || undefined,
-			profilePicture: dao.profilePicture || undefined,
-			rodoAcceptanceDate: dao.rodoAcceptanceDate || undefined,
+			phoneNumber: dao.phoneNumber ?? undefined,
+			profilePicture: dao.profilePicture ?? undefined,
+			rodoAcceptanceDate: dao.rodoAcceptanceDate ?? undefined,
 		});
 	}
 }

@@ -1,4 +1,4 @@
-import { TableNames } from '@app/database';
+import { TableNames } from '@app/core';
 import { Address, IUserProfileModel } from '@libs/common';
 import { BaseModel } from '@libs/ddd';
 

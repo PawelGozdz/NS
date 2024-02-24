@@ -109,7 +109,7 @@ describe('CookiesService', () => {
 				const result = service.getCookieForLogOut();
 
 				// Assert
-				expect(result).toEqual([`Authentication=; HttpOnly; Path=/; Max-Age=0`, `Refresh=; HttpOnly; Path=/; Max-Age=0`]);
+				expect(result).toEqual(['Authentication=; HttpOnly; Path=/; Max-Age=0', 'Refresh=; HttpOnly; Path=/; Max-Age=0']);
 				expect(result).toMatchSnapshot();
 			});
 		});

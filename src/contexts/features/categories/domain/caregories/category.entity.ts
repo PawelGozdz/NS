@@ -1,15 +1,19 @@
 export class Category {
 	id: number;
+
 	name: string;
+
 	description?: string | null;
+
 	parentId?: number | null;
+
 	ctx: string;
 
 	constructor(props: Category) {
 		this.id = props.id;
 		this.name = props.name;
-		this.description = props.description || null;
-		this.parentId = props.parentId || null;
+		this.description = props.description ?? null;
+		this.parentId = props.parentId ?? null;
 		this.ctx = props.ctx;
 	}
 
@@ -29,8 +33,8 @@ export class Category {
 		const category = new Category({
 			id,
 			name,
-			description: description || null,
-			parentId: parentId || null,
+			description: description ?? null,
+			parentId: parentId ?? null,
 			ctx,
 		});
 

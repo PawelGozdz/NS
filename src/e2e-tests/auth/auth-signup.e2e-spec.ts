@@ -1,4 +1,5 @@
-import { TestingE2EFunctions } from '@app/database/kysley';
+import { UserAlreadyExistsError } from '@app/contexts/auth';
+import { AppRoutes, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { ApiResponseStatusJsendEnum } from '@libs/common/api';
 import { AuthenticationServer, TestLoggerModule, testingDefaults } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
@@ -6,10 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-import { UserAlreadyExistsError } from '@app/contexts/auth/users/domain/users/errors/user-already-exists.error';
-import { AppRoutes } from '@app/core';
 import { AppModule } from '../../app.module';
-import { TableNames, dialect, kyselyPlugins } from '../../database';
 import { UserSeedBuilder } from '../builders/user-builder';
 
 type IDdbDaos = any;

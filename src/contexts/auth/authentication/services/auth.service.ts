@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PinoLogger } from 'nestjs-pino';
 
-import { SignInDto, SignUpDto } from '../../../../api-gateway/auth/http/auth-dtos';
+import { SignInDto, SignUpDto } from '../dtos';
 import { AuthUser } from '../models';
 import { ITokens } from '../types';
 import { AuthUsersService } from './auth-users.service';
@@ -20,6 +20,7 @@ export class AuthService {
 	) {
 		this.logger.setContext(this.constructor.name);
 	}
+
 	public async createUser(dto: SignUpDto): Promise<AuthUser> {
 		this.logger.info(dto, 'Creating user');
 		try {
@@ -28,7 +29,7 @@ export class AuthService {
 			const integrationUser = await this.authUsersService.createIntegrationUser(dto);
 
 			const buildUserObj = AuthUser.create({
-				userId: integrationUser.id!,
+				userId: integrationUser.id,
 				hash,
 				email: dto.email,
 				hashedRt: null,
@@ -39,7 +40,7 @@ export class AuthService {
 			return buildUserObj;
 		} catch (error: any) {
 			if (error.code === 'P2002') {
-				throw new ConflictError(`User with this email already exists!`);
+				throw new ConflictError('User with this email already exists!');
 			}
 			throw error;
 		}
@@ -125,12 +126,12 @@ export class AuthService {
 
 		const user = await this.authUsersService.getByUserId(userId);
 
-		if (!user || !user.hashedRt) {
+		if (!user?.hashedRt) {
 			this.logger.warn(`User with id ${userId} not found`);
 			throw new UnauthorizedError();
 		}
 
-		const isAuth = await this.hashService.hashAndTextVerify(user.hashedRt!, token);
+		const isAuth = await this.hashService.hashAndTextVerify(user.hashedRt, token);
 
 		if (isAuth) {
 			return user;
@@ -210,7 +211,7 @@ export class AuthService {
 	}
 
 	async updateHash(text: string) {
-		return await this.hashService.hashData(text);
+		return this.hashService.hashData(text);
 	}
 
 	isCorrectString(...texts: (string | string[])[]) {

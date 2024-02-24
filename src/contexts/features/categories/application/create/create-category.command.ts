@@ -4,8 +4,11 @@ import { PickType } from '@nestjs/swagger';
 
 export class CreateCategoryCommand extends Command<CreateCategoryCommand, CreateCategoryResponseDto> {
 	name: string;
+
 	description?: string;
+
 	parentId?: number;
+
 	ctx: string;
 
 	constructor(command: CreateCategoryCommand) {

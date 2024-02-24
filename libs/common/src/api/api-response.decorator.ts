@@ -23,18 +23,18 @@ const getSuccessData = <TModel extends DataType>(model?: TModel): SwaggerSchemaO
 				$ref: getSchemaPath(model[0]),
 			},
 		};
-	} else if (model) {
+	}
+	if (model) {
 		return {
 			type: 'object',
 			$ref: getSchemaPath(model),
 		};
-	} else {
-		return {
-			type: 'object',
-			example: null,
-			nullable: true,
-		};
 	}
+	return {
+		type: 'object',
+		example: null,
+		nullable: true,
+	};
 };
 
 const getFailData = <TModel extends DataType>(model?: TModel): SwaggerSchemaObj => {
@@ -43,12 +43,11 @@ const getFailData = <TModel extends DataType>(model?: TModel): SwaggerSchemaObj 
 			type: 'object',
 			$ref: getSchemaPath(model as Type<unknown>),
 		};
-	} else {
-		return {
-			type: 'object',
-			$ref: getSchemaPath(ValidationErrorResponse),
-		};
 	}
+	return {
+		type: 'object',
+		$ref: getSchemaPath(ValidationErrorResponse),
+	};
 };
 
 const getMessage = (): SwaggerSchemaObj => ({
@@ -69,49 +68,45 @@ function getDescription(status: ApiResponseStatusJsendEnum) {
 	}
 }
 
-const ApiJsendBuild = (props: Partial<ApiDecoratorOptions>): SwaggerSchemaObj => {
-	return {
-		properties: {
-			...(props.status === ApiResponseStatusJsendEnum.SUCCESS
-				? { data: getSuccessData(props.type) }
-				: props.status === ApiResponseStatusJsendEnum.FAIL
+const ApiJsendBuild = (props: Partial<ApiDecoratorOptions>): SwaggerSchemaObj => ({
+	properties: {
+		...(props.status === ApiResponseStatusJsendEnum.SUCCESS
+			? { data: getSuccessData(props.type) }
+			: props.status === ApiResponseStatusJsendEnum.FAIL
 				? { data: getFailData(props?.type) }
 				: { message: getMessage() }),
-		},
-	};
-};
+	},
+});
 
-const ApiDefaultBuild = (props: Partial<ApiDecoratorOptions>): SwaggerSchemaObj => {
-	return {
-		properties: {
-			statusCode: {
-				type: 'number',
-				example: props.statusCode,
-				nullable: false,
-			},
-			status: {
-				type: 'string',
-				enum: Object.values(ApiResponseStatusJsendEnum),
-				example: props.status,
-				nullable: false,
-			},
-			timestamp: {
-				type: 'string',
-				example: '2024-01-02T14:51:00.000Z',
-				nullable: false,
-			},
-			path: {
-				type: 'string',
-				example: props?.path || '/api/v1/some-path',
-				nullable: false,
-			},
+const ApiDefaultBuild = (props: Partial<ApiDecoratorOptions>): SwaggerSchemaObj => ({
+	properties: {
+		statusCode: {
+			type: 'number',
+			example: props.statusCode,
+			nullable: false,
 		},
-		type: 'object',
-	};
-};
+		status: {
+			type: 'string',
+			enum: Object.values(ApiResponseStatusJsendEnum),
+			example: props.status,
+			nullable: false,
+		},
+		timestamp: {
+			type: 'string',
+			example: '2024-01-02T14:51:00.000Z',
+			nullable: false,
+		},
+		path: {
+			type: 'string',
+			example: props?.path || '/api/v1/some-path',
+			nullable: false,
+		},
+	},
+	type: 'object',
+});
 
 export const ApiJsendResponse = (props?: Partial<ApiDecoratorOptions>) => {
-	const status = props?.status || ApiResponseStatusJsendEnum.SUCCESS;
+	const status = props?.status ? props?.status : ApiResponseStatusJsendEnum.SUCCESS;
 	const statusCode = props?.statusCode || defaultStatusCode;
 	const type = props?.type ? props.type : null;
 	const path = props?.path;
@@ -126,7 +121,7 @@ export const ApiJsendResponse = (props?: Partial<ApiDecoratorOptions>) => {
 				schema: {
 					allOf: [ApiDefaultBuild({ statusCode, status, path }), ApiJsendBuild({ type, status })],
 				},
-		  };
+			};
 
 	const decorators: any = [];
 

@@ -1,8 +1,9 @@
-import { Database } from '@app/database';
+import { Database } from '@app/core';
 import { createMock } from '@golevelup/ts-jest';
 import { TestLoggerModule } from '@libs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+
 import { GracefulShutDownConfig, GracefulShutdownService } from './graceful-shutdown.service';
 import { otelSDK } from './modules';
 

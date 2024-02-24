@@ -1,4 +1,5 @@
 export * from './context-errors';
+export * from './database';
 export * from './dtos';
 export * from './events';
 export * from './exception-filters';

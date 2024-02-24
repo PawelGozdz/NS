@@ -1,5 +1,6 @@
 import { EntityId } from '@libs/common';
-import { Profile } from '../profiles/profile.entity';
+
+import { Profile } from '../profiles';
 import { UserCreatedEvent, UserUpdatedEvent } from './events';
 import { User } from './user.aggregate-root';
 import { UserAggregateRootFixtureFactory } from './user.aggregate-root.fixture';

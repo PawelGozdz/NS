@@ -10,6 +10,7 @@ export class LoggingInterceptor implements NestInterceptor {
 	constructor(private readonly logger: PinoLogger) {
 		this.logger.setContext(this.constructor.name);
 	}
+
 	intercept(context: ExecutionContext, next: CallHandler): Observable<any> | any {
 		if (context.getType() === 'http') {
 			return this.logHttpCall(context, next);
@@ -38,7 +39,7 @@ export class LoggingInterceptor implements NestInterceptor {
 				const { statusCode } = response;
 				const contentLength = response.get('content-length');
 
-				const responseText = `[${correlationKey}] ${method} ${url} ${statusCode} ${contentLength ? contentLength : ''}: ${Date.now() - reqTime}ms`;
+				const responseText = `[${correlationKey}] ${method} ${url} ${statusCode} ${contentLength || ''}: ${Date.now() - reqTime}ms`;
 
 				this.logger.info(
 					{
