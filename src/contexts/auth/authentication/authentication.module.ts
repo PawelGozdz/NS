@@ -1,4 +1,4 @@
-import config from '@app/config/app';
+import config from '@app/config';
 import { CqrsModule } from '@libs/cqrs';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -24,9 +24,9 @@ const repositories = [
 			imports: [ConfigModule],
 			useFactory: async () => ({
 				isGlobal: true,
-				secret: config.JWT_ACCESS_TOKEN_SECRET,
+				secret: config.appConfig.JWT_ACCESS_TOKEN_SECRET,
 				signOptions: {
-					expiresIn: config.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+					expiresIn: config.appConfig.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 				},
 			}),
 		}),

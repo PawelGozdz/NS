@@ -55,4 +55,4 @@ const envSchema = z.object({
 
 export type Env = z.infer<typeof envSchema>;
 
-export default envSchema.parse(process.env);
+export const appConfig = envSchema.parse(process.env);

@@ -1,4 +1,4 @@
-import config from '@app/config/app';
+import config from '@app/config';
 import { BadRequestError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 
@@ -10,7 +10,7 @@ export class CookiesService {
 		}
 
 		return {
-			cookie: `Authentication=${accessToken}; HttpOnly; Path=/; Max-Age=${config.JWT_ACCESS_TOKEN_EXPIRATION_TIME}`,
+			cookie: `Authentication=${accessToken}; HttpOnly; Path=/; Max-Age=${config.appConfig.JWT_ACCESS_TOKEN_EXPIRATION_TIME}`,
 		};
 	}
 
@@ -24,7 +24,7 @@ export class CookiesService {
 		}
 
 		return {
-			cookie: `Refresh=${refreshToken}; HttpOnly; Path=/; Max-Age=${config.JWT_REFRESH_TOKEN_EXPIRATION_TIME}`,
+			cookie: `Refresh=${refreshToken}; HttpOnly; Path=/; Max-Age=${config.appConfig.JWT_REFRESH_TOKEN_EXPIRATION_TIME}`,
 		};
 	}
 

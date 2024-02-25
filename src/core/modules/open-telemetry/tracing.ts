@@ -9,22 +9,22 @@ import { BatchSpanProcessor, SimpleSpanProcessor } from '@opentelemetry/sdk-trac
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 import process from 'process';
 
-import config, { Environment } from '@app/config/app';
+import config from '@app/config';
 
 const exporterOptions = {
-	url: config.JAEGER_URL,
+	url: config.appConfig.JAEGER_URL,
 };
 
 const traceExporter = new OTLPTraceExporter(exporterOptions);
 
 const spanProcessor =
-	process.env.NODE_ENV === Environment.DEVELOPMENT ? new SimpleSpanProcessor(traceExporter) : new BatchSpanProcessor(traceExporter);
+	process.env.NODE_ENV === config.Environment.DEVELOPMENT ? new SimpleSpanProcessor(traceExporter) : new BatchSpanProcessor(traceExporter);
 
 export const otelSDK = new NodeSDK({
 	contextManager: new AsyncLocalStorageContextManager(),
 	resource: new Resource({
-		[SemanticResourceAttributes.SERVICE_NAME]: config.APP_NAME,
-		[SemanticResourceAttributes.SERVICE_VERSION]: config.APP_VERSION,
+		[SemanticResourceAttributes.SERVICE_NAME]: config.appConfig.APP_NAME,
+		[SemanticResourceAttributes.SERVICE_VERSION]: config.appConfig.APP_VERSION,
 	}),
 	traceExporter,
 	spanProcessor,

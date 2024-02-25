@@ -1,4 +1,4 @@
-import config from '@app/config/app';
+import config from '@app/config';
 import { EntityId, IAuthUserModel, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
@@ -20,7 +20,7 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
 				},
 			]),
 			ignoreExpiration: false,
-			secretOrKey: config.JWT_ACCESS_TOKEN_SECRET,
+			secretOrKey: config.appConfig.JWT_ACCESS_TOKEN_SECRET,
 			passReqToCallback: true,
 		});
 	}

@@ -1,4 +1,4 @@
-import config, { globalPrefix, globalVersioning } from '@app/config/app';
+import config from '@app/config';
 import { INestApplication, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
@@ -13,7 +13,7 @@ import { nestApplicationSecirityConfiguration } from './security-configuration';
 import { SwaggerBuilder } from './swagger-setup';
 
 async function buildSwaggers(app: INestApplication) {
-	await SwaggerBuilder.build(app, ApiGatewayModule, '/api-docs', config.APP_NAME, 'Rest API documentation', true);
+	await SwaggerBuilder.build(app, ApiGatewayModule, '/api-docs', config.appConfig.APP_NAME, 'Rest API documentation', true);
 }
 
 async function bootstrap() {
@@ -31,10 +31,10 @@ async function bootstrap() {
 	app.flushLogs();
 
 	// API VERSION
-	app.setGlobalPrefix(globalPrefix);
+	app.setGlobalPrefix(config.globalPrefix);
 	app.enableVersioning({
 		type: VersioningType.URI,
-		defaultVersion: globalVersioning,
+		defaultVersion: config.globalVersioning,
 	});
 
 	nestApplicationSecirityConfiguration(app);
@@ -42,12 +42,12 @@ async function bootstrap() {
 	const gracefulShutdownServie = app.get(GracefulShutdownService);
 	gracefulShutdownServie.setConfig({
 		app,
-		applicationName: config.APP_NAME,
+		applicationName: config.appConfig.APP_NAME,
 	});
 
 	app.enableShutdownHooks();
 
-	await app.listen(config.PORT);
+	await app.listen(config.appConfig.PORT);
 }
 bootstrap();
 

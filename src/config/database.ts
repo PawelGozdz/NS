@@ -1,4 +1,4 @@
-import appConfig from './app';
+import { appConfig } from './app';
 
 const { DATABASE_NAME, DATABASE_PASSWORD, DATABASE_PORT, DATABASE_USER, DATABASE_HOST, DATABASE_LOGGING, DATABASE_SCHEMA } = appConfig;
 

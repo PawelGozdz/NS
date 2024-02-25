@@ -27,8 +27,8 @@
 		"test:e2e:watch": "docker-compose -f docker-compose.e2e-test.yaml down -v && docker-compose -f docker-compose.e2e-test.yaml run --rm api-service-e2e npm run test:e2e:run -- --watchAll && docker-compose -f docker-compose.e2e-test.yaml down",
 		"migration:generate": "ts-node -r tsconfig-paths/register src/core/database/kysley/migration-generate.ts --",
 		"migration:run": "ts-node -r tsconfig-paths/register src/core/database/kysley/migration-runner.ts",
-		"depcruise:archi": "depcruise --version && depcruise --config .dependency-cruiser.js --output-type archi src | dot -T svg | depcruise-wrap-stream-in-html > high-level-dependencies.html",
-		"decruise:test": "depcruise -v -- src libs"
+		"depcruise:archi": "depcruise --version && depcruise --config dc-graph.js --output-type archi src libs | dot -T svg | depcruise-wrap-stream-in-html > high-level-dependencies.html",
+		"depcruise:test": "depcruise -v --config dc-forbidden-test.js -- src libs"
 	},
 	"dependencies": {
 		"@nestjs/common": "^10.0.0",

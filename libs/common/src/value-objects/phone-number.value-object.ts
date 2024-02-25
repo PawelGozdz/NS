@@ -1,6 +1,5 @@
-import { CountryCode as CountryCodeType, isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js';
-
 import { CountryCode, InvalidParameterError } from '@libs/common';
+import { CountryCode as CountryCodeType, isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js';
 
 export type PhoneNumberData = {
 	number: string;

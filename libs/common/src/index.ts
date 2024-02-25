@@ -8,7 +8,6 @@ export * from './guards';
 export * from './helper-functions';
 export * from './interceptors';
 export * from './models';
-export * from './setup-dayjs';
 export * from './system-variables';
 export * from './types';
 export * from './utils';

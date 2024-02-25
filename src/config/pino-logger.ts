@@ -1,12 +1,12 @@
+import { mergePatch, redact } from '@libs/common';
 import { RequestMethod } from '@nestjs/common';
 import { context, trace } from '@opentelemetry/api';
 import { Request } from 'express';
 import { Params } from 'nestjs-pino';
 
-import { mergePatch, redact } from '@libs/common';
-import config, { Environment } from './app';
+import { Environment, appConfig } from './app';
 
-const isProduction = config.NODE_ENV === Environment.PRODUCTION;
+const isProduction = appConfig.NODE_ENV === Environment.PRODUCTION;
 
 const options: Params = {
 	pinoHttp: {
@@ -24,7 +24,7 @@ const options: Params = {
 
 				const res: { [key: string]: any } = mergePatch({ __context: object.context }, objCopy);
 
-				const redacted = config.MASKING_ENABLED ? redact.json(res) : res;
+				const redacted = appConfig.MASKING_ENABLED ? redact.json(res) : res;
 
 				if (!activeSpan) {
 					return redacted;
@@ -46,7 +46,7 @@ const options: Params = {
 			targets: [
 				{
 					target: 'pino-pretty',
-					level: config.LOG_LEVEL || 'info',
+					level: appConfig.LOG_LEVEL || 'info',
 					options: {
 						colorize: true,
 						translateTime: 'yyyy-mm-dd HH:MM:ss',

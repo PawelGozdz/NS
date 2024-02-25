@@ -1,11 +1,10 @@
-import loggerOptions from '@app/config/pino-logger';
+import { ApiGatewayModule } from '@app/api-gateway';
+import config from '@app/config';
+import { DatabaseModule, GracefulShutdownService, OpenTelemetryModuleModule, OutboxModule } from '@app/core';
 import { CqrsModule } from '@libs/cqrs';
 import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { LoggerModule } from 'nestjs-pino';
-
-import { ApiGatewayModule } from './api-gateway';
-import { DatabaseModule, GracefulShutdownService, OpenTelemetryModuleModule, OutboxModule } from './core';
 
 const providers = [GracefulShutdownService];
 
@@ -17,7 +16,7 @@ const providers = [GracefulShutdownService];
 		DatabaseModule,
 		ApiGatewayModule,
 		CqrsModule,
-		LoggerModule.forRoot(loggerOptions),
+		LoggerModule.forRoot(config.pinoLogger),
 		OpenTelemetryModuleModule,
 		OutboxModule,
 	],

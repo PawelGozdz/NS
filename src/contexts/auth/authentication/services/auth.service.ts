@@ -1,4 +1,4 @@
-import config from '@app/config/app';
+import config from '@app/config';
 import { ConflictError, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -189,8 +189,8 @@ export class AuthService {
 				id: userId,
 			},
 			{
-				secret: config.JWT_ACCESS_TOKEN_SECRET,
-				expiresIn: config.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+				secret: config.appConfig.JWT_ACCESS_TOKEN_SECRET,
+				expiresIn: config.appConfig.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
 			},
 		);
 
@@ -199,8 +199,8 @@ export class AuthService {
 				id: userId,
 			},
 			{
-				secret: config.JWT_REFRESH_TOKEN_SECRET,
-				expiresIn: config.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+				secret: config.appConfig.JWT_REFRESH_TOKEN_SECRET,
+				expiresIn: config.appConfig.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
 			},
 		);
 		const [at, rt] = await Promise.all([accessToken, refreshToken]);

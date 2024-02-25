@@ -1,4 +1,4 @@
-import config, { globalPrefix, globalVersioning } from '@app/config/app';
+import config from '@app/config';
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -7,8 +7,8 @@ export class SwaggerBuilder {
 		const swaggerConfig = new DocumentBuilder()
 			.setTitle(title)
 			.setDescription(description)
-			.setVersion(config.APP_VERSION)
-			.addServer(`/${globalPrefix}/v${globalVersioning}`);
+			.setVersion(config.appConfig.APP_VERSION)
+			.addServer(`/${config.globalPrefix}/v${config.globalVersioning}`);
 
 		if (!useApiAuth) {
 			swaggerConfig.addBearerAuth();

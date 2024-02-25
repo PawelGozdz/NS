@@ -1,4 +1,4 @@
-import config from '@app/config/app';
+import config from '@app/config';
 import { EntityId, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
@@ -20,7 +20,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
 					return token;
 				},
 			]),
-			secretOrKey: config.JWT_REFRESH_TOKEN_SECRET,
+			secretOrKey: config.appConfig.JWT_REFRESH_TOKEN_SECRET,
 			passReqToCallback: true,
 		});
 	}
