@@ -9,4 +9,4 @@ dist
 
 # Files
 
-.eslintrc
+.prettierrc

@@ -66,3 +66,9 @@ Then run `sudo apt install graphviz`
 Generating graph:
 
 - npx depcruise src --include-only "^src" --output-type dot | dot -T svg > ./dependency-graphs/dependency-graph.svg
+
+## Git pre-hooks
+
+Skip running Husky
+
+`git commit -m "intitial commit" --no-verify`
