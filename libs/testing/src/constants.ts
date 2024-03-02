@@ -11,11 +11,11 @@ const defaultUserFirstName = 'John';
 const defaultUserLastName = 'Doe';
 const defaultUsername = 'JohnDoe';
 const defaultAddress = Address.create({
-	city: 'Warsaw',
-	countryCode: CountryCode.England,
-	streetNumber: '1',
-	postalCode: '00-000',
-	street: 'Test',
+  city: 'Warsaw',
+  countryCode: CountryCode.England,
+  streetNumber: '1',
+  postalCode: '00-000',
+  street: 'Test',
 });
 const defaultBio = 'Test bio';
 const defaultDateOfBirth = new Date('1990-01-01');
@@ -34,30 +34,30 @@ const defaultCategoryDescription = 'Test description';
 const defaultCtx = AppContext.CATEGORIES;
 
 export const testingDefaults = {
-	userId: defaultUserId,
-	refreshSecret: defaultRefreshSecret,
-	secret: defaultSecret,
-	email: defaultEmail,
-	hash: defaultArgoHash,
-	userPassword: defaultUserPassword,
-	hashedRt: defaultArgoRefreshedRt,
-	profile: {
-		firstName: defaultUserFirstName,
-		lastName: defaultUserLastName,
-		username: defaultUsername,
-		address: defaultAddress,
-		bio: defaultBio,
-		dateOfBirth: defaultDateOfBirth,
-		gender: defaultGender,
-		hobbies: defaultHobbies,
-		languages: defaultLanguages,
-		phoneNumber: defaultPhoneNumber,
-		profilePicture: defaultProfilePicture,
-		rodoAcceptanceDate: defaultRodoAcceptanceDate,
-	},
-	category: {
-		name: defaultCategoryName,
-		description: defaultCategoryDescription,
-		ctx: defaultCtx,
-	},
+  userId: defaultUserId,
+  refreshSecret: defaultRefreshSecret,
+  secret: defaultSecret,
+  email: defaultEmail,
+  hash: defaultArgoHash,
+  userPassword: defaultUserPassword,
+  hashedRt: defaultArgoRefreshedRt,
+  profile: {
+    firstName: defaultUserFirstName,
+    lastName: defaultUserLastName,
+    username: defaultUsername,
+    address: defaultAddress,
+    bio: defaultBio,
+    dateOfBirth: defaultDateOfBirth,
+    gender: defaultGender,
+    hobbies: defaultHobbies,
+    languages: defaultLanguages,
+    phoneNumber: defaultPhoneNumber,
+    profilePicture: defaultProfilePicture,
+    rodoAcceptanceDate: defaultRodoAcceptanceDate,
+  },
+  category: {
+    name: defaultCategoryName,
+    description: defaultCategoryDescription,
+    ctx: defaultCtx,
+  },
 };

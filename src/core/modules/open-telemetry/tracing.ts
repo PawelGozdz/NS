@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { CompositePropagator, W3CBaggagePropagator, W3CTraceContextPropagator } from '@opentelemetry/core';
@@ -12,40 +13,40 @@ import process from 'process';
 import config from '@app/config';
 
 const exporterOptions = {
-	url: config.appConfig.JAEGER_URL,
+  url: config.appConfig.JAEGER_URL,
 };
 
 const traceExporter = new OTLPTraceExporter(exporterOptions);
 
 const spanProcessor =
-	process.env.NODE_ENV === config.Environment.DEVELOPMENT ? new SimpleSpanProcessor(traceExporter) : new BatchSpanProcessor(traceExporter);
+  process.env.NODE_ENV === config.Environment.DEVELOPMENT ? new SimpleSpanProcessor(traceExporter) : new BatchSpanProcessor(traceExporter);
 
 export const otelSDK = new NodeSDK({
-	contextManager: new AsyncLocalStorageContextManager(),
-	resource: new Resource({
-		[SemanticResourceAttributes.SERVICE_NAME]: config.appConfig.APP_NAME,
-		[SemanticResourceAttributes.SERVICE_VERSION]: config.appConfig.APP_VERSION,
-	}),
-	traceExporter,
-	spanProcessor,
-	textMapPropagator: new CompositePropagator({
-		propagators: [
-			new W3CTraceContextPropagator(),
-			new W3CBaggagePropagator(),
-			new B3Propagator(),
-			new B3Propagator({
-				injectEncoding: B3InjectEncoding.MULTI_HEADER,
-			}),
-		],
-	}),
-	instrumentations: [
-		getNodeAutoInstrumentations({
-			'@opentelemetry/instrumentation-express': { enabled: true },
-			'@opentelemetry/instrumentation-http': { enabled: true },
-			'@opentelemetry/instrumentation-grpc': { enabled: true },
-			'@opentelemetry/instrumentation-pg': { enabled: true },
-			'@opentelemetry/instrumentation-nestjs-core': { enabled: true },
-			'@opentelemetry/instrumentation-pino': { enabled: true },
-		}),
-	],
+  contextManager: new AsyncLocalStorageContextManager(),
+  resource: new Resource({
+    [SemanticResourceAttributes.SERVICE_NAME]: config.appConfig.APP_NAME,
+    [SemanticResourceAttributes.SERVICE_VERSION]: config.appConfig.APP_VERSION,
+  }),
+  traceExporter,
+  spanProcessor,
+  textMapPropagator: new CompositePropagator({
+    propagators: [
+      new W3CTraceContextPropagator(),
+      new W3CBaggagePropagator(),
+      new B3Propagator(),
+      new B3Propagator({
+        injectEncoding: B3InjectEncoding.MULTI_HEADER,
+      }),
+    ],
+  }),
+  instrumentations: [
+    getNodeAutoInstrumentations({
+      '@opentelemetry/instrumentation-express': { enabled: true },
+      '@opentelemetry/instrumentation-http': { enabled: true },
+      '@opentelemetry/instrumentation-grpc': { enabled: true },
+      '@opentelemetry/instrumentation-pg': { enabled: true },
+      '@opentelemetry/instrumentation-nestjs-core': { enabled: true },
+      '@opentelemetry/instrumentation-pino': { enabled: true },
+    }),
+  ],
 });

@@ -1,19 +1,19 @@
 export abstract class IAuthUserModel {
-	id: string;
+  id: string;
 
-	email: string;
+  email: string;
 
-	userId: string;
+  userId: string;
 
-	hash: string;
+  hash: string;
 
-	hashedRt: string | null;
+  hashedRt: string | null;
 
-	lastLogin: Date | null;
+  lastLogin: Date | null;
 
-	tokenRefreshedAt: Date | null;
+  tokenRefreshedAt: Date | null;
 
-	createdAt: Date;
+  createdAt: Date;
 
-	updatedAt: Date;
+  updatedAt: Date;
 }

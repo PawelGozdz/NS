@@ -1,44 +1,44 @@
 import { ApiResponseStatusJsendEnum } from './api.interfaces';
 
 export class SuccessResponse {
-	readonly status = ApiResponseStatusJsendEnum.SUCCESS;
+  readonly status = ApiResponseStatusJsendEnum.SUCCESS;
 
-	readonly data: any | null;
+  readonly data: unknown | null;
 
-	constructor(data: any | null) {
-		this.data = data || null;
-	}
+  constructor(data: unknown | null) {
+    this.data = data ?? null;
+  }
 }
 
 export class FailResponse {
-	readonly status = ApiResponseStatusJsendEnum.FAIL;
+  readonly status = ApiResponseStatusJsendEnum.FAIL;
 
-	readonly data: any;
+  readonly data: unknown;
 
-	constructor(data: any) {
-		this.data = data;
-	}
+  constructor(data: unknown) {
+    this.data = data;
+  }
 }
 
 export class ErrorResponse {
-	readonly status = ApiResponseStatusJsendEnum.ERROR;
+  readonly status = ApiResponseStatusJsendEnum.ERROR;
 
-	readonly message: string;
+  readonly message: string;
 
-	constructor(message: string) {
-		this.message = message;
-	}
+  constructor(message: string) {
+    this.message = message;
+  }
 }
 
 export function createJsendResponse<T>(status: ApiResponseStatusJsendEnum, dataOrMessage: T) {
-	switch (status) {
-		case ApiResponseStatusJsendEnum.SUCCESS:
-			return new SuccessResponse(dataOrMessage);
-		case ApiResponseStatusJsendEnum.FAIL:
-			return new FailResponse(dataOrMessage);
-		case ApiResponseStatusJsendEnum.ERROR:
-			return new ErrorResponse(dataOrMessage as string);
-		default:
-			throw new Error(`Invalid status: ${status}`);
-	}
+  switch (status) {
+    case ApiResponseStatusJsendEnum.SUCCESS:
+      return new SuccessResponse(dataOrMessage);
+    case ApiResponseStatusJsendEnum.FAIL:
+      return new FailResponse(dataOrMessage);
+    case ApiResponseStatusJsendEnum.ERROR:
+      return new ErrorResponse(dataOrMessage as string);
+    default:
+      throw new Error(`Invalid status: ${status}`);
+  }
 }

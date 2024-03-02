@@ -2,17 +2,17 @@ import { IntegrationEvent } from '../integration-base.event';
 import { IntegrationEventNames } from '../integration-events.enum';
 
 export class GetUserByEmailIntegrationEvent extends IntegrationEvent {
-	static readonly eventName = IntegrationEventNames.getUserByEmail;
+  static readonly eventName = IntegrationEventNames.getUserByEmail;
 
-	payload: {
-		email: string;
-	};
+  payload: {
+    email: string;
+  };
 
-	constructor(email: string) {
-		super();
+  constructor(email: string) {
+    super();
 
-		this.payload = {
-			email,
-		};
-	}
+    this.payload = {
+      email,
+    };
+  }
 }

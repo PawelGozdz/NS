@@ -31,46 +31,46 @@ type MapFn<T, V> = (result: Exclude<SerializedTarget<T>, null | undefined>) => V
 export function mergePatch<T, U extends PatchParam<T>>(target: T, patch: U): SerializedTarget<T> | MapOptional<U>;
 export function mergePatch<T, U extends PatchParam<T>, V>(target: T, patch: U, mapFn: MapFn<T, V>): V | MapOptional<U>;
 export function mergePatch<T, U extends PatchParam<T>, V>(target: T, patch: U, mapFn?: MapFn<T, V>): SerializedTarget<T> | MapOptional<U> | V {
-	const targetCopy = structuredClone(serialize(target));
+  const targetCopy = structuredClone(serialize(target));
 
-	const result = patch && apply(targetCopy, patch);
-	if (mapFn && result != null) {
-		return mapFn(result);
-	}
+  const result = patch && apply(targetCopy, patch);
+  if (mapFn && result != null) {
+    return mapFn(result);
+  }
 
-	return result;
+  return result;
 }
 
 function serialize(value: any): any {
-	return value && typeof value.toJSON === 'function' ? value.toJSON() : value;
+  return value && typeof value.toJSON === 'function' ? value.toJSON() : value;
 }
 
 function apply(target: any, patch: any): any {
-	target = serialize(target);
-	if (patch === undefined) {
-		return target;
-	}
+  target = serialize(target);
+  if (patch === undefined) {
+    return target;
+  }
 
-	patch = serialize(patch);
+  patch = serialize(patch);
 
-	if (patch === null || typeof patch !== 'object' || Array.isArray(patch)) {
-		return patch;
-	}
+  if (patch === null || typeof patch !== 'object' || Array.isArray(patch)) {
+    return patch;
+  }
 
-	if (target === null || typeof target !== 'object' || Array.isArray(target)) {
-		target = {};
-	}
-	for (const [key, value] of Object.entries(patch)) {
-		if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
-			return target;
-		}
-		if (value === null) {
-			if (target.hasOwnProperty(key)) {
-				delete target[key];
-			}
-		} else {
-			target[key] = apply(target[key], value);
-		}
-	}
-	return target;
+  if (target === null || typeof target !== 'object' || Array.isArray(target)) {
+    target = {};
+  }
+  for (const [key, value] of Object.entries(patch)) {
+    if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+      return target;
+    }
+    if (value === null) {
+      if (target.hasOwnProperty(key)) {
+        delete target[key];
+      }
+    } else {
+      target[key] = apply(target[key], value);
+    }
+  }
+  return target;
 }

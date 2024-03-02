@@ -1,60 +1,58 @@
-import { AppModule } from '@app/app.module';
-import { TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { AuthenticationServer, TestLoggerModule } from '@libs/testing';
+/* eslint-disable import/no-extraneous-dependencies */
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-type IDdbDaos = any;
+import { AppModule } from '@app/app.module';
+import { TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
+import { IDatabaseModels } from '@libs/common';
+import { TestLoggerModule } from '@libs/testing';
+
+type IDdbDaos = IDatabaseModels;
 
 describe('Template (e2e)', () => {
-	const dbConnection = new Kysely<IDdbDaos>({
-		dialect,
-		plugins: kyselyPlugins,
-	});
-	const dbUtils = new TestingE2EFunctions(dbConnection);
-	let app: INestApplication;
-	let authenticationServer: AuthenticationServer;
+  const dbConnection = new Kysely<IDdbDaos>({
+    dialect,
+    plugins: kyselyPlugins,
+  });
+  const dbUtils = new TestingE2EFunctions(dbConnection);
+  let app: INestApplication;
 
-	const tablesInvolved = [];
+  const tablesInvolved = [];
 
-	beforeAll(async () => {
-		const moduleFixture: TestingModule = await Test.createTestingModule({
-			imports: [AppModule, TestLoggerModule.forRoot()],
-		}).compile();
+  beforeAll(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule, TestLoggerModule.forRoot()],
+    }).compile();
 
-		app = moduleFixture.createNestApplication();
-		await app.init();
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  });
 
-		authenticationServer = new AuthenticationServer();
-	});
+  afterAll(async () => {
+    await dbConnection.destroy();
+    await app.close();
+  });
 
-	afterAll(async () => {
-		await dbConnection.destroy();
-		await app.close();
-	});
+  beforeEach(async () => {
+    await dbConnection.transaction().execute(async (trx) => {
+      await dbUtils.truncateTables(tablesInvolved, trx);
+      // Perform any other setup here
+      // like insertion user, etc
+      // all in a transaction
+    });
+  });
 
-	beforeEach(async () => {
-		await dbConnection.transaction().execute(async (trx) => {
-			await dbUtils.truncateTables(tablesInvolved, trx);
-			// Perform any other setup here
-			// like insertion user, etc
-			// all in a transaction
-		});
-	});
+  it('/user', async () => {
+    // Act
+    const response = await request(app.getHttpServer())
+      .get('/user')
+      .set(...['Authorization', 'Bearer ZYX'])
+      .set('Content-Type', 'application/json');
 
-	let someDao: any;
-
-	it('/user', async () => {
-		// Act
-		const response = await request(app.getHttpServer())
-			.get('/user')
-			.set(...['Authorization', 'Bearer ZYX'])
-			.set('Content-Type', 'application/json');
-
-		// Assert
-		expect(response.statusCode).toBe(401);
-		expect(response.body.data.error).toEqual('Unauthorized');
-	});
+    // Assert
+    expect(response.statusCode).toBe(401);
+    expect(response.body.data.error).toEqual('Unauthorized');
+  });
 });

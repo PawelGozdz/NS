@@ -1,19 +1,19 @@
 import { Event } from '@libs/cqrs';
 
 export class CategoryUpdatedEvent extends Event<CategoryUpdatedEvent> {
-	id: number;
+  id: number;
 
-	name: string;
+  name: string;
 
-	description: string | null;
+  description: string | null;
 
-	parentId: number | null;
+  parentId: number | null;
 
-	context: string;
+  context: string;
 
-	constructor(event: CategoryUpdatedEvent) {
-		super(event);
+  constructor(event: CategoryUpdatedEvent) {
+    super(event);
 
-		Object.assign(this, event);
-	}
+    Object.assign(this, event);
+  }
 }

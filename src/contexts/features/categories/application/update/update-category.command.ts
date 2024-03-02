@@ -1,21 +1,21 @@
 import { Command } from '@libs/cqrs';
 
 export class UpdateCategoryCommand extends Command<UpdateCategoryCommand, UpdateCategoryResponseDto> {
-	id: number;
+  id: number;
 
-	name?: string;
+  name?: string;
 
-	description?: string | null;
+  description?: string | null;
 
-	parentId?: number | null;
+  parentId?: number | null;
 
-	ctx?: string;
+  ctx?: string;
 
-	constructor(command: UpdateCategoryCommand) {
-		super(command);
+  constructor(command: UpdateCategoryCommand) {
+    super(command);
 
-		Object.assign(this, command);
-	}
+    Object.assign(this, command);
+  }
 }
 
 export class UpdateCategoryResponseDto {}

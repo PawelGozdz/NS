@@ -4,13 +4,13 @@ import { Query } from '@libs/cqrs';
 import { UserInfo } from '../../domain';
 
 export class GetUsersQuery extends Query<GetUsersQuery, GetUsersQueryResult> {
-	queryParams?: IUsersQueryParams;
+  queryParams?: IUsersQueryParams;
 
-	constructor(query: GetUsersQuery) {
-		super(query);
+  constructor(query: GetUsersQuery) {
+    super(query);
 
-		Object.assign(this, query);
-	}
+    Object.assign(this, query);
+  }
 }
 
 export type GetUsersQueryResult = UserInfo[];

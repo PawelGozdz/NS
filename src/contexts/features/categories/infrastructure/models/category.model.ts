@@ -3,19 +3,19 @@ import { ICategoryModel } from '@libs/common';
 import { BaseModel } from '@libs/ddd';
 
 export class CategoryModel extends BaseModel implements ICategoryModel {
-	id: number;
+  id: number;
 
-	name: string;
+  name: string;
 
-	description: string | null;
+  description: string | null;
 
-	ctx: string;
+  ctx: string;
 
-	parentId: number | null;
+  parentId: number | null;
 
-	updatedAt: Date;
+  updatedAt: Date;
 
-	createdAt: Date;
+  createdAt: Date;
 
-	static tableName = TableNames.CATEGORIES;
+  static tableName = TableNames.CATEGORIES;
 }

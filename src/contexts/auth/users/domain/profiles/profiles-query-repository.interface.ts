@@ -1,42 +1,43 @@
 import { CountryCode, EntityId } from '@libs/common';
 
 export type ProfileInfo = {
-	id: string;
+  id: string;
 
-	userId: string;
+  userId: string;
 
-	firstName: string | null;
+  firstName: string | null;
 
-	lastName: string | null;
+  lastName: string | null;
 
-	dateOfBirth: Date | null;
+  dateOfBirth: Date | null;
 
-	username: string | null;
+  username: string | null;
 
-	phoneNumber: string | null;
+  phoneNumber: string | null;
 
-	gender: string | null;
+  gender: string | null;
 
-	bio: string | null;
+  bio: string | null;
 
-	hobbies: string[];
+  hobbies: string[];
 
-	languages: string[];
+  languages: string[];
 
-	profilePicture?: string | null;
+  profilePicture?: string | null;
 
-	rodoAcceptanceDate?: Date | null;
+  rodoAcceptanceDate?: Date | null;
 
-	address: {
-		street: string;
-		streetNumber: string | undefined;
-		city: string;
-		countryCode: CountryCode;
-		postalCode: string;
-	} | null;
+  address: {
+    street: string;
+    streetNumber: string | undefined;
+    city: string;
+    countryCode: CountryCode;
+    postalCode: string;
+  } | null;
 };
 
 export abstract class IUsersQueryRepository {
-	abstract getOneById(id: EntityId): Promise<ProfileInfo | undefined>;
-	abstract getOneByUserId(userId: EntityId): Promise<ProfileInfo | undefined>;
+  abstract getOneById(id: EntityId): Promise<ProfileInfo | undefined>;
+
+  abstract getOneByUserId(userId: EntityId): Promise<ProfileInfo | undefined>;
 }

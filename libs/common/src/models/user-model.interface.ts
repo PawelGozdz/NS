@@ -1,11 +1,11 @@
 export abstract class IUserModel {
-	id: string;
+  id: string;
 
-	email: string;
+  email: string;
 
-	updatedAt: Date;
+  updatedAt: Date;
 
-	createdAt: Date;
+  createdAt: Date;
 
-	version: number;
+  version: number;
 }

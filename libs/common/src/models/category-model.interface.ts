@@ -1,15 +1,15 @@
 export abstract class ICategoryModel {
-	id: number;
+  id: number;
 
-	name: string;
+  name: string;
 
-	description: string | null;
+  description: string | null;
 
-	ctx: string;
+  ctx: string;
 
-	parentId: number | null;
+  parentId: number | null;
 
-	updatedAt: Date;
+  updatedAt: Date;
 
-	createdAt: Date;
+  createdAt: Date;
 }

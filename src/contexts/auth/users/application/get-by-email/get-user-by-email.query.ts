@@ -3,13 +3,13 @@ import { Query } from '@libs/cqrs';
 import { UserInfo } from '../../domain';
 
 export class GetUserByEmailQuery extends Query<GetUserByEmailQuery, GetUserByEmailQueryResult> {
-	email: string;
+  email: string;
 
-	constructor(command: GetUserByEmailQuery) {
-		super(command);
+  constructor(command: GetUserByEmailQuery) {
+    super(command);
 
-		Object.assign(this, command);
-	}
+    Object.assign(this, command);
+  }
 }
 
 export type GetUserByEmailQueryResult = UserInfo;

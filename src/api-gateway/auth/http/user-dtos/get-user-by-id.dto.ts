@@ -1,5 +1,6 @@
-import { GlobalDto } from '@libs/common';
 import { PickType } from '@nestjs/swagger';
+
+import { GlobalDto } from '@libs/common';
 
 import { UserResponseDto } from './user-response.dto';
 

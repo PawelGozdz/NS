@@ -1,3 +1,3 @@
 export class BaseModel {
-	static tableName = '';
+  static tableName = '';
 }

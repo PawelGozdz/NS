@@ -1,30 +1,31 @@
-import config from '@app/config';
 import { Global, Module } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
+
+import config from '@app/config';
 
 import { ConfigurableDatabaseModule, Database, dialect, kyselyPlugins } from './kysely.config';
 
 const providers = [
-	{
-		provide: Database,
-		useFactory: (logger: PinoLogger) =>
-			new Database({
-				dialect,
-				log(event) {
-					logger.info('Query:', event.query.sql);
-					if (config.appConfig.DATABASE_LOGGING && event.level === config.appConfig?.DATABASE_LOGGING_LEVEL) {
-						logger.info('Parameters:', event.query.parameters);
-					}
-				},
-				plugins: kyselyPlugins,
-			}),
-		inject: [PinoLogger],
-	},
+  {
+    provide: Database,
+    useFactory: (logger: PinoLogger) =>
+      new Database({
+        dialect,
+        log(event) {
+          logger.info('Query:', event.query.sql);
+          if (config.appConfig.DATABASE_LOGGING && event.level === config.appConfig?.DATABASE_LOGGING_LEVEL) {
+            logger.info('Parameters:', event.query.parameters);
+          }
+        },
+        plugins: kyselyPlugins,
+      }),
+    inject: [PinoLogger],
+  },
 ];
 
 @Global()
 @Module({
-	exports: [Database],
-	providers: [...providers],
+  exports: [Database],
+  providers: [...providers],
 })
 export class DatabaseModule extends ConfigurableDatabaseModule {}

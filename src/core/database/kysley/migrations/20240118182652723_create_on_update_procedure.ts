@@ -2,8 +2,10 @@
 
 import { Kysely, sql } from 'kysely';
 
-export async function up(db: Kysely<any>): Promise<void> {
-	const compiledQuery = sql`
+import { IDatabaseModels } from '@libs/common';
+
+export async function up(db: Kysely<IDatabaseModels>): Promise<void> {
+  const compiledQuery = sql`
         CREATE OR REPLACE FUNCTION on_update_timestamp()
         RETURNS trigger AS $$
         BEGIN
@@ -12,10 +14,10 @@ export async function up(db: Kysely<any>): Promise<void> {
         END;
         $$ language 'plpgsql';
     `;
-	await compiledQuery.execute(db);
+  await compiledQuery.execute(db);
 }
 
-export async function down(db: Kysely<any>): Promise<void> {
-	const compiledQuery = sql`DROP FUNCTION on_update_timestamp`;
-	await compiledQuery.execute(db);
+export async function down(db: Kysely<IDatabaseModels>): Promise<void> {
+  const compiledQuery = sql`DROP FUNCTION on_update_timestamp`;
+  await compiledQuery.execute(db);
 }

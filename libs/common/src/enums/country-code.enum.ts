@@ -1,4 +1,4 @@
 export enum CountryCode {
-	England = 'EN',
-	Poland = 'PL',
+  England = 'EN',
+  Poland = 'PL',
 }

@@ -3,37 +3,37 @@ import { Address, IUserProfileModel } from '@libs/common';
 import { BaseModel } from '@libs/ddd';
 
 export class UserProfileModel extends BaseModel implements IUserProfileModel {
-	id: string;
+  id: string;
 
-	userId: string;
+  userId: string;
 
-	firstName: string | null;
+  firstName: string | null;
 
-	lastName: string | null;
+  lastName: string | null;
 
-	username: string | null;
+  username: string | null;
 
-	address: Address | null;
+  address: Address | null;
 
-	bio: string | null;
+  bio: string | null;
 
-	dateOfBirth: Date | null;
+  dateOfBirth: Date | null;
 
-	gender: string | null;
+  gender: string | null;
 
-	hobbies: string[];
+  hobbies: string[];
 
-	languages: string[];
+  languages: string[];
 
-	phoneNumber: string | null;
+  phoneNumber: string | null;
 
-	profilePicture: string | null;
+  profilePicture: string | null;
 
-	rodoAcceptanceDate: Date | null;
+  rodoAcceptanceDate: Date | null;
 
-	updatedAt: Date;
+  updatedAt: Date;
 
-	createdAt: Date;
+  createdAt: Date;
 
-	static tableName = TableNames.USER_PROFILES;
+  static tableName = TableNames.USER_PROFILES;
 }

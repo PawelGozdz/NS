@@ -1,8 +1,9 @@
-import config from '@app/config';
 import { INestApplication, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import { Logger } from 'nestjs-pino';
+
+import config from '@app/config';
 
 import { ApiGatewayModule } from './api-gateway';
 import { AppModule } from './app.module';
@@ -13,52 +14,53 @@ import { nestApplicationSecirityConfiguration } from './security-configuration';
 import { SwaggerBuilder } from './swagger-setup';
 
 async function buildSwaggers(app: INestApplication) {
-	await SwaggerBuilder.build(app, ApiGatewayModule, '/api-docs', config.appConfig.APP_NAME, 'Rest API documentation', true);
+  await SwaggerBuilder.build(app, ApiGatewayModule, '/api-docs', config.appConfig.APP_NAME, 'Rest API documentation', true);
 }
 
 async function bootstrap() {
-	await otelSDK.start();
+  await otelSDK.start();
 
-	const app = await NestFactory.create(AppModule, {
-		...nestApplicationOptions,
-	});
+  const app = await NestFactory.create(AppModule, {
+    ...nestApplicationOptions,
+  });
 
-	await buildSwaggers(app);
+  await buildSwaggers(app);
 
-	app.use(cookieParser());
+  app.use(cookieParser());
 
-	app.useLogger(app.get(Logger));
-	app.flushLogs();
+  const logger = app.get(Logger);
+  app.useLogger(logger);
+  app.flushLogs();
 
-	// API VERSION
-	app.setGlobalPrefix(config.globalPrefix);
-	app.enableVersioning({
-		type: VersioningType.URI,
-		defaultVersion: config.globalVersioning,
-	});
+  // API VERSION
+  app.setGlobalPrefix(config.globalPrefix);
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: config.globalVersioning,
+  });
 
-	nestApplicationSecirityConfiguration(app);
+  nestApplicationSecirityConfiguration(app);
 
-	const gracefulShutdownServie = app.get(GracefulShutdownService);
-	gracefulShutdownServie.setConfig({
-		app,
-		applicationName: config.appConfig.APP_NAME,
-	});
+  const gracefulShutdownServie = app.get(GracefulShutdownService);
+  gracefulShutdownServie.setConfig({
+    app,
+    applicationName: config.appConfig.APP_NAME,
+  });
 
-	app.enableShutdownHooks();
+  app.enableShutdownHooks();
 
-	await app.listen(config.appConfig.PORT);
+  await app.listen(config.appConfig.PORT);
+
+  process.on('unhandledRejection', (reason, _promise) => {
+    logger.fatal('Unhandled Promise rejection:', reason);
+    process.exit(1);
+    // Handle the unhandled promise rejection here
+  });
+
+  process.on('uncaughtException', (error) => {
+    logger.fatal('Uncaught Exception:', error);
+    process.exit(1);
+    // Handle the uncaught exception here
+  });
 }
 bootstrap();
-
-process.on('unhandledRejection', (reason, promise) => {
-	console.error('Unhandled Promise rejection:', reason);
-	process.exit(1);
-	// Handle the unhandled promise rejection here
-});
-
-process.on('uncaughtException', (error) => {
-	console.error('Uncaught Exception:', error);
-	process.exit(1);
-	// Handle the uncaught exception here
-});

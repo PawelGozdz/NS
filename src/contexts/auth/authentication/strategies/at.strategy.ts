@@ -1,56 +1,62 @@
-import config from '@app/config';
-import { EntityId, IAuthUserModel, UnauthorizedError } from '@libs/common';
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import * as cookie from 'cookie';
 import { Request } from 'express';
+import { PinoLogger } from 'nestjs-pino';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+
+import config from '@app/config';
+import { AppUtils, EntityId, IAuthUserModel, UnauthorizedError } from '@libs/common';
 
 import { AuthService } from '../services';
 import { JwtPayload } from '../types';
 
 @Injectable()
 export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
-	constructor(private readonly authService: AuthService) {
-		super({
-			jwtFromRequest: ExtractJwt.fromExtractors([
-				(req: Request) => {
-					const accessToken = req?.cookies?.Authentication || this.parseCookies(req.headers.cookie || '')?.Authentication;
-					return accessToken;
-				},
-			]),
-			ignoreExpiration: false,
-			secretOrKey: config.appConfig.JWT_ACCESS_TOKEN_SECRET,
-			passReqToCallback: true,
-		});
-	}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly logger: PinoLogger,
+  ) {
+    super({
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request): string | null => {
+          const accessToken = (req?.cookies?.Authentication as string) || this.parseCookies(req.headers.cookie ?? '')?.Authentication;
+          return accessToken;
+        },
+      ]),
+      ignoreExpiration: false,
+      secretOrKey: config.appConfig.JWT_ACCESS_TOKEN_SECRET,
+      passReqToCallback: true,
+    });
+  }
 
-	private parseCookies(cookieAsString: string) {
-		return cookie.parse(cookieAsString || '');
-	}
+  private parseCookies(cookieAsString: string) {
+    return cookie.parse(cookieAsString ?? '');
+  }
 
-	async validate(req: Request, payload: JwtPayload): Promise<IAuthUserModel> {
-		const accessToken = req?.cookies?.Authentication || this.parseCookies(req.headers.cookie || '')?.Authentication;
+  async validate(req: Request, payload: JwtPayload): Promise<IAuthUserModel> {
+    const accessToken = (req?.cookies?.Authentication as string) || this.parseCookies(req.headers.cookie ?? '')?.Authentication;
 
-		if (!accessToken || typeof accessToken !== 'string' || accessToken === '') {
-			throw new UnauthorizedError();
-		}
+    if (typeof accessToken !== 'string' || AppUtils.isEmpty(accessToken)) {
+      throw new UnauthorizedError();
+    }
 
-		const userId = EntityId.create(payload.id);
+    const userId = EntityId.create(payload.id);
 
-		const user = await this.authService.getAuthenticatedUserWithJwt(userId.value);
+    const user = await this.authService.getAuthenticatedUserWithJwt(userId.value);
 
-		if (user) {
-			req.authUser = user;
+    if (!AppUtils.isEmpty(user)) {
+      req.authUser = user;
 
-			req.user = {
-				email: user.email,
-				id: user.userId,
-			};
+      req.user = {
+        email: user.email,
+        id: user.userId,
+      };
 
-			return req.authUser;
-		}
+      return req.authUser;
+    }
 
-		throw new UnauthorizedError();
-	}
+    this.logger.error('User not found with provided access token');
+    throw new UnauthorizedError();
+  }
 }

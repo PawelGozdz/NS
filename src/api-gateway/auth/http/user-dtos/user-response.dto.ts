@@ -1,9 +1,9 @@
 import { ProfileDto } from './profile.dto';
 
 export class UserResponseDto {
-	id: string;
+  id: string;
 
-	email: string;
+  email: string;
 
-	profile: ProfileDto;
+  profile: ProfileDto;
 }

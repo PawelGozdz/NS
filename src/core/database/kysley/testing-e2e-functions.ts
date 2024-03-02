@@ -1,18 +1,23 @@
+/* eslint-disable no-restricted-syntax */
 import { Kysely, Transaction, sql } from 'kysely';
+
+import { IDatabaseModels } from '@libs/common';
+
 import { TableNames } from '../table-names';
 
+type IDatabaseDaos = IDatabaseModels;
 export class TestingE2EFunctions {
-	constructor(private readonly connection: Kysely<any>) {}
+  constructor(private readonly connection: Kysely<IDatabaseDaos>) {}
 
-	async truncateTables(givenTables?: string[], trx?: Transaction<any>) {
-		const tables = !givenTables?.length ? Object.values(TableNames) : givenTables;
+  async truncateTables(givenTables?: string[], trx?: Transaction<IDatabaseDaos>) {
+    const tables = Array.isArray(givenTables) ? givenTables : Object.values(TableNames);
 
-		for await (const tableName of tables) {
-			await sql.raw(`TRUNCATE TABLE ${this.convertCamelToSnakeCase(tableName)} CASCADE`).execute(trx ?? this.connection);
-		}
-	}
+    for await (const tableName of tables) {
+      await sql.raw(`TRUNCATE TABLE ${this.convertCamelToSnakeCase(tableName)} CASCADE`).execute(trx ?? this.connection);
+    }
+  }
 
-	convertCamelToSnakeCase(str: string) {
-		return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
-	}
+  convertCamelToSnakeCase(str: string) {
+    return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+  }
 }

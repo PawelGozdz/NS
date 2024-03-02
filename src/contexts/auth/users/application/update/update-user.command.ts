@@ -2,15 +2,15 @@ import { IUpdateProfile } from '@app/core';
 import { Command } from '@libs/cqrs';
 
 export class UpdateUserCommand extends Command<UpdateUserCommand, void> {
-	id: string;
+  id: string;
 
-	email?: string;
+  email?: string;
 
-	profile?: IUpdateProfile;
+  profile?: IUpdateProfile;
 
-	constructor(command: UpdateUserCommand) {
-		super(command);
+  constructor(command: UpdateUserCommand) {
+    super(command);
 
-		Object.assign(this, command);
-	}
+    Object.assign(this, command);
+  }
 }

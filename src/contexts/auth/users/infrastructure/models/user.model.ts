@@ -5,17 +5,17 @@ import { BaseModel } from '@libs/ddd';
 import { UserProfileModel } from './profile.model';
 
 export class UserModel extends BaseModel implements IUserModel {
-	id: string;
+  id: string;
 
-	email: string;
+  email: string;
 
-	profile: UserProfileModel;
+  profile: UserProfileModel;
 
-	updatedAt: Date;
+  updatedAt: Date;
 
-	createdAt: Date;
+  createdAt: Date;
 
-	version: number;
+  version: number;
 
-	static tableName = TableNames.USERS;
+  static tableName = TableNames.USERS;
 }

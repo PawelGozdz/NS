@@ -2,21 +2,11 @@
 module.exports = {
   options: {
     doNotFollow: {
-      dependencyTypes: [
-        "npm",
-        "npm-dev",
-        "npm-optional",
-        "npm-peer",
-        "npm-bundled",
-        "npm-no-pkg",
-      ],
-      path: [
-        "node_modules",
-        "dist"
-      ]
+      dependencyTypes: ['npm', 'npm-dev', 'npm-optional', 'npm-peer', 'npm-bundled', 'npm-no-pkg'],
+      path: ['node_modules', 'dist'],
     },
     maxDepth: 3,
-    includeOnly: ["^libs/[^/]+", "^src/[^/]+"],
+    includeOnly: ['^libs/[^/]+', '^src/[^/]+'],
 
     // focus: {
     //   "path": "table-names\\.ts$",
@@ -31,35 +21,35 @@ module.exports = {
     tsConfig: {},
 
     exclude: {
-      path: "^(src/e2e-tests|node_modules+)"
+      path: '^(src/e2e-tests|node_modules+)',
     },
 
-    progress: { type: "performance-log" },
+    progress: { type: 'performance-log' },
 
     reporterOptions: {
       archi: {
-        collapsePattern: "^src/[^/]+",
-        "theme": {
-          "graph": {
-            "splines": "ortho"
+        collapsePattern: '^src/[^/]+',
+        theme: {
+          graph: {
+            splines: 'ortho',
           },
-          "modules": [
+          modules: [
             {
-              "criteria": { "matchesReaches": true },
-              "attributes": {
-                "fillcolor": "lime"
-              }
+              criteria: { matchesReaches: true },
+              attributes: {
+                fillcolor: 'lime',
+              },
             },
             {
-              "criteria": { "matchesReaches": false },
-              "attributes": {
-                "fillcolor": "lightgray",
-                "fontcolor": "gray"
-              }
-            }
-          ]
-        }
+              criteria: { matchesReaches: false },
+              attributes: {
+                fillcolor: 'lightgray',
+                fontcolor: 'gray',
+              },
+            },
+          ],
+        },
       },
     },
-  }
+  },
 };

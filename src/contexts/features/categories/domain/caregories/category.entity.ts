@@ -1,58 +1,58 @@
 export class Category {
-	id: number;
+  id: number;
 
-	name: string;
+  name: string;
 
-	description?: string | null;
+  description?: string | null;
 
-	parentId?: number | null;
+  parentId?: number | null;
 
-	ctx: string;
+  ctx: string;
 
-	constructor(props: Category) {
-		this.id = props.id;
-		this.name = props.name;
-		this.description = props.description ?? null;
-		this.parentId = props.parentId ?? null;
-		this.ctx = props.ctx;
-	}
+  constructor(props: Category) {
+    this.id = props.id;
+    this.name = props.name;
+    this.description = props.description ?? null;
+    this.parentId = props.parentId ?? null;
+    this.ctx = props.ctx;
+  }
 
-	public static create({
-		id,
-		name,
-		description,
-		parentId,
-		ctx,
-	}: {
-		id: number;
-		name: string;
-		description?: string | null;
-		parentId?: number | null;
-		ctx: string;
-	}): Category {
-		const category = new Category({
-			id,
-			name,
-			description: description ?? null,
-			parentId: parentId ?? null,
-			ctx,
-		});
+  public static create({
+    id,
+    name,
+    description,
+    parentId,
+    ctx,
+  }: {
+    id: number;
+    name: string;
+    description?: string | null;
+    parentId?: number | null;
+    ctx: string;
+  }): Category {
+    const category = new Category({
+      id,
+      name,
+      description: description ?? null,
+      parentId: parentId ?? null,
+      ctx,
+    });
 
-		return category;
-	}
+    return category;
+  }
 }
 
 export type ICategoryCreateData = {
-	name: string;
-	description?: string | null;
-	parentId?: number | null;
-	ctx: string;
+  name: string;
+  description?: string | null;
+  parentId?: number | null;
+  ctx: string;
 };
 
 export type ICategoryUpdateData = {
-	id: number;
-	name?: string;
-	description?: string | null;
-	ctx?: string;
-	parentId?: number | null;
+  id: number;
+  name?: string;
+  description?: string | null;
+  ctx?: string;
+  parentId?: number | null;
 };

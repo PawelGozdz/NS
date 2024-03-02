@@ -1,15 +1,15 @@
 import { Command } from '@libs/cqrs';
 
 export class CreateUserCommand extends Command<CreateUserCommand, CreateUserResponse> {
-	email: string;
+  email: string;
 
-	constructor(command: CreateUserCommand) {
-		super(command);
+  constructor(command: CreateUserCommand) {
+    super(command);
 
-		Object.assign(this, command);
-	}
+    Object.assign(this, command);
+  }
 }
 
 export type CreateUserResponse = {
-	id: string;
+  id: string;
 };

@@ -1,41 +1,41 @@
 import { CountryCode } from '@libs/common';
 
 export abstract class IUserProfileModel {
-	id: string;
+  id: string;
 
-	userId: string;
+  userId: string;
 
-	firstName: string | null;
+  firstName: string | null;
 
-	lastName: string | null;
+  lastName: string | null;
 
-	dateOfBirth: Date | null;
+  dateOfBirth: Date | null;
 
-	username: string | null;
+  username: string | null;
 
-	phoneNumber: string | null;
+  phoneNumber: string | null;
 
-	gender: string | null;
+  gender: string | null;
 
-	bio: string | null;
+  bio: string | null;
 
-	hobbies: string[];
+  hobbies: string[];
 
-	languages: string[];
+  languages: string[];
 
-	profilePicture?: string | null;
+  profilePicture?: string | null;
 
-	rodoAcceptanceDate?: Date | null;
+  rodoAcceptanceDate?: Date | null;
 
-	address: {
-		street: string;
-		streetNumber: string | undefined;
-		city: string;
-		countryCode: CountryCode;
-		postalCode: string;
-	} | null;
+  address: {
+    street: string;
+    streetNumber: string | undefined;
+    city: string;
+    countryCode: CountryCode;
+    postalCode: string;
+  } | null;
 
-	updatedAt: Date;
+  updatedAt: Date;
 
-	createdAt: Date;
+  createdAt: Date;
 }

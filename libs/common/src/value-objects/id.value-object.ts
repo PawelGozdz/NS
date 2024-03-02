@@ -3,29 +3,29 @@ import { isUUID } from 'class-validator';
 import { AppUtils, InvalidParameterError, MissingValueError } from '@libs/common';
 
 export class EntityId {
-	constructor(readonly value: string) {}
+  constructor(readonly value: string) {}
 
-	static createRandom() {
-		return new EntityId(AppUtils.getUUID());
-	}
+  static createRandom() {
+    return new EntityId(AppUtils.getUUID());
+  }
 
-	static create(value: string): EntityId {
-		if (!value) {
-			throw MissingValueError.withValue('entity identifier');
-		}
+  static create(value: string): EntityId {
+    if (!value) {
+      throw MissingValueError.withValue('entity identifier');
+    }
 
-		if (!isUUID(value)) {
-			throw InvalidParameterError.withParameter('entity identifier');
-		}
+    if (!isUUID(value)) {
+      throw InvalidParameterError.withParameter('entity identifier');
+    }
 
-		return new EntityId(value);
-	}
+    return new EntityId(value);
+  }
 
-	equals(entityId: EntityId) {
-		return this.value === entityId.value;
-	}
+  equals(entityId: EntityId) {
+    return this.value === entityId.value;
+  }
 
-	toJSON() {
-		return this.value;
-	}
+  toJSON() {
+    return this.value;
+  }
 }

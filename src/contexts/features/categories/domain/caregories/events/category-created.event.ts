@@ -1,19 +1,19 @@
 import { Event } from '@libs/cqrs';
 
 export class CategoryCreatedEvent extends Event<CategoryCreatedEvent> {
-	id: number;
+  id: number;
 
-	name: string;
+  name: string;
 
-	description: string | null;
+  description: string | null;
 
-	parentId: number | null;
+  parentId: number | null;
 
-	ctx: string;
+  ctx: string;
 
-	constructor(event: CategoryCreatedEvent) {
-		super(event);
+  constructor(event: CategoryCreatedEvent) {
+    super(event);
 
-		Object.assign(this, event);
-	}
+    Object.assign(this, event);
+  }
 }

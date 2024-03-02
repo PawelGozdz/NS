@@ -7,16 +7,16 @@ export type QueryBusMock = jest.Mocked<IQueryBus>;
 export type CommandBusMock = jest.Mocked<ICommandBus>;
 
 @Module({
-	providers: [
-		{
-			provide: QueryBus,
-			useFactory: createMock,
-		},
-		{
-			provide: CommandBus,
-			useFactory: createMock,
-		},
-	],
-	exports: [CommandBus, QueryBus],
+  providers: [
+    {
+      provide: QueryBus,
+      useFactory: createMock,
+    },
+    {
+      provide: CommandBus,
+      useFactory: createMock,
+    },
+  ],
+  exports: [CommandBus, QueryBus],
 })
 export class TestCqrsModule {}

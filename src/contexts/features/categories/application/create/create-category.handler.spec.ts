@@ -1,76 +1,77 @@
 import { createMock } from '@golevelup/ts-jest';
-import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 import { Test } from '@nestjs/testing';
+
+import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 
 import { CategoryAlreadyExistsError, CategoryEntityFixtureFactory, ICategoriesCommandRepository } from '../../domain';
 import { CreateCategoryCommand } from './create-category.command';
 import { CreateCategoryHandler } from './create-category.handler';
 
 describe('CreateCategoryHandler', () => {
-	let handler: CreateCategoryHandler;
-	let categoryCommandRepositoryMock: jest.Mocked<ICategoriesCommandRepository>;
+  let handler: CreateCategoryHandler;
+  let categoryCommandRepositoryMock: jest.Mocked<ICategoriesCommandRepository>;
 
-	beforeEach(async () => {
-		categoryCommandRepositoryMock = createMock();
+  beforeEach(async () => {
+    categoryCommandRepositoryMock = createMock();
 
-		const app = await Test.createTestingModule({
-			imports: [TestLoggerModule.forRoot(), TestCqrsModule],
-			providers: [
-				CreateCategoryHandler,
-				{
-					provide: ICategoriesCommandRepository,
-					useValue: categoryCommandRepositoryMock,
-				},
-			],
-		}).compile();
+    const app = await Test.createTestingModule({
+      imports: [TestLoggerModule.forRoot(), TestCqrsModule],
+      providers: [
+        CreateCategoryHandler,
+        {
+          provide: ICategoriesCommandRepository,
+          useValue: categoryCommandRepositoryMock,
+        },
+      ],
+    }).compile();
 
-		handler = app.get(CreateCategoryHandler);
-	});
+    handler = app.get(CreateCategoryHandler);
+  });
 
-	const name = 'test';
-	const ctx = 'test-ctx';
-	const id = 1;
-	const command = new CreateCategoryCommand({
-		name,
-		ctx,
-	});
+  const name = 'test';
+  const ctx = 'test-ctx';
+  const id = 1;
+  const command = new CreateCategoryCommand({
+    name,
+    ctx,
+  });
 
-	const categoryEntity = CategoryEntityFixtureFactory.create();
+  const categoryEntity = CategoryEntityFixtureFactory.create();
 
-	describe('Success', () => {
-		it('should create new category', async () => {
-			// Arrange
-			categoryCommandRepositoryMock.getOneByNameAndContext.mockResolvedValueOnce(undefined);
-			categoryCommandRepositoryMock.save.mockResolvedValueOnce({ id });
+  describe('Success', () => {
+    it('should create new category', async () => {
+      // Arrange
+      categoryCommandRepositoryMock.getOneByNameAndContext.mockResolvedValueOnce(undefined);
+      categoryCommandRepositoryMock.save.mockResolvedValueOnce({ id });
 
-			// Act
-			const result = await handler.execute(command);
+      // Act
+      const result = await handler.execute(command);
 
-			// Assert
+      // Assert
 
-			expect(categoryCommandRepositoryMock.save).toHaveBeenCalledWith({
-				name,
-				ctx,
-				description: undefined,
-				parentId: undefined,
-			});
-			expect(result).toMatchSnapshot();
-		});
-	});
+      expect(categoryCommandRepositoryMock.save).toHaveBeenCalledWith({
+        name,
+        ctx,
+        description: undefined,
+        parentId: undefined,
+      });
+      expect(result).toMatchSnapshot();
+    });
+  });
 
-	describe('failure', () => {
-		it('should throw CategoryAlreadyExistsError', async () => {
-			// Arrange
-			categoryCommandRepositoryMock.getOneByNameAndContext.mockResolvedValueOnce(categoryEntity);
+  describe('failure', () => {
+    it('should throw CategoryAlreadyExistsError', async () => {
+      // Arrange
+      categoryCommandRepositoryMock.getOneByNameAndContext.mockResolvedValueOnce(categoryEntity);
 
-			// Act
-			const { error } = await catchActError(() => handler.execute(command));
+      // Act
+      const { error } = await catchActError(() => handler.execute(command));
 
-			// Assert
+      // Assert
 
-			expect(categoryCommandRepositoryMock.save).toHaveBeenCalledTimes(0);
-			expect(error).toBeInstanceOf(CategoryAlreadyExistsError);
-			expect(error).toMatchSnapshot();
-		});
-	});
+      expect(categoryCommandRepositoryMock.save).toHaveBeenCalledTimes(0);
+      expect(error).toBeInstanceOf(CategoryAlreadyExistsError);
+      expect(error).toMatchSnapshot();
+    });
+  });
 });

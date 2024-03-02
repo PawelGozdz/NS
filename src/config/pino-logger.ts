@@ -1,63 +1,61 @@
-import { mergePatch, redact } from '@libs/common';
+/* eslint-disable import/no-extraneous-dependencies */
 import { RequestMethod } from '@nestjs/common';
 import { context, trace } from '@opentelemetry/api';
 import { Request } from 'express';
 import { Params } from 'nestjs-pino';
+
+import { AppUtils, mergePatch, redact } from '@libs/common';
 
 import { Environment, appConfig } from './app';
 
 const isProduction = appConfig.NODE_ENV === Environment.PRODUCTION;
 
 const options: Params = {
-	pinoHttp: {
-		autoLogging: isProduction
-			? {
-					ignore: (req) => (req as Request).originalUrl === '/',
-				}
-			: false,
-		formatters: {
-			log(object) {
-				const objCopy = { ...object };
+  pinoHttp: {
+    autoLogging: isProduction ? { ignore: (req) => (req as Request).originalUrl === '/' } : false,
+    formatters: {
+      log(object) {
+        const objCopy = { ...object };
 
-				delete objCopy.context;
-				const activeSpan = trace.getSpan(context.active());
+        delete objCopy.context;
+        const activeSpan = trace.getSpan(context.active());
 
-				const res: { [key: string]: any } = mergePatch({ __context: object.context }, objCopy);
+        const res: { [key: string]: unknown } = mergePatch({ __context: object.context }, objCopy);
 
-				const redacted = appConfig.MASKING_ENABLED ? redact.json(res) : res;
+        const redacted = appConfig.MASKING_ENABLED ? redact.json(res) : res;
 
-				if (!activeSpan) {
-					return redacted;
-				}
+        if (AppUtils.isEmpty(activeSpan)) {
+          return redacted;
+        }
 
-				if (redacted.__context) {
-					const ctx = trace.getSpan(context.active())?.spanContext();
+        if ('__context' in redacted) {
+          const ctx = trace.getSpan(context.active())?.spanContext();
 
-					redacted.__spanId = ctx?.spanId;
-					redacted.__traceId = ctx?.traceId;
+          redacted.__spanId = ctx?.spanId;
+          redacted.__traceId = ctx?.traceId;
 
-					activeSpan?.addEvent(JSON.stringify(redacted));
-				}
+          activeSpan?.addEvent(JSON.stringify(redacted));
+        }
 
-				return redacted;
-			},
-		},
-		transport: {
-			targets: [
-				{
-					target: 'pino-pretty',
-					level: appConfig.LOG_LEVEL || 'info',
-					options: {
-						colorize: true,
-						translateTime: 'yyyy-mm-dd HH:MM:ss',
-						levelFirst: true,
-						ignore: 'hostname,pid,res,req,responseTime',
-					},
-				},
-			],
-		},
-	},
-	exclude: [{ method: RequestMethod.POST, path: 'health' }],
+        return redacted;
+      },
+    },
+    transport: {
+      targets: [
+        {
+          target: 'pino-pretty',
+          level: appConfig.LOG_LEVEL ?? 'info',
+          options: {
+            colorize: true,
+            translateTime: 'yyyy-mm-dd HH:MM:ss',
+            levelFirst: true,
+            ignore: 'hostname,pid,res,req,responseTime',
+          },
+        },
+      ],
+    },
+  },
+  exclude: [{ method: RequestMethod.POST, path: 'health' }],
 };
 
 export default options;
