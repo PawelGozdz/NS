@@ -1,5 +1,4 @@
-import { TableNames } from '@app/core';
-import { ICategoryModel } from '@libs/common';
+import { ICategoryModel, TableNames } from '@app/core';
 import { BaseModel } from '@libs/ddd';
 
 export class CategoryModel extends BaseModel implements ICategoryModel {

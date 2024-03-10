@@ -1,7 +1,6 @@
 import { Kysely, Transaction } from 'kysely';
 
-import { TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { IDatabaseModels } from '@libs/common';
+import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { AuthenticationServer } from '@libs/testing';
 
 import { UserSeedBuilder } from './user-builder';

@@ -1,5 +1,5 @@
-import { TableNames } from '@app/core';
-import { EntityId, IAuthUserModel } from '@libs/common';
+import { IAuthUserModel, TableNames } from '@app/core';
+import { EntityId } from '@libs/common';
 
 export class AuthUserModel extends IAuthUserModel {
   static tableName = TableNames.AUTH_USERS;

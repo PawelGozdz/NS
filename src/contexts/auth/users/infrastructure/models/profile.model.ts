@@ -1,5 +1,5 @@
-import { TableNames } from '@app/core';
-import { Address, IUserProfileModel } from '@libs/common';
+import { IUserProfileModel, TableNames } from '@app/core';
+import { Address } from '@libs/common';
 import { BaseModel } from '@libs/ddd';
 
 export class UserProfileModel extends BaseModel implements IUserProfileModel {

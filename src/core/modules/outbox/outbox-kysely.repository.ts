@@ -1,7 +1,6 @@
 import { Kysely } from 'kysely';
 
-import { TableNames } from '@app/core';
-import { IDatabaseModels, IOutboxInput } from '@libs/common';
+import { IDatabaseModels, IOutboxInput, TableNames } from '@app/core';
 
 import { IOutboxRepository } from './outbox-repository.interface';
 import { Outbox, OutboxModel } from './outbox.model';
