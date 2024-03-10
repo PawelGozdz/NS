@@ -2,7 +2,7 @@
 
 import { Kysely, sql } from 'kysely';
 
-import { IDatabaseModels } from '@libs/common';
+import { IDatabaseModels } from '@app/core';
 
 export async function up(db: Kysely<IDatabaseModels>): Promise<void> {
   const compiledQuery = sql`

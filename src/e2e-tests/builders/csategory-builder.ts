@@ -1,8 +1,7 @@
 import { Kysely } from 'kysely';
 
 import { CategoryModel } from '@app/contexts';
-import { TableNames, dialect, kyselyPlugins } from '@app/core';
-import { IDatabaseModels } from '@libs/common';
+import { IDatabaseModels, TableNames, dialect, kyselyPlugins } from '@app/core';
 
 import { CategoryFixtureFactory } from '../fixtures';
 

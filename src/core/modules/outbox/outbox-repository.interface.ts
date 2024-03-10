@@ -1,4 +1,4 @@
-import { IOutboxInput } from '@libs/common';
+import { IOutboxInput } from '@app/core';
 
 import { Outbox } from './outbox.model';
 

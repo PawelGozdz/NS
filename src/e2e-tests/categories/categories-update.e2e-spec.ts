@@ -3,8 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-import { TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { IDatabaseModels } from '@libs/common';
+import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { TestLoggerModule } from '@libs/testing';
 
 import { AppModule } from '../../app.module';

@@ -2,8 +2,7 @@
 import { Kysely, Transaction } from 'kysely';
 
 import { AuthUserModel, UserModel, UserProfileModel } from '@app/contexts';
-import { TableNames, dialect, kyselyPlugins } from '@app/core';
-import { IDatabaseModels } from '@libs/common';
+import { IDatabaseModels, TableNames, dialect, kyselyPlugins } from '@app/core';
 
 import { AuthUserFixtureFactory, ProfileFixtureFactory, UserFixtureFactory } from '../fixtures';
 
