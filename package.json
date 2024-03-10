@@ -73,7 +73,7 @@
     "nest-commander": "^3.12.2",
     "nestjs-cls": "^3.6.0",
     "nestjs-otel": "^5.1.5",
-    "nestjs-pino": "^3.5.0",
+    "nestjs-pino": "^4.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.11.3",
@@ -90,9 +90,11 @@
     "@babel/plugin-proposal-decorators": "^7.23.5",
     "@babel/preset-env": "^7.23.5",
     "@babel/preset-typescript": "^7.23.3",
+    "@commitlint/cli": "^19.0.3",
     "@commitlint/config-conventional": "^19.0.3",
     "@commitlint/lint": "^19.0.3",
     "@commitlint/load": "^19.0.3",
+    "@faker-js/faker": "^5.5.3",
     "@golevelup/ts-jest": "^0.4.0",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
@@ -111,6 +113,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "babel-jest": "^29.7.0",
+    "commitizen": "^4.3.0",
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
     "dependency-cruiser": "^16.2.1",
@@ -121,7 +124,6 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-security": "^2.1.1",
-    "@faker-js/faker": "^5.5.3",
     "husky": "^8.0.0",
     "jest": "^29.5.0",
     "lint-staged": "^15.2.2",
@@ -146,6 +148,13 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "sh .husky/prepare-commit-msg",
+      "commit-msg": "sh .husky/commit-msg",
+      "pre-commit": "sh .husky/pre-commit"
     }
   }
 }

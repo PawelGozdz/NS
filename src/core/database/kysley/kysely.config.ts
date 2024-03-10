@@ -2,8 +2,8 @@ import { ConfigurableModuleBuilder, Injectable } from '@nestjs/common';
 import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 
-import { IDatabaseModels } from '@libs/common';
 import config from '@app/config';
+import { IDatabaseModels } from '@app/core';
 
 export const { ConfigurableModuleClass: ConfigurableDatabaseModule } = new ConfigurableModuleBuilder().setClassMethodName('forRoot').build();
 

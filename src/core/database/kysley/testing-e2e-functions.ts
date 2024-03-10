@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import { Kysely, Transaction, sql } from 'kysely';
 
-import { IDatabaseModels } from '@libs/common';
+import { IDatabaseModels } from '@app/core';
 
 import { TableNames } from '../table-names';
 

@@ -1,5 +1,4 @@
-import { TableNames } from '@app/core';
-import { IUserModel } from '@libs/common';
+import { IUserModel, TableNames } from '@app/core';
 import { BaseModel } from '@libs/ddd';
 
 import { UserProfileModel } from './profile.model';

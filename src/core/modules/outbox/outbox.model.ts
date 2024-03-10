@@ -1,4 +1,4 @@
-import { IOutboxModel } from '@libs/common';
+import { IOutboxModel } from '@app/core';
 import { Event } from '@libs/cqrs';
 
 export class Outbox {

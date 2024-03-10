@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Transaction } from 'kysely';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 
-import { Database, TableNames } from '@app/core';
-import { EntityId, IDatabaseModels } from '@libs/common';
+import { Database, IDatabaseModels, TableNames } from '@app/core';
+import { EntityId } from '@libs/common';
 import { EventBus } from '@libs/cqrs';
 import { EntityRepository } from '@libs/ddd';
 
