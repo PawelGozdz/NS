@@ -6,7 +6,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import config from '@app/config';
-import { AppUtils, EntityId, IAuthUserModel, UnauthorizedError } from '@libs/common';
+import { AppUtils, EntityId, UnauthorizedError } from '@libs/common';
 
 import { AuthService } from '../services';
 import { JwtPayload } from '../types';
@@ -34,7 +34,7 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
     return cookie.parse(cookieAsString ?? '');
   }
 
-  async validate(req: Request, payload: JwtPayload): Promise<IAuthUserModel> {
+  async validate(req: Request, payload: JwtPayload) {
     const accessToken = (req?.cookies?.Authentication as string) || this.parseCookies(req.headers.cookie ?? '')?.Authentication;
 
     if (typeof accessToken !== 'string' || AppUtils.isEmpty(accessToken)) {

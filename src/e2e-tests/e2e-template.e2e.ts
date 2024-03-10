@@ -5,8 +5,7 @@ import { Kysely } from 'kysely';
 import request from 'supertest';
 
 import { AppModule } from '@app/app.module';
-import { TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { IDatabaseModels } from '@libs/common';
+import { IDatabaseModels, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { TestLoggerModule } from '@libs/testing';
 
 type IDdbDaos = IDatabaseModels;
