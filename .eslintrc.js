@@ -35,6 +35,7 @@ module.exports = {
 
     'prettier/prettier': ['error', {}, { usePrettierrc: true }],
     '@typescript-eslint/indent': 'off',
+    indent: 'off',
 
     // TypeScript Rules
     '@typescript-eslint/no-explicit-any': 'error',
