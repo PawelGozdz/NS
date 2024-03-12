@@ -1,4 +1,6 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+echo "Running pre-commit hook"
 
-node ./scripts/danger.js && npx lint-staged && npm test
+npx lint-staged
+

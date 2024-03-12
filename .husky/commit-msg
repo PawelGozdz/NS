@@ -1,0 +1,19 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+echo "Running commit-msg hook"
+echo "\033[36mMake sure that the commit message matches the required format (HI-XXXX)\033[0m"
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG_CONTENT=$(cat $COMMIT_MSG_FILE)
+
+REGEX="\\(HI-[0-9]{1,4}\\)$"
+
+if ! echo "$COMMIT_MSG_CONTENT" | grep -qE "$REGEX"; then
+    echo "\033[31mError: Commit message does not match required format\033[0m"
+    echo "\033[31mError: Commit message should come first and the ticket number at the very end (HI-XXXX)\033[0m"
+    exit 1
+fi
+
+echo "\033[32mCommit message format is correct\033[0m"
+
+npx commitlint --edit $1
