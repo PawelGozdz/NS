@@ -72,3 +72,19 @@ Generating graph:
 Skip running Husky
 
 `git commit -m "intitial commit" --no-verify`
+
+### Running Husky scripts
+
+By default Husky runs on each `git commit`
+It runs eslint and prettier. After that commit message prompt pops up and message validation at the very end.
+
+## Commit Message Format
+
+Each commit message must adhere to the following format:
+
+Where:
+
+- The short description is a brief summary of the changes the commit introduces. It should be written in present tense.
+- `(HI-XXXX)` is the JIRA ticket number associated with the commit. Replace `XXXX` with the actual ticket number. This should be placed at the end of the commit message.
+
+For example: `Add new feature to component (HI-1234)`
