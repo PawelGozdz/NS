@@ -1,11 +1,11 @@
-name: Release
+name: Develop
 on:
   push:
     branches:
       - develop
 jobs:
   release:
-    name: Develop
+    name: 'Release to develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -15,8 +15,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
+          node-version: '20.7.0'
       - name: Install dependencies
         run: npm install
-      - name: Develop
+      - name: Testing
         run: npm test
+      - name: 'Dependency Cruiser check'
+        run: npm run depcruise:test
