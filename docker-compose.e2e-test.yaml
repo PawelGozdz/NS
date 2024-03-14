@@ -3,7 +3,7 @@ name: huntit-e2e-test
 
 services:
   backend-database-e2e:
-    image: postgres:14
+    image: postgres:16
     container_name: backend-database-e2e
     env_file:
       - .env.test

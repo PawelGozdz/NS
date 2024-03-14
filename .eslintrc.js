@@ -97,7 +97,7 @@ module.exports = {
     'max-classes-per-file': 'off',
     '@typescript-eslint/no-use-before-define': ['error', { functions: false, classes: true, variables: true }],
     'no-restricted-syntax': 'off',
-    'no-underscore-dangle': ['error', { allow: ['_filter', '__spanId', '__traceId', '_context'] }],
+    'no-underscore-dangle': ['error', { allow: ['_filter', '_spanId', '_traceId', '_ctx'] }],
     indent: 'off',
 
     // Import and Dependencies

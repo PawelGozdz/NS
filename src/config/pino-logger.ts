@@ -1,38 +1,71 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { RequestMethod } from '@nestjs/common';
 import { context, trace } from '@opentelemetry/api';
-import { Request } from 'express';
 import { Params } from 'nestjs-pino';
 
-import { AppUtils, mergePatch, redact } from '@libs/common';
+import { AppUtils, redact } from '@libs/common';
 
-import { Environment, appConfig } from './app';
+import { appConfig } from './app';
 
-const isProduction = appConfig.NODE_ENV === Environment.PRODUCTION;
+type LogResponseObj = {
+  metadata: {
+    _ctx: string;
+    _traceId?: string;
+    _spanId?: string;
+  };
+  props?: { [key: string]: unknown };
+  err?: { message: string; stack?: unknown; [key: string]: unknown };
+};
 
 const options: Params = {
+  renameContext: '_ctx',
   pinoHttp: {
-    autoLogging: isProduction ? { ignore: (req) => (req as Request).originalUrl === '/' } : false,
+    autoLogging: false,
     formatters: {
       log(object) {
-        const objCopy = { ...object };
+        if (AppUtils.isEmpty(object)) {
+          return object;
+        }
 
-        delete objCopy.context;
+        const { _ctx, err, ...rest } = object;
+
         const activeSpan = trace.getSpan(context.active());
 
-        const res: { [key: string]: unknown } = mergePatch({ __context: object.context }, objCopy);
+        const res: LogResponseObj = {
+          metadata: {
+            _ctx: _ctx as string,
+          },
+        };
 
-        const redacted = appConfig.MASKING_ENABLED ? redact.json(res) : res;
+        if (AppUtils.isNotEmpty(rest)) {
+          res.props = rest;
+        }
+
+        const redacted = (appConfig.MASKING_ENABLED ? redact.json(res) : res) as LogResponseObj;
 
         if (AppUtils.isEmpty(activeSpan)) {
           return redacted;
         }
 
-        if ('__context' in redacted) {
+        if (err instanceof Error) {
+          redacted.err = {
+            ...err,
+            message: err.message,
+            stack: err.stack,
+          };
+        } else if (AppUtils.isNotEmpty(err) && typeof err === 'object') {
+          const error = err as Record<string, unknown>;
+          redacted.err = {
+            ...err,
+            message: AppUtils.isNotEmpty(error.message) ? (error.message as string) : 'Unknown error',
+          };
+        }
+
+        if ('_ctx' in redacted.metadata) {
           const ctx = trace.getSpan(context.active())?.spanContext();
 
-          redacted.__spanId = ctx?.spanId;
-          redacted.__traceId = ctx?.traceId;
+          redacted.metadata._spanId = ctx?.spanId;
+          redacted.metadata._traceId = ctx?.traceId;
 
           activeSpan?.addEvent(JSON.stringify(redacted));
         }
