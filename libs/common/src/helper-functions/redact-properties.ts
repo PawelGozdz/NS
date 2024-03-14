@@ -10,7 +10,7 @@ class Redact {
       unmaskedEndCharactersAfterAt: 3,
       maskAtTheRate: false,
     },
-    emailFields: generateWildcardCombinations(['email'], ['dto', 'user', 'event']),
+    emailFields: generateWildcardCombinations(['email'], ['dto', 'user', 'event', 'props']),
 
     passwordMaskOptions: {
       maskWith: '*',
@@ -18,7 +18,7 @@ class Redact {
       unmaskedStartCharacters: 0,
       unmaskedEndCharacters: 0,
     },
-    passwordFields: generateWildcardCombinations(['password'], ['dto', 'user', 'event']),
+    passwordFields: generateWildcardCombinations(['password'], ['dto', 'user', 'event', 'props']),
 
     uuidMaskOptions: {
       maskWith: '*',
@@ -45,7 +45,7 @@ class Redact {
           unmaskedStartCharacters: 3,
           unmaskedEndCharacters: 2,
         },
-        fields: generateWildcardCombinations(['hash', 'hashedRt'], ['dto', 'user', 'event']),
+        fields: generateWildcardCombinations(['hash', 'hashedRt'], ['dto', 'user', 'event', 'props']),
       },
     ],
   };
