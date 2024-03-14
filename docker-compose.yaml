@@ -3,7 +3,7 @@ name: huntit
 
 services:
   backend-database:
-    image: postgres:14
+    image: postgres:16
     container_name: backend-database
     env_file:
       - .env
