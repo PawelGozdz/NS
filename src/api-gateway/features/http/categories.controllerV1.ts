@@ -59,7 +59,7 @@ export class CategoriesControllerV1 {
         name: dto.name,
         description: dto.description,
         parentId: dto.parentId,
-        ctx: dto.ctx,
+        context: dto.context,
       }),
     );
   }
@@ -81,7 +81,7 @@ export class CategoriesControllerV1 {
         _filter: {
           id: dto?._filter?.id,
           name: dto?._filter?.name,
-          ctx: dto?._filter?.ctx,
+          context: dto?._filter?.context,
           parentId: dto?._filter?.parentId,
         },
       }),
@@ -117,7 +117,7 @@ export class CategoriesControllerV1 {
         name: dto.name,
         description: dto.description,
         parentId: dto.parentId,
-        ctx: dto.ctx,
+        context: dto.context,
       }),
     );
   }

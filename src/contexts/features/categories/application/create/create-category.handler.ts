@@ -18,10 +18,10 @@ export class CreateCategoryHandler implements IInferredCommandHandler<CreateCate
   async execute(command: CreateCategoryCommand): Promise<CreateCategoryResponseDto> {
     this.logger.info(command, 'Creating category:');
 
-    const currentEntity = await this.categoryCommandRepository.getOneByNameAndContext(command.name, command.ctx);
+    const currentEntity = await this.categoryCommandRepository.getOneByNameAndContext(command.name, command.context);
 
     if (currentEntity) {
-      throw CategoryAlreadyExistsError.withNameAndContext(command.name, command.ctx);
+      throw CategoryAlreadyExistsError.withNameAndContext(command.name, command.context);
     }
 
     const category = await this.categoryCommandRepository.save(this.createCategoryInstance(command));
@@ -34,7 +34,7 @@ export class CreateCategoryHandler implements IInferredCommandHandler<CreateCate
   private createCategoryInstance(command: CreateCategoryCommand) {
     return {
       name: command.name,
-      ctx: command.ctx,
+      context: command.context,
       description: command.description,
       parentId: command.parentId,
     };

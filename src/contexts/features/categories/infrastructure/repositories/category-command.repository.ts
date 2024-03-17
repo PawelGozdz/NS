@@ -26,7 +26,7 @@ export class CategoriesCommandRepository implements ICategoriesCommandRepository
 
   async getOneByNameAndContext(name: string, context: string): Promise<Category | undefined> {
     try {
-      const entity = await this.getCategory().where('c.name', '=', name).where('c.ctx', '=', context).executeTakeFirst();
+      const entity = await this.getCategory().where('c.name', '=', name).where('c.context', '=', context).executeTakeFirst();
 
       if (!entity) {
         return undefined;
@@ -45,7 +45,7 @@ export class CategoriesCommandRepository implements ICategoriesCommandRepository
         .values({
           name: category.name,
           description: category.description,
-          ctx: category.ctx,
+          context: category.context,
           parentId: category.parentId,
         } as CategoryModel)
         .returning('id')
@@ -66,7 +66,7 @@ export class CategoriesCommandRepository implements ICategoriesCommandRepository
         .set({
           name: category.name,
           description: category.description,
-          ctx: category.ctx,
+          context: category.context,
           parentId: category.parentId,
         })
         .where('id', '=', category.id)
@@ -82,13 +82,13 @@ export class CategoriesCommandRepository implements ICategoriesCommandRepository
       name: model.name,
       description: model.description,
       parentId: model.parentId,
-      ctx: model.ctx,
+      context: model.context,
     });
   }
 
   private getCategory() {
     return this.db
       .selectFrom(`${TableNames.CATEGORIES} as c`)
-      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.ctx', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
+      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
   }
 }

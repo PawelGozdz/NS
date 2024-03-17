@@ -9,7 +9,7 @@ export class CategoryCreatedEvent extends Event<CategoryCreatedEvent> {
 
   parentId: number | null;
 
-  ctx: string;
+  context: string;
 
   constructor(event: CategoryCreatedEvent) {
     super(event);

@@ -10,7 +10,7 @@ export class CreateCategoryCommand extends Command<CreateCategoryCommand, Create
 
   parentId?: number;
 
-  ctx: string;
+  context: string;
 
   constructor(command: CreateCategoryCommand) {
     super(command);

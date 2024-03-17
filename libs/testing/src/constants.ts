@@ -58,6 +58,6 @@ export const testingDefaults = {
   category: {
     name: defaultCategoryName,
     description: defaultCategoryDescription,
-    ctx: defaultCtx,
+    context: defaultCtx,
   },
 };

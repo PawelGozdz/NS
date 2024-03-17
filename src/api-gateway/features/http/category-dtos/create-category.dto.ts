@@ -3,7 +3,7 @@ import { IsOptional } from 'class-validator';
 
 import { CategoryGlobalDto } from '@app/core';
 
-export class CreateCategoryDto extends PickType(CategoryGlobalDto, ['name', 'description', 'parentId', 'ctx']) {
+export class CreateCategoryDto extends PickType(CategoryGlobalDto, ['name', 'description', 'parentId', 'context']) {
   @ApiProperty({
     required: false,
   })

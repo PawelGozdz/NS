@@ -48,7 +48,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
     });
   });
 
-  const ctx = 'users';
+  const context = 'users';
   const name = 'test category';
 
   describe('/categories (POST) V1', () => {
@@ -64,7 +64,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
           .send({
             name,
             description: 'default-category',
-            ctx,
+            context,
           });
 
         // Assert
@@ -83,13 +83,13 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
         seedBuilder.withCategory({
           name,
           description: 'default-category',
-          ctx,
+          context,
         });
         await seedBuilder.build();
         const categoryInsertedId = seedBuilder.categoryDao.id;
 
         const newCategoryName = 'test category2';
-        const newCtx = 'users';
+        const newcontext = 'users';
 
         // Act
         const response = await request(app.getHttpServer())
@@ -99,7 +99,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
           .send({
             name: newCategoryName,
             description: 'default-category2',
-            ctx: newCtx,
+            context: newcontext,
             parentId: categoryInsertedId,
           });
 
@@ -107,7 +107,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
           .selectFrom(TableNames.CATEGORIES)
           .selectAll()
           .where('name', '=', newCategoryName)
-          .where('ctx', '=', newCtx)
+          .where('context', '=', newcontext)
           .executeTakeFirst()) as typeof dataAssertion;
 
         // Assert
@@ -117,13 +117,13 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
     });
 
     describe('FAILURE', () => {
-      it('should throw 409 if category with provided name and ctx exists', async () => {
+      it('should throw 409 if category with provided name and context exists', async () => {
         // Arrange
         const seedBuilder = await CategorySeedBuilder.create(dbConnection);
         seedBuilder.withCategory({
           name,
           description: 'default-category',
-          ctx,
+          context,
         });
 
         await seedBuilder.build();
@@ -136,7 +136,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
           .send({
             name,
             description: 'default-category',
-            ctx,
+            context,
           });
 
         // Assert
@@ -153,7 +153,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
         seedBuilder.withCategory({
           name,
           description: 'default-category',
-          ctx,
+          context,
         });
         await seedBuilder.build();
         const categoryInsertedId = seedBuilder.categoryDao.id + 1;
@@ -166,7 +166,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
           .send({
             name: 'new-name',
             description: 'default-category',
-            ctx,
+            context,
             parentId: categoryInsertedId,
           });
 

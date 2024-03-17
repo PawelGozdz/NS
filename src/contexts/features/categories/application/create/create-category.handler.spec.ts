@@ -29,11 +29,11 @@ describe('CreateCategoryHandler', () => {
   });
 
   const name = 'test';
-  const ctx = 'test-ctx';
+  const context = 'test-context';
   const id = 1;
   const command = new CreateCategoryCommand({
     name,
-    ctx,
+    context,
   });
 
   const categoryEntity = CategoryEntityFixtureFactory.create();
@@ -51,7 +51,7 @@ describe('CreateCategoryHandler', () => {
 
       expect(categoryCommandRepositoryMock.save).toHaveBeenCalledWith({
         name,
-        ctx,
+        context,
         description: undefined,
         parentId: undefined,
       });

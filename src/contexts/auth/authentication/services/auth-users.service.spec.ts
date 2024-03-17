@@ -177,6 +177,7 @@ describe('AuthService', () => {
           ...expectTokens,
         });
         paramEvent.integrationEventId = expect.any(String);
+        paramEvent.integrationEventOccuredON = expect.any(Date);
 
         // Act
         const result = await service.createIntegrationUser(dto);
