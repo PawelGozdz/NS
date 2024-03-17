@@ -9,7 +9,7 @@ describe('Category', () => {
         name: 'Test Category',
         description: 'Test description',
         parentId: 2,
-        ctx: 'Test context',
+        context: 'Test context',
       };
 
       // Act
@@ -20,7 +20,7 @@ describe('Category', () => {
       expect(category.name).toBe(props.name);
       expect(category.description).toBe(props.description);
       expect(category.parentId).toBe(props.parentId);
-      expect(category.ctx).toBe(props.ctx);
+      expect(category.context).toBe(props.context);
     });
 
     it('should set description and parentId to null if not provided', () => {
@@ -28,7 +28,7 @@ describe('Category', () => {
       const props = {
         id: 1,
         name: 'Test Category',
-        ctx: 'Test context',
+        context: 'Test context',
       };
 
       // Act
@@ -48,7 +48,7 @@ describe('Category', () => {
         name: 'Test Category',
         description: 'Test description',
         parentId: 2,
-        ctx: 'Test context',
+        context: 'Test context',
       };
 
       // Act
@@ -59,7 +59,7 @@ describe('Category', () => {
       expect(category.name).toBe(props.name);
       expect(category.description).toBe(props.description);
       expect(category.parentId).toBe(props.parentId);
-      expect(category.ctx).toBe(props.ctx);
+      expect(category.context).toBe(props.context);
     });
 
     it('should set description and parentId to null if not provided', () => {
@@ -67,7 +67,7 @@ describe('Category', () => {
       const props = {
         id: 1,
         name: 'Test Category',
-        ctx: 'Test context',
+        context: 'Test context',
       };
 
       // Act

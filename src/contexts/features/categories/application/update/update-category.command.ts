@@ -9,7 +9,7 @@ export class UpdateCategoryCommand extends Command<UpdateCategoryCommand, Update
 
   parentId?: number | null;
 
-  ctx?: string;
+  context?: string;
 
   constructor(command: UpdateCategoryCommand) {
     super(command);

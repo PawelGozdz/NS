@@ -15,7 +15,7 @@ export class OutboxKyselyRepository implements IOutboxRepository {
         .insertInto(TableNames.OUTBOX)
         .values({
           eventName: outboxInput.eventName,
-          ctx: outboxInput.ctx,
+          context: outboxInput.context,
           payload: outboxInput.payload,
         } as OutboxModel)
         .execute();
@@ -38,7 +38,7 @@ export class OutboxKyselyRepository implements IOutboxRepository {
     return new Outbox({
       id: outbox.id,
       eventName: outbox.eventName,
-      ctx: outbox.ctx,
+      context: outbox.context,
       payload: outbox.payload,
       createdAt: outbox.createdAt,
       publishedOn: outbox.publishedOn,

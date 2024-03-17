@@ -23,7 +23,7 @@ export class GetManyCategoriesHandler implements IInferredQueryHandler<GetManyCa
     return entities.map((e) => ({
       id: e.id,
       name: e.name,
-      ctx: e.ctx,
+      context: e.context,
       parentId: e.parentId,
       description: e.description,
     }));

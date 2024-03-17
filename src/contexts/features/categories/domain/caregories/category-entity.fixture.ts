@@ -5,7 +5,7 @@ type Input = {
   id?: number;
   name?: string;
   description?: string;
-  ctx?: string;
+  context?: string;
   parentId?: number;
 };
 
@@ -14,14 +14,14 @@ export class CategoryEntityFixtureFactory {
     const id = overrides?.id ?? 1;
     const name = overrides?.name ? overrides.name : 'Grocery';
     const description = overrides?.description ? overrides.description : 'Grocery category';
-    const ctx = overrides?.ctx ? overrides.ctx : 'test-context';
+    const context = overrides?.context ? overrides.context : 'test-context';
     const parentId = overrides?.parentId ? overrides.parentId : null;
 
     return new Category({
       id,
       name,
       description,
-      ctx,
+      context,
       parentId,
     });
   }

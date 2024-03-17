@@ -3,7 +3,7 @@
 exports[`GetManyCategoriesHandler should get many categories 1`] = `
 [
   {
-    "ctx": "ctx",
+    "context": "context",
     "description": "description",
     "id": 2,
     "name": "name",

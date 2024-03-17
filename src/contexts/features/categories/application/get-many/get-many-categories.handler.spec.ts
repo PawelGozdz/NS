@@ -41,7 +41,7 @@ describe('GetManyCategoriesHandler', () => {
       id: 2,
       name: 'name',
       description: 'description',
-      ctx: 'ctx',
+      context: 'context',
       parentId: 1,
     },
   ];

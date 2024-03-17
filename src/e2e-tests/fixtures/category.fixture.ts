@@ -12,7 +12,7 @@ export class CategoryFixtureFactory {
     const defaults = {
       name: testingDefaults.category.name,
       description: testingDefaults.category.description,
-      ctx: testingDefaults.category.ctx,
+      context: testingDefaults.category.context,
     };
 
     return _.merge(categoryDao, defaults, overrides);

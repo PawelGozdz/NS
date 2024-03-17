@@ -4,13 +4,13 @@ import { Kysely } from 'kysely';
 import request from 'supertest';
 
 import { AppModule } from '@app/app.module';
-import { TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
+import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { TestLoggerModule } from '@libs/testing';
 
 import { getCookies, loginUser } from '../builders/auth-user';
 import { CategorySeedBuilder } from '../builders/csategory-builder';
 
-type IDdbDaos = { [key: string]: unknown };
+type IDdbDaos = IDatabaseModels;
 
 describe('CategoriesControllerV1 -> getMany (e2e)', () => {
   const dbConnection = new Kysely<IDdbDaos>({
@@ -41,7 +41,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
 
   beforeEach(async () => {
     const name = 'test category';
-    const ctx = 'users';
+    const context = 'users';
 
     cookies = getCookies();
 
@@ -53,7 +53,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
       seedBuilder.withCategory({
         name,
         description: 'default-category',
-        ctx,
+        context,
       });
       await seedBuilder.build();
 
@@ -61,7 +61,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
 
       seedBuilder.withCategory({
         name: 'new-name',
-        ctx,
+        context,
         parentId,
       });
       await seedBuilder.build();
