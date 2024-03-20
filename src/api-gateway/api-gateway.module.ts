@@ -1,6 +1,8 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
+import config from '@app/config';
 import { AuthenticationModule, ContextModule } from '@app/contexts';
 import { GlobalExceptionFilter } from '@app/core';
 import { AccessTokenGuard, JsendTransformSuccessInterceptor, LoggingInterceptor } from '@libs/common';
@@ -27,7 +29,13 @@ const exceptionFilters = [
   },
 ];
 
-const guards = [{ provide: 'APP_GUARD', useClass: AccessTokenGuard }];
+const guards = [
+  { provide: APP_GUARD, useClass: AccessTokenGuard },
+  {
+    provide: APP_GUARD,
+    useClass: ThrottlerGuard,
+  },
+];
 const pipes = [
   {
     provide: 'APP_PIPE',
@@ -42,7 +50,17 @@ const pipes = [
 const controllersV1 = [AuthJwtControllerV1, UsersControllerV1, CategoriesControllerV1];
 
 @Module({
-  imports: [CqrsModule, AuthenticationModule, ContextModule],
+  imports: [
+    CqrsModule,
+    AuthenticationModule,
+    ContextModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: config.appConfig.THROTTLER_TTL,
+        limit: config.appConfig.THROTTLER_LIMIT,
+      },
+    ]),
+  ],
   controllers: [...controllersV1],
   providers: [...exceptionFilters, ...interceptors, ...guards, ...pipes],
 })
