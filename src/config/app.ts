@@ -52,6 +52,10 @@ const envSchema = z.object({
     .string()
     .transform((val) => val === 'true')
     .default('true'),
+
+  // THROTTLER
+  THROTTLER_TTL: z.coerce.number().positive(),
+  THROTTLER_LIMIT: z.coerce.number().positive(),
 });
 
 export type Env = z.infer<typeof envSchema>;
