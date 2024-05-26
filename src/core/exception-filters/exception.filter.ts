@@ -5,8 +5,6 @@ import { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 
 import {
-  ApiResponseBase,
-  ApiResponseStatusJsendEnum,
   ApplicationError,
   ApplicationErrorCode,
   BaseError,
@@ -16,8 +14,9 @@ import {
   FrameworkErrorCode,
   PostgresErrorCode,
   UserErrorCode,
-  createJsendResponse,
 } from '@libs/common';
+
+import { ApiResponseBase, ApiResponseStatusJsendEnum, createJsendResponse } from '../api';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {

@@ -36,11 +36,11 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
     await app.close();
   });
 
-  let cookies: [string, string];
+  let credentials: [string, string];
   let dataAssertion: { parentId?: number; name?: string };
 
   beforeEach(async () => {
-    cookies = getCookies();
+    credentials = getCookies();
 
     await dbConnection.transaction().execute(async (trx) => {
       await dbUtils.truncateTables(tablesInvolved, trx);
@@ -59,7 +59,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .post('/categories')
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name,
@@ -94,7 +94,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .post('/categories')
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name: newCategoryName,
@@ -131,7 +131,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .post('/categories')
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name,
@@ -161,7 +161,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .post('/categories')
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name: 'new-name',

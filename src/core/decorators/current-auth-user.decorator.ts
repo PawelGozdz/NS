@@ -1,7 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-import { NotFoundError } from '../errors';
-import { AppUtils } from '../utils';
+import { NotFoundError } from '../../../libs/common/src/errors';
+import { AppUtils } from '../../../libs/common/src/utils';
 
 export const GetCurrentAuthUser = createParamDecorator((_: string | undefined, context: ExecutionContext) => {
   const request = context.switchToHttp().getRequest();

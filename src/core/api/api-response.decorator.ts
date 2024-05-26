@@ -2,7 +2,8 @@ import { Type, applyDecorators } from '@nestjs/common';
 import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 import { ReferenceObject, SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 
-import { ValidationErrorResponse } from '../dto';
+import { ValidationErrorResponse } from '@libs/common';
+
 import { ApiResponseStatusJsendEnum } from './api.interfaces';
 
 type SwaggerSchemaObj = SchemaObject | ReferenceObject;
