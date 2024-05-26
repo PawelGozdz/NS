@@ -41,7 +41,7 @@ export class CategoryGlobalDto {
   @IsNotIn([null])
   @IsDefined()
   @IsAlphanumeric()
-  ctx: string;
+  context: string;
 
   @ApiProperty({
     example: systemVariables.dtos.categories.parentId.example1,

@@ -13,7 +13,7 @@ describe('Redact', () => {
       unmaskedEndCharactersAfterAt: 3,
       maskAtTheRate: false,
     });
-    expect(configs.emailFields).toEqual(generateWildcardCombinations(['email'], ['dto', 'user', 'event']));
+    expect(configs.emailFields).toEqual(generateWildcardCombinations(['email'], ['dto', 'user', 'event', 'props']));
 
     expect(configs.passwordMaskOptions).toEqual({
       maskWith: '*',
@@ -21,7 +21,7 @@ describe('Redact', () => {
       unmaskedStartCharacters: 0,
       unmaskedEndCharacters: 0,
     });
-    expect(configs.passwordFields).toEqual(generateWildcardCombinations(['password'], ['dto', 'user', 'event']));
+    expect(configs.passwordFields).toEqual(generateWildcardCombinations(['password'], ['dto', 'user', 'event', 'props']));
 
     expect(configs.uuidMaskOptions).toEqual({
       maskWith: '*',
@@ -48,7 +48,7 @@ describe('Redact', () => {
           unmaskedStartCharacters: 3,
           unmaskedEndCharacters: 2,
         },
-        fields: generateWildcardCombinations(['hash', 'hashedRt'], ['dto', 'user', 'event']),
+        fields: generateWildcardCombinations(['hash', 'hashedRt'], ['dto', 'user', 'event', 'props']),
       },
     ]);
   });

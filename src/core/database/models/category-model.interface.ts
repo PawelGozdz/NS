@@ -5,7 +5,7 @@ export abstract class ICategoryModel {
 
   description: string | null;
 
-  ctx: string;
+  context: string;
 
   parentId: number | null;
 

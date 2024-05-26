@@ -7,14 +7,14 @@ export class Category {
 
   parentId?: number | null;
 
-  ctx: string;
+  context: string;
 
   constructor(props: Category) {
     this.id = props.id;
     this.name = props.name;
     this.description = props.description ?? null;
     this.parentId = props.parentId ?? null;
-    this.ctx = props.ctx;
+    this.context = props.context;
   }
 
   public static create({
@@ -22,20 +22,20 @@ export class Category {
     name,
     description,
     parentId,
-    ctx,
+    context,
   }: {
     id: number;
     name: string;
     description?: string | null;
     parentId?: number | null;
-    ctx: string;
+    context: string;
   }): Category {
     const category = new Category({
       id,
       name,
       description: description ?? null,
       parentId: parentId ?? null,
-      ctx,
+      context,
     });
 
     return category;
@@ -46,13 +46,13 @@ export type ICategoryCreateData = {
   name: string;
   description?: string | null;
   parentId?: number | null;
-  ctx: string;
+  context: string;
 };
 
 export type ICategoryUpdateData = {
   id: number;
   name?: string;
   description?: string | null;
-  ctx?: string;
+  context?: string;
   parentId?: number | null;
 };

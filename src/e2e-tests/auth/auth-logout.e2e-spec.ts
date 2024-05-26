@@ -4,14 +4,14 @@ import { Kysely } from 'kysely';
 import request from 'supertest';
 
 import { HashService } from '@app/contexts';
-import { AppRoutes, dialect, kyselyPlugins } from '@app/core';
-import { ApiResponseStatusJsendEnum, UnauthorizedError } from '@libs/common';
+import { ApiResponseStatusJsendEnum, AppRoutes, IDatabaseModels, dialect, kyselyPlugins } from '@app/core';
+import { UnauthorizedError } from '@libs/common';
 import { TestLoggerModule } from '@libs/testing';
 
 import { AppModule } from '../../app.module';
 import { getCookies, loginUser } from '../builders/auth-user';
 
-type IDdbDaos = { [key: string]: unknown };
+type IDdbDaos = IDatabaseModels;
 
 describe('AuthJwtControllerV1 -> logout (e2e)', () => {
   const dbConnection = new Kysely<IDdbDaos>({

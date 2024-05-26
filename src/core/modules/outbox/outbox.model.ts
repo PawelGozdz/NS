@@ -6,7 +6,7 @@ export class Outbox {
 
   public eventName: string;
 
-  public ctx: string;
+  public context: string;
 
   public payload: Event<unknown>;
 
@@ -14,10 +14,10 @@ export class Outbox {
 
   public publishedOn: Date | null;
 
-  constructor(props: { id: number; eventName: string; ctx: string; payload: Event<unknown>; createdAt: Date; publishedOn: Date | null }) {
+  constructor(props: { id: number; eventName: string; context: string; payload: Event<unknown>; createdAt: Date; publishedOn: Date | null }) {
     this.id = props.id;
     this.eventName = props.eventName;
-    this.ctx = props.ctx;
+    this.context = props.context;
     this.payload = props.payload;
     this.createdAt = props.createdAt;
     this.publishedOn = props.publishedOn;
@@ -29,7 +29,7 @@ export class OutboxModel implements IOutboxModel {
 
   public eventName: string;
 
-  public ctx: string;
+  public context: string;
 
   public payload: Event<unknown>;
 
@@ -37,10 +37,10 @@ export class OutboxModel implements IOutboxModel {
 
   public publishedOn: Date | null;
 
-  constructor(props: { id: number; eventName: string; ctx: string; payload: Event<unknown>; createdAt: Date; publishedOn: Date | null }) {
+  constructor(props: { id: number; eventName: string; context: string; payload: Event<unknown>; createdAt: Date; publishedOn: Date | null }) {
     this.id = props.id;
     this.eventName = props.eventName;
-    this.ctx = props.ctx;
+    this.context = props.context;
     this.payload = props.payload;
     this.createdAt = props.createdAt;
     this.publishedOn = props.publishedOn;

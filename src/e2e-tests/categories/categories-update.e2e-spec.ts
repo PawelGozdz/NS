@@ -34,16 +34,16 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
     await app.close();
   });
 
-  let cookies: [string, string];
+  let credentials: [string, string];
   let builder: CategorySeedBuilder;
   let categoryInsertedId: number;
   let dataAssertion: { parentId?: number; name?: string };
 
-  const ctx = 'users';
+  const context = 'users';
   const name = 'test category';
 
   beforeEach(async () => {
-    cookies = getCookies();
+    credentials = getCookies();
 
     await dbConnection.transaction().execute(async (trx) => {
       await dbUtils.truncateTables(tablesInvolved, trx);
@@ -53,7 +53,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
       builder.withCategory({
         name,
         description: 'default-category',
-        ctx,
+        context,
       });
       await builder.build();
       categoryInsertedId = builder.categoryDao.id;
@@ -69,12 +69,12 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/categories/${categoryInsertedId}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name: newName,
             description: 'default-category',
-            ctx,
+            context,
           });
 
         const updatedCategory = (await dbConnection
@@ -95,7 +95,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         seedBuilder2.withCategory({
           name: name2,
           description: 'default-category',
-          ctx,
+          context,
         });
         await seedBuilder2.build();
         const categoryInsertedId2 = seedBuilder2.categoryDao.id;
@@ -105,12 +105,12 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/categories/${categoryInsertedId2}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name: newName,
             description: 'default-category',
-            ctx,
+            context,
             parentId: categoryInsertedId,
           });
 
@@ -127,14 +127,14 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
     });
 
     describe('FAILURE', () => {
-      it('should throw 409 if category with provided name and ctx exists', async () => {
+      it('should throw 409 if category with provided name and context exists', async () => {
         // Arrange
         const name2 = 'test category2';
         const seedBuilder = await CategorySeedBuilder.create(dbConnection);
         seedBuilder.withCategory({
           name: name2,
           description: 'default-category',
-          ctx,
+          context,
         });
         await seedBuilder.build();
         const categoryInsertedId2 = seedBuilder.categoryDao.id;
@@ -142,12 +142,12 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/categories/${categoryInsertedId2}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name,
             description: 'default-category',
-            ctx,
+            context,
           });
 
         // Assert
@@ -161,7 +161,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         seedBuilder.withCategory({
           name: 'new-name-55',
           description: 'default-category',
-          ctx,
+          context,
         });
         await seedBuilder.build();
         const categoryInsertedId2 = seedBuilder.categoryDao.id;
@@ -169,7 +169,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/categories/${categoryInsertedId2}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             parentId: categoryInsertedId + 5,

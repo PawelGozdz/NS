@@ -5,12 +5,12 @@ import request from 'supertest';
 
 import { AppModule } from '@app/app.module';
 import { HashService } from '@app/contexts';
-import { AppRoutes, dialect, kyselyPlugins } from '@app/core';
+import { AppRoutes, IDatabaseModels, dialect, kyselyPlugins } from '@app/core';
 import { TestLoggerModule } from '@libs/testing';
 
 import { getCookies, loginUser } from '../builders/auth-user';
 
-type IDdbDaos = { [key: string]: unknown };
+type IDdbDaos = IDatabaseModels;
 
 describe('UsersControllerV1 -> getMany (e2e)', () => {
   const dbConnection = new Kysely<IDdbDaos>({
@@ -34,10 +34,10 @@ describe('UsersControllerV1 -> getMany (e2e)', () => {
     await app.close();
   });
 
-  let cookies: [string, string];
+  let credentials: [string, string];
 
   beforeEach(async () => {
-    cookies = getCookies();
+    credentials = getCookies();
 
     await dbConnection.transaction().execute(async (trx) => {
       await loginUser(trx);
@@ -52,7 +52,7 @@ describe('UsersControllerV1 -> getMany (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .get(AppRoutes.USERS.v1.getUsers)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send();
 
@@ -65,7 +65,7 @@ describe('UsersControllerV1 -> getMany (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .get(`${AppRoutes.USERS.v1.getUsers}?_filter[email]=t@test.com`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send();
 

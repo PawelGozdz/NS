@@ -32,7 +32,7 @@ export class UpdateCategoryHandler implements IInferredCommandHandler<UpdateCate
     return {
       id: currentEntity.id,
       name: getCoalescedField(command.name, currentEntity.name),
-      ctx: getCoalescedField(command.ctx, currentEntity.ctx),
+      context: getCoalescedField(command.context, currentEntity.context),
       description: getNullOrValueField(command.description, currentEntity.description),
       parentId: getNullOrValueField(command.parentId, currentEntity.parentId),
     };

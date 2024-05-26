@@ -4,13 +4,13 @@ import { Kysely } from 'kysely';
 import request from 'supertest';
 
 import { AppModule } from '@app/app.module';
-import { TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
+import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { TestLoggerModule } from '@libs/testing';
 
 import { getCookies, loginUser } from '../builders/auth-user';
 import { CategorySeedBuilder } from '../builders/csategory-builder';
 
-type IDdbDaos = { [key: string]: unknown };
+type IDdbDaos = IDatabaseModels;
 
 describe('CategoriesControllerV1 -> getMany (e2e)', () => {
   const dbConnection = new Kysely<IDdbDaos>({
@@ -36,14 +36,14 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
     await app.close();
   });
 
-  let cookies: [string, string];
+  let credentials: [string, string];
   let parentId: number;
 
   beforeEach(async () => {
     const name = 'test category';
-    const ctx = 'users';
+    const context = 'users';
 
-    cookies = getCookies();
+    credentials = getCookies();
 
     await dbConnection.transaction().execute(async (trx) => {
       await dbUtils.truncateTables(tablesInvolved, trx);
@@ -53,7 +53,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
       seedBuilder.withCategory({
         name,
         description: 'default-category',
-        ctx,
+        context,
       });
       await seedBuilder.build();
 
@@ -61,7 +61,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
 
       seedBuilder.withCategory({
         name: 'new-name',
-        ctx,
+        context,
         parentId,
       });
       await seedBuilder.build();
@@ -76,7 +76,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .get('/categories')
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json');
 
         // Assert
@@ -90,7 +90,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .get(`/categories?_filter[parentId]=${parentId}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json');
 
         // Assert
