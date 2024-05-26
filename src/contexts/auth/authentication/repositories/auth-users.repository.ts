@@ -1,19 +1,21 @@
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Injectable } from '@nestjs/common';
 import dayjs from 'dayjs';
 
-import { Database, TableNames } from '@app/core';
+import { IDatabaseModels, TableNames } from '@app/core';
 
 import { AuthUser, AuthUserModel } from '../models';
 import { IAuthUsersRepository } from './auth-users-repository.interface';
 
 @Injectable()
 export class AuthUsersRepository implements IAuthUsersRepository {
-  constructor(private readonly db: Database) {}
+  constructor(private readonly txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>) {}
 
   async create(user: AuthUser): Promise<{ id: string }> {
     const now = dayjs().toDate();
 
-    const userDao = await this.db
+    const userDao = await this.txHost.tx
       .insertInto(TableNames.AUTH_USERS)
       .values({
         id: user.id,
@@ -33,14 +35,14 @@ export class AuthUsersRepository implements IAuthUsersRepository {
   }
 
   async update(user: AuthUser): Promise<void> {
-    await this.db.updateTable(TableNames.AUTH_USERS).set(user).where('userId', '=', user.userId).execute();
+    await this.txHost.tx.updateTable(TableNames.AUTH_USERS).set(user).where('userId', '=', user.userId).execute();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   async delete(_userId: string): Promise<void> {}
 
   async getByUserId(userId: string): Promise<AuthUser | undefined> {
-    const userDao = await this.db.selectFrom(TableNames.AUTH_USERS).selectAll().where('userId', '=', userId).executeTakeFirst();
+    const userDao = await this.txHost.tx.selectFrom(TableNames.AUTH_USERS).selectAll().where('userId', '=', userId).executeTakeFirst();
 
     if (!userDao) {
       return undefined;
@@ -50,7 +52,7 @@ export class AuthUsersRepository implements IAuthUsersRepository {
   }
 
   async getByUserEmail(email: string): Promise<AuthUser | undefined> {
-    const userDao = await this.db.selectFrom(TableNames.AUTH_USERS).selectAll().where('email', '=', email).executeTakeFirst();
+    const userDao = await this.txHost.tx.selectFrom(TableNames.AUTH_USERS).selectAll().where('email', '=', email).executeTakeFirst();
 
     if (!userDao) {
       return undefined;

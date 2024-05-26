@@ -1,8 +1,9 @@
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Injectable } from '@nestjs/common';
-import { Transaction } from 'kysely';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 
-import { Database, IDatabaseModels, TableNames } from '@app/core';
+import { IDatabaseModels, TableNames } from '@app/core';
 import { EntityId } from '@libs/common';
 import { EventBus } from '@libs/cqrs';
 import { EntityRepository } from '@libs/ddd';
@@ -14,9 +15,9 @@ import { UserModel, UserProfileModel } from '../models';
 export class UsersCommandRepository extends EntityRepository implements IUsersCommandRepository {
   constructor(
     eventBus: EventBus,
-    readonly db: Database,
+    private readonly txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>,
   ) {
-    super(eventBus, UserModel, db);
+    super(eventBus, UserModel, txHost);
   }
 
   async getOneById(id: EntityId): Promise<User | undefined> {
@@ -43,7 +44,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
     return User.restoreFromSnapshot(snapshot);
   }
 
-  public save(user: User): Promise<void> {
+  public async save(user: User): Promise<void> {
     return this.handleUncommittedEvents(user);
   }
 
@@ -72,7 +73,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
   }
 
   private getUserAndProfile() {
-    return this.db
+    return this.txHost.tx
       .selectFrom(`${TableNames.USERS} as u`)
       .select((eb) => [
         'u.id',
@@ -106,8 +107,8 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
       ]);
   }
 
-  public async handleUserUpdatedEvent(event: UserCreatedEvent, trx: Transaction<IDatabaseModels>) {
-    await trx
+  public async handleUserUpdatedEvent(event: UserCreatedEvent) {
+    await this.db.tx
       .updateTable(TableNames.USERS)
       .set({
         email: event.email,
@@ -115,7 +116,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
       .where('id', '=', event.id.value)
       .executeTakeFirstOrThrow();
 
-    await trx
+    await this.db.tx
       .updateTable(TableNames.USER_PROFILES)
       .set({
         firstName: event.profile.firstName,
@@ -136,12 +137,13 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
       .execute();
   }
 
-  public async handleUserCreatedEvent(event: UserCreatedEvent, trx: Transaction<IDatabaseModels>) {
-    await trx
+  public async handleUserCreatedEvent(event: UserCreatedEvent) {
+    await this.db.tx
       .insertInto(TableNames.USERS)
       .values({ id: event.id.value, email: event.email } as UserModel)
       .execute();
-    await trx
+
+    await this.db.tx
       .insertInto(TableNames.USER_PROFILES)
       .values({
         id: event.profile.id.value,

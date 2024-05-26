@@ -1,3 +1,4 @@
+import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PinoLogger } from 'nestjs-pino';
@@ -22,6 +23,7 @@ export class AuthService {
     this.logger.setContext(this.constructor.name);
   }
 
+  @Transactional()
   public async createUser(dto: SignUpDto): Promise<AuthUser> {
     this.logger.info(dto, 'Creating user');
     try {

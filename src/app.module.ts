@@ -1,12 +1,13 @@
+import { ClsPluginTransactional } from '@nestjs-cls/transactional';
+import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Module } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { Request } from 'express';
 import { ClsModule } from 'nestjs-cls';
 import { LoggerModule } from 'nestjs-pino';
 
 import { ApiGatewayModule } from '@app/api-gateway';
 import config from '@app/config';
-import { DatabaseModule, GracefulShutdownService, OpenTelemetryModuleModule, OutboxModule } from '@app/core';
+import { Database, DatabaseModule, GracefulShutdownService, OpenTelemetryModuleModule, OutboxModule } from '@app/core';
 import { AppUtils } from '@libs/common';
 import { CqrsModule } from '@libs/cqrs';
 
@@ -17,6 +18,7 @@ const providers = [GracefulShutdownService];
     EventEmitterModule.forRoot({
       global: true,
     }),
+    DatabaseModule,
     ClsModule.forRootAsync({
       global: true,
       useFactory: () => ({
@@ -26,8 +28,10 @@ const providers = [GracefulShutdownService];
           idGenerator: (req: Request) => (req.headers['X-Request-Id'] as string | undefined) ?? AppUtils.getUUID(),
         },
       }),
+      plugins: [
+        new ClsPluginTransactional({ imports: [DatabaseModule], adapter: new TransactionalAdapterKysely({ kyselyInstanceToken: Database }) }),
+      ],
     }),
-    DatabaseModule,
     ApiGatewayModule,
     CqrsModule,
     LoggerModule.forRoot(config.pinoLogger),

@@ -1,3 +1,4 @@
+import { Transactional } from '@nestjs-cls/transactional';
 import { PinoLogger } from 'nestjs-pino';
 
 import { Address, ConflictError, EntityId } from '@libs/common';
@@ -15,6 +16,7 @@ export class UpdateUserHandler implements IInferredCommandHandler<UpdateUserComm
     this.logger.setContext(this.constructor.name);
   }
 
+  @Transactional()
   async execute(command: UpdateUserCommand): Promise<void> {
     this.logger.info(command, 'Updating user:');
 
