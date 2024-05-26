@@ -34,7 +34,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
     await app.close();
   });
 
-  let cookies: [string, string];
+  let credentials: [string, string];
   let builder: CategorySeedBuilder;
   let categoryInsertedId: number;
   let dataAssertion: { parentId?: number; name?: string };
@@ -43,7 +43,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
   const name = 'test category';
 
   beforeEach(async () => {
-    cookies = getCookies();
+    credentials = getCookies();
 
     await dbConnection.transaction().execute(async (trx) => {
       await dbUtils.truncateTables(tablesInvolved, trx);
@@ -69,7 +69,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/categories/${categoryInsertedId}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name: newName,
@@ -105,7 +105,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/categories/${categoryInsertedId2}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name: newName,
@@ -142,7 +142,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/categories/${categoryInsertedId2}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             name,
@@ -169,7 +169,7 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/categories/${categoryInsertedId2}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
             parentId: categoryInsertedId + 5,

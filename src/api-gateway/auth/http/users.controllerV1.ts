@@ -3,15 +3,8 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PinoLogger } from 'nestjs-pino';
 
 import { GetUsersQuery, UpdateUserCommand } from '@app/contexts';
-import { AppRoutes } from '@app/core';
-import {
-  ApiJsendResponse,
-  ApiResponseStatusJsendEnum,
-  ConflictErrorResponse,
-  IdDto,
-  NotFoundErrorResponse,
-  UnauthorizedErrorResponse,
-} from '@libs/common';
+import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes } from '@app/core';
+import { ConflictErrorResponse, IdDto, NotFoundErrorResponse, UnauthorizedErrorResponse } from '@libs/common';
 import { CommandBus, QueryBus } from '@libs/cqrs';
 
 import { UpdateUserDto, UpdateUserValidationErrorDto, UserQueryParamsDto, UserResponseDto } from './user-dtos';

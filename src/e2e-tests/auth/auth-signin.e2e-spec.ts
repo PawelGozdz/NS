@@ -3,14 +3,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-import { AppRoutes, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { ApiResponseStatusJsendEnum, UnauthorizedError } from '@libs/common';
+import { ApiResponseStatusJsendEnum, AppRoutes, IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
+import { UnauthorizedError } from '@libs/common';
 import { TestLoggerModule, testingDefaults } from '@libs/testing';
 
 import { AppModule } from '../../app.module';
 import { UserSeedBuilder } from '../builders/user-builder';
 
-type IDdbDaos = { [key: string]: unknown };
+type IDdbDaos = IDatabaseModels;
 
 describe('AuthJwtControllerV1 -> signin (e2e)', () => {
   const dbConnection = new Kysely<IDdbDaos>({

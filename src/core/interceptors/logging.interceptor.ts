@@ -2,14 +2,17 @@
 /* eslint-disable consistent-return */
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { ClsService } from 'nestjs-cls';
 import { PinoLogger } from 'nestjs-pino';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  constructor(private readonly logger: PinoLogger) {
+  constructor(
+    private readonly cls: ClsService,
+    private readonly logger: PinoLogger,
+  ) {
     this.logger.setContext(this.constructor.name);
   }
 
@@ -23,7 +26,7 @@ export class LoggingInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const userAgent: string = request.get('user-agent') ?? '';
     const { ip, method, path: url }: Request = request;
-    const correlationKey = uuidv4();
+    const correlationKey = this.cls.getId();
     const userId: string = request.user?.userId;
     const reqTime = Date.now();
 

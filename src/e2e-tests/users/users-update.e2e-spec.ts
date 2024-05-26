@@ -39,12 +39,12 @@ describe('UsersControllerV1 -> update (e2e)', () => {
     await app.close();
   });
 
-  let cookies: [string, string];
+  let credentials: [string, string];
   let builder: UserSeedBuilder;
   let dataAssertion: { email?: string };
 
   beforeEach(async () => {
-    cookies = getCookies();
+    credentials = getCookies();
 
     await dbConnection.transaction().execute(async (trx) => {
       builder = await loginUser(trx);
@@ -60,7 +60,7 @@ describe('UsersControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/users/${builder.authUserDao.userId}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send(bodyDto);
 
@@ -93,7 +93,7 @@ describe('UsersControllerV1 -> update (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .patch(`/users/${builder.authUserDao.userId}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json')
           .send(bodyDto);
 

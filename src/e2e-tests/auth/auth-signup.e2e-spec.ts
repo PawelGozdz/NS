@@ -4,14 +4,13 @@ import { Kysely } from 'kysely';
 import request from 'supertest';
 
 import { UserAlreadyExistsError } from '@app/contexts';
-import { AppRoutes, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { ApiResponseStatusJsendEnum } from '@libs/common';
+import { ApiResponseStatusJsendEnum, AppRoutes, IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { TestLoggerModule, testingDefaults } from '@libs/testing';
 
 import { AppModule } from '../../app.module';
 import { UserSeedBuilder } from '../builders/user-builder';
 
-type IDdbDaos = { [key: string]: unknown };
+type IDdbDaos = IDatabaseModels;
 
 describe('AuthJwtControllerV1 -> signup (e2e)', () => {
   const dbConnection = new Kysely<IDdbDaos>({

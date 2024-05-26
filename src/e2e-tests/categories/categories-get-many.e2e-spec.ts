@@ -36,14 +36,14 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
     await app.close();
   });
 
-  let cookies: [string, string];
+  let credentials: [string, string];
   let parentId: number;
 
   beforeEach(async () => {
     const name = 'test category';
     const context = 'users';
 
-    cookies = getCookies();
+    credentials = getCookies();
 
     await dbConnection.transaction().execute(async (trx) => {
       await dbUtils.truncateTables(tablesInvolved, trx);
@@ -76,7 +76,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .get('/categories')
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json');
 
         // Assert
@@ -90,7 +90,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
         // Act
         const response = await request(app.getHttpServer())
           .get(`/categories?_filter[parentId]=${parentId}`)
-          .set(...cookies)
+          .set(...credentials)
           .set('Content-Type', 'application/json');
 
         // Assert
