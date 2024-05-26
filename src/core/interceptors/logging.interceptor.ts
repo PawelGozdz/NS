@@ -10,7 +10,7 @@ import { tap } from 'rxjs/operators';
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   constructor(
-    private readonly cls: ClsService,
+    private readonly ctx: ClsService,
     private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -26,12 +26,12 @@ export class LoggingInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const userAgent: string = request.get('user-agent') ?? '';
     const { ip, method, path: url }: Request = request;
-    const correlationKey = this.cls.getId();
+    const correlationKey = this.ctx.getId();
     const userId: string = request.user?.userId;
     const reqTime = Date.now();
 
     this.logger.info(
-      `[${correlationKey}] [${context.getClass().name} --> ${context.getHandler().name}] ${method} ${url} ${
+      `REQUEST [${correlationKey}] [${context.getClass().name} --> ${context.getHandler().name}] ${method} ${url} ${
         userId ? `[USER: ${userId}]` : ''
       } ${userAgent} ${ip}`,
     );
@@ -44,7 +44,7 @@ export class LoggingInterceptor implements NestInterceptor {
         const { statusCode } = response;
         const contentLength = response.get('content-length');
 
-        const responseText = `[${correlationKey}] ${method} ${url} ${statusCode} ${contentLength ?? ''}: ${Date.now() - reqTime}ms`;
+        const responseText = `RESPONSE [${correlationKey}] ${method} ${url} ${statusCode} ${contentLength ?? ''}: ${Date.now() - reqTime}ms`;
 
         this.logger.info(
           {

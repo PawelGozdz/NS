@@ -12,8 +12,8 @@ const providers = [
       new Database({
         dialect,
         log(event) {
-          logger.info('Query:', event.query.sql);
           if (config.appConfig.DATABASE_LOGGING && event.level === config.appConfig?.DATABASE_LOGGING_LEVEL) {
+            logger.info('Query:', event);
             logger.info('Parameters:', event.query.parameters);
           }
         },

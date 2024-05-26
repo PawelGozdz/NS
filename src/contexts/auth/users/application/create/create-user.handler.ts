@@ -1,3 +1,4 @@
+import { Transactional } from '@nestjs-cls/transactional';
 import { PinoLogger } from 'nestjs-pino';
 
 import { EntityId } from '@libs/common';
@@ -15,6 +16,7 @@ export class CreateUserHandler implements IInferredCommandHandler<CreateUserComm
     this.logger.setContext(this.constructor.name);
   }
 
+  @Transactional()
   async execute(command: CreateUserCommand): Promise<CreateUserResponse> {
     this.logger.info(command, 'Creating user:');
 

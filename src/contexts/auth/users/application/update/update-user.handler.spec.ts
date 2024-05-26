@@ -9,6 +9,10 @@ import { IUsersCommandRepository, User, UserAggregateRootFixtureFactory, UserNot
 import { UpdateUserCommand } from './update-user.command';
 import { UpdateUserHandler } from './update-user.handler';
 
+jest.mock('@nestjs-cls/transactional', () => ({
+  Transactional: () => jest.fn(),
+}));
+
 describe('UpdateUserHandler', () => {
   let handler: UpdateUserHandler;
   let userCommandRepositoryMock: jest.Mocked<IUsersCommandRepository>;

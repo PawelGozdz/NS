@@ -14,6 +14,10 @@ import { AuthUsersService } from './auth-users.service';
 import { AuthService } from './auth.service';
 import { HashService } from './hash.service';
 
+jest.mock('@nestjs-cls/transactional', () => ({
+  Transactional: () => jest.fn(),
+}));
+
 describe('AuthService', () => {
   let service: AuthService;
   let hashServiceMock: jest.Mocked<HashService>;

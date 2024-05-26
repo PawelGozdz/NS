@@ -153,6 +153,7 @@ describe('AuthService', () => {
       eventEmitterMock.emitAsync.mockResolvedValue([user]);
       const paramEvent = new GetUserByEmailIntegrationEvent(authUser.email);
       paramEvent.integrationEventId = expect.any(String);
+      paramEvent.integrationEventOccuredON = expect.any(Date);
 
       // Act
       const result = await service.getIntegrationUserByEmail(authUser.email);
@@ -197,6 +198,7 @@ describe('AuthService', () => {
           ...expectTokens,
         });
         paramEvent.integrationEventId = expect.any(String);
+        paramEvent.integrationEventOccuredON = expect.any(Date);
 
         // Act
         const { error } = await catchActError(() => service.createIntegrationUser(dto));
