@@ -35,6 +35,7 @@ const guards = [
     useClass: ThrottlerGuard,
   },
 ];
+
 const pipes = [
   {
     provide: 'APP_PIPE',
