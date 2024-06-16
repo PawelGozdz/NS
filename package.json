@@ -75,7 +75,7 @@
     "nanoid": "^5.0.3",
     "nest-commander": "^3.12.2",
     "nestjs-cls": "^4.3.0",
-    "nestjs-otel": "^5.1.5",
+    "nestjs-otel": "^6.0.0",
     "nestjs-pino": "^4.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
