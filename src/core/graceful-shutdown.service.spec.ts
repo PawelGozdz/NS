@@ -6,9 +6,9 @@ import { Database } from '@app/core';
 import { TestLoggerModule } from '@libs/testing';
 
 import { GracefulShutDownConfig, GracefulShutdownService } from './graceful-shutdown.service';
-import { otelSDK } from './modules';
+import { JobManagerService, otelSDK } from './modules';
 
-jest.mock('./modules', () => ({
+jest.mock('./modules/open-telemetry', () => ({
   otelSDK: {
     shutdown: jest.fn(),
   },
@@ -17,9 +17,11 @@ jest.mock('./modules', () => ({
 describe('GracefulShutdownService', () => {
   let service: GracefulShutdownService;
   let dbMock: jest.Mocked<Database>;
+  let jobManagerServiceMock: jest.Mocked<JobManagerService>;
 
   beforeEach(async () => {
     dbMock = createMock();
+    jobManagerServiceMock = createMock();
     dbMock.destroy = jest.fn();
 
     const module = await Test.createTestingModule({
@@ -29,6 +31,10 @@ describe('GracefulShutdownService', () => {
         {
           provide: Database,
           useValue: dbMock,
+        },
+        {
+          provide: JobManagerService,
+          useValue: jobManagerServiceMock,
         },
       ],
     }).compile();
@@ -54,12 +60,14 @@ describe('GracefulShutdownService', () => {
     it('should gracefuly shut down all connections', async () => {
       // Arrange
       service.setConfig(mockConfig);
+
       // Act
       await service.onApplicationShutdown(signal);
 
       // Assert
       expect(dbMock.destroy).toHaveBeenCalled();
       expect(otelSDK.shutdown).toHaveBeenCalledTimes(1);
+      expect(jobManagerServiceMock.stopJobs).toHaveBeenCalledTimes(1);
     });
   });
 });
