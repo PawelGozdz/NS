@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
 import config from '@app/config';
@@ -23,9 +23,8 @@ const providers = [
   },
 ];
 
-@Global()
 @Module({
   exports: [Database],
   providers: [...providers],
 })
-export class DatabaseModule extends ConfigurableDatabaseModule {}
+export class KyselyDatabaseModule extends ConfigurableDatabaseModule {}

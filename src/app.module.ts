@@ -7,7 +7,7 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { ApiGatewayModule } from '@app/api-gateway';
 import config from '@app/config';
-import { Database, DatabaseModule, GracefulShutdownService, OpenTelemetryModuleModule, OutboxModule } from '@app/core';
+import { Database, DatabaseModule, GracefulShutdownService, JobModule, OpenTelemetryModuleModule } from '@app/core';
 import { AppUtils } from '@libs/common';
 import { CqrsModule } from '@libs/cqrs';
 
@@ -36,7 +36,7 @@ const providers = [GracefulShutdownService];
     CqrsModule,
     LoggerModule.forRoot(config.pinoLogger),
     OpenTelemetryModuleModule,
-    OutboxModule,
+    JobModule,
   ],
   providers: [...providers],
 })

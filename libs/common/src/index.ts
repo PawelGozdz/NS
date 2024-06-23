@@ -3,6 +3,7 @@ export * from './dto';
 export * from './enums';
 export * from './errors';
 export * from './helper-functions';
+export * from './pg-boss';
 export * from './system-variables';
 export * from './types';
 export * from './utils';
