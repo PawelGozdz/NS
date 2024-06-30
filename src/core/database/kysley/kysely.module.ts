@@ -13,8 +13,9 @@ const providers = [
         dialect,
         log(event) {
           if (config.appConfig.DATABASE_LOGGING && event.level === config.appConfig?.DATABASE_LOGGING_LEVEL) {
-            logger.info('Query:', event);
-            logger.info('Parameters:', event.query.parameters);
+            logger.info(event.query.sql, 'Query:');
+            logger.info(event.query.parameters, 'Parameters:');
+            logger.info(`Resolved in: ${Number(event.queryDurationMillis).toFixed(3)}ms`);
           }
         },
         plugins: kyselyPlugins,
