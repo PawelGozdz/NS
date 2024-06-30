@@ -8,7 +8,7 @@ import { AppUtils, redact } from '@libs/common';
 import { appConfig } from './app';
 
 type LogResponseObj = {
-  metadata: {
+  metadata?: {
     _ctx: string;
     _traceId?: string;
     _spanId?: string;
@@ -61,13 +61,17 @@ const options: Params = {
           };
         }
 
-        if ('_ctx' in redacted.metadata) {
+        if (redacted.metadata && '_ctx' in redacted.metadata) {
           const ctx = trace.getSpan(context.active())?.spanContext();
 
           redacted.metadata._spanId = ctx?.spanId;
           redacted.metadata._traceId = ctx?.traceId;
 
           activeSpan?.addEvent(JSON.stringify(redacted));
+        }
+
+        if (AppUtils.isEmpty(redacted.metadata)) {
+          redacted.metadata = undefined;
         }
 
         return redacted;
