@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 
-import { CqrsModule } from '@libs/cqrs';
 import config from '@app/config';
+import { CqrsModule } from '@libs/cqrs';
 
 import { OnUserUpdatedHandler } from './events';
 import { AuthUsersRepository, IAuthUsersRepository } from './repositories';
@@ -24,7 +24,6 @@ const repositories = [
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async () => ({
-        isGlobal: true,
         secret: config.appConfig.JWT_ACCESS_TOKEN_SECRET,
         signOptions: {
           expiresIn: config.appConfig.JWT_ACCESS_TOKEN_EXPIRATION_TIME,

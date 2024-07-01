@@ -13,7 +13,7 @@ const providers = [
         dialect,
         log(event) {
           if (config.appConfig.DATABASE_LOGGING && event.level === config.appConfig?.DATABASE_LOGGING_LEVEL) {
-            logger.info(event.query.sql, 'Query:');
+            logger.info(`Query: ${event.query.sql}`);
             logger.info(event.query.parameters, 'Parameters:');
             logger.info(`Resolved in: ${Number(event.queryDurationMillis).toFixed(3)}ms`);
           }

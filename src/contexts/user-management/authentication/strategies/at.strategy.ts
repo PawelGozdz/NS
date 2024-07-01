@@ -45,7 +45,7 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
     const user = await this.authService.getAuthenticatedUserWithJwt(userId.value);
 
-    if (!AppUtils.isEmpty(user)) {
+    if (AppUtils.isNotEmpty(user)) {
       req.authUser = user;
 
       req.user = {

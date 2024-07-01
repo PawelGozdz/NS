@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
-import { UpdateUserDto } from '@app/api-gateway/auth';
+import { UpdateUserDto } from '@app/api-gateway/user-management';
 import { HashService } from '@app/contexts';
 import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 import { TestLoggerModule } from '@libs/testing';
