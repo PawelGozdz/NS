@@ -30,5 +30,6 @@ const integrationHandlers = [OnUGetUserByIdEventHandler, OnUGetUserByEmailEventH
 @Module({
   imports: [CqrsModule, DatabaseModule],
   providers: [...providers, ...queries, ...commands, ...integrationHandlers],
+  exports: [...providers],
 })
 export class UsersModule {}

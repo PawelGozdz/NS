@@ -5,7 +5,9 @@ import { PinoLogger } from 'nestjs-pino';
 
 import config from '@app/config';
 import { ConflictError, UnauthorizedError } from '@libs/common';
+import { CommandBus } from '@libs/cqrs';
 
+import { CreateUserCommand, CreateUserResponse } from '../../users';
 import { SignInDto, SignUpDto } from '../dtos';
 import { AuthUser } from '../models';
 import { ITokens } from '../types';
@@ -19,6 +21,7 @@ export class AuthService {
     private readonly hashService: HashService,
     private readonly authUsersService: AuthUsersService,
     private readonly logger: PinoLogger,
+    private readonly commandBus: CommandBus,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -29,10 +32,14 @@ export class AuthService {
     try {
       const hash = await this.hashService.hashData(dto.password);
 
-      const integrationUser = await this.authUsersService.createIntegrationUser(dto);
+      const userCreatedResponse: CreateUserResponse = await this.commandBus.execute(
+        new CreateUserCommand({
+          email: dto.email,
+        }),
+      );
 
       const buildUserObj = AuthUser.create({
-        userId: integrationUser.id,
+        userId: userCreatedResponse.id,
         hash,
         email: dto.email,
         hashedRt: null,
@@ -113,8 +120,6 @@ export class AuthService {
   }
 
   public async getAuthenticatedUserWithJwt(userId: string): Promise<AuthUser> {
-    this.isCorrectString(userId);
-
     const user = await this.authUsersService.getByUserId(userId);
 
     if (user) {
@@ -125,8 +130,6 @@ export class AuthService {
   }
 
   public async getAuthenticatedUserWithRefreshToken(userId: string, token: string): Promise<AuthUser> {
-    this.isCorrectString(userId, token);
-
     const user = await this.authUsersService.getByUserId(userId);
 
     if (!user?.hashedRt) {
