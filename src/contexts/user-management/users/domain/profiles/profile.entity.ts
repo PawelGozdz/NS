@@ -1,4 +1,5 @@
-import { Address, EntityId } from '@libs/common';
+import { Address } from '@app/core';
+import { EntityId } from '@libs/common';
 
 import { ProfileSnapshot } from './profile.snapshot';
 

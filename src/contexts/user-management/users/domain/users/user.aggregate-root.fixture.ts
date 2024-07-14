@@ -1,4 +1,5 @@
-import { Address, CountryCode, EntityId } from '@libs/common';
+import { Address, CountryCode } from '@app/core';
+import { EntityId } from '@libs/common';
 
 import { User } from './user.aggregate-root';
 

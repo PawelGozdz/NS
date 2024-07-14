@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
 
-import { GlobalDto } from '@libs/common';
+import { GlobalDto } from '@app/core';
 
 export class ProfileDto extends PickType(GlobalDto, [
   'id',

@@ -1,4 +1,4 @@
-import { Address } from '@libs/common';
+import { Address } from '@app/core';
 
 export type ProfileSnapshot = {
   id: string;

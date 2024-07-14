@@ -1,4 +1,6 @@
-import { CountryCode, MissingValueError } from '@libs/common';
+import { MissingValueError } from '@libs/common';
+
+import { CountryCode } from '../enums';
 
 type CompareAddressValue = {
   street: string;

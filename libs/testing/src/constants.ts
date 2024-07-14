@@ -1,5 +1,3 @@
-import { Address, AppContext, CountryCode } from '@libs/common';
-
 const defaultSecret: string = 'secret';
 const defaultRefreshSecret: string = 'refreshSecret';
 const defaultUserId = 'a6185a9f-8873-4f1b-b630-3729318bc636';
@@ -10,13 +8,13 @@ const defaultUserPassword = 'Test1234';
 const defaultUserFirstName = 'John';
 const defaultUserLastName = 'Doe';
 const defaultUsername = 'JohnDoe';
-const defaultAddress = Address.create({
+const defaultAddress = {
   city: 'Warsaw',
-  countryCode: CountryCode.England,
+  countryCode: 'PL',
   streetNumber: '1',
   postalCode: '00-000',
   street: 'Test',
-});
+};
 const defaultBio = 'Test bio';
 const defaultDateOfBirth = new Date('1990-01-01');
 const defaultGender = 'male';
@@ -31,7 +29,7 @@ const defaultCategoryName = 'Test category';
 const defaultCategoryDescription = 'Test description';
 
 // Context
-const defaultCtx = AppContext.CATEGORIES;
+const defaultCtx = 'categories';
 
 export const testingDefaults = {
   userId: defaultUserId,

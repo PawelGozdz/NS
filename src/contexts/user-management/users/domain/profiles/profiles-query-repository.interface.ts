@@ -1,4 +1,5 @@
-import { CountryCode, EntityId } from '@libs/common';
+import { CountryCode } from '@app/core';
+import { EntityId } from '@libs/common';
 
 export type ProfileInfo = {
   id: string;

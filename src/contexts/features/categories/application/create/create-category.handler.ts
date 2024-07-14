@@ -2,8 +2,7 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { IOutboxRepository } from '@app/core';
-import { AppContext } from '@libs/common';
+import { AppContext, IOutboxRepository } from '@app/core';
 import { IInferredCommandHandler } from '@libs/cqrs';
 
 import { CategoryAlreadyExistsError, CategoryCreatedEvent, ICategoriesCommandRepository } from '../../domain';

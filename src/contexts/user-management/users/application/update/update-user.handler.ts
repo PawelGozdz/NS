@@ -1,7 +1,8 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { PinoLogger } from 'nestjs-pino';
 
-import { Address, ConflictError, EntityId } from '@libs/common';
+import { Address } from '@app/core';
+import { ConflictError, EntityId } from '@libs/common';
 import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 
 import { IUsersCommandRepository, UserNotFoundError } from '../../domain';
