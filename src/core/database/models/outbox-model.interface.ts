@@ -3,7 +3,7 @@ import { Event } from '@libs/cqrs';
 export interface IOutboxInput<T = unknown> {
   eventName: string;
   context: string;
-  payload: Event<T>;
+  data: Event<T>;
 }
 
 export abstract class IOutboxModel implements IOutboxInput {
@@ -13,7 +13,7 @@ export abstract class IOutboxModel implements IOutboxInput {
 
   context: string;
 
-  payload: Event<unknown>;
+  data: Event<unknown>;
 
   createdAt: Date;
 

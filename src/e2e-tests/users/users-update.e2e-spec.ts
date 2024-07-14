@@ -6,7 +6,6 @@ import request from 'supertest';
 import { UpdateUserDto } from '@app/api-gateway/user-management';
 import { HashService } from '@app/contexts';
 import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { TestLoggerModule } from '@libs/testing';
 
 import { AppModule } from '../../app.module';
 import { getCookies, loginUser } from '../builders/auth-user';
@@ -26,7 +25,7 @@ describe('UsersControllerV1 -> update (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, TestLoggerModule.forRoot()],
+      imports: [AppModule],
       providers: [HashService],
     }).compile();
 

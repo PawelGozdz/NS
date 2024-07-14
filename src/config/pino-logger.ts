@@ -20,6 +20,7 @@ type LogResponseObj = {
 const options: Params = {
   renameContext: '_ctx',
   pinoHttp: {
+    level: appConfig.LOG_LEVEL ?? 'info',
     autoLogging: false,
     formatters: {
       log(object) {

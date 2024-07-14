@@ -4,7 +4,6 @@ import { Kysely } from 'kysely';
 import request from 'supertest';
 
 import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { TestLoggerModule } from '@libs/testing';
 
 import { AppModule } from '../../app.module';
 import { getCookies, loginUser } from '../builders/auth-user';
@@ -24,7 +23,7 @@ describe('CategoriesControllerV1 -> create (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, TestLoggerModule.forRoot()],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();

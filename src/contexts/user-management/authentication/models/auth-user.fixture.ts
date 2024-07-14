@@ -8,7 +8,7 @@ export class AuthUserFixture {
     userId?: string;
     email?: string;
     hash?: string;
-    hashedRt?: string;
+    hashedRt?: string | null;
     tokenRefreshedAt?: Date | null;
     lastLogin?: Date | null;
   }) {

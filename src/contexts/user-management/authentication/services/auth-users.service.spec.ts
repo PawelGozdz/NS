@@ -2,10 +2,8 @@ import { createMock } from '@golevelup/ts-jest';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { CannotCreateUserError, CreateUserIntegrationEvent, GetUserByEmailIntegrationEvent, GetUserByIdIntegrationEvent } from '@app/core';
-import { TestLoggerModule, catchActError } from '@libs/testing';
+import { TestLoggerModule } from '@libs/testing';
 
-import { SignUpIntegrationDto } from '../dtos';
 import { AuthUserFixture } from '../models';
 import { IAuthUsersRepository } from '../repositories';
 import { AuthUsersService } from './auth-users.service';
@@ -51,11 +49,6 @@ describe('AuthService', () => {
 
   const userResp = {
     id: user.id,
-  };
-
-  const expectTokens = {
-    lastLogin: expect.any(Date),
-    tokenRefreshedAt: expect.any(Date),
   };
 
   describe('create', () => {
@@ -127,86 +120,6 @@ describe('AuthService', () => {
       // Assert
       expect(result).toEqual(authUser);
       expect(authUsersRepositoryMock.getByUserEmail).toHaveBeenNthCalledWith(1, authUser.email);
-    });
-  });
-
-  describe('getIntegrationUserById', () => {
-    it('should return user with getIntegrationUserById', async () => {
-      // Arrange
-      eventEmitterMock.emitAsync.mockResolvedValue([user]);
-      const paramEvent = new GetUserByIdIntegrationEvent(authUser.userId);
-      paramEvent.integrationEventId = expect.any(String);
-      paramEvent.integrationEventOccuredON = expect.any(Date);
-
-      // Act
-      const result = await service.getIntegrationUserById(authUser.userId);
-
-      // Assert
-      expect(result).toEqual(user);
-      expect(eventEmitterMock.emitAsync).toHaveBeenNthCalledWith(1, GetUserByIdIntegrationEvent.eventName, paramEvent);
-    });
-  });
-
-  describe('getIntegrationUserByEmail', () => {
-    it('should return user with getIntegrationUserByEmail', async () => {
-      // Arrange
-      eventEmitterMock.emitAsync.mockResolvedValue([user]);
-      const paramEvent = new GetUserByEmailIntegrationEvent(authUser.email);
-      paramEvent.integrationEventId = expect.any(String);
-      paramEvent.integrationEventOccuredON = expect.any(Date);
-
-      // Act
-      const result = await service.getIntegrationUserByEmail(authUser.email);
-
-      // Assert
-      expect(result).toEqual(user);
-      expect(eventEmitterMock.emitAsync).toHaveBeenNthCalledWith(1, GetUserByEmailIntegrationEvent.eventName, paramEvent);
-    });
-  });
-
-  describe('createIntegrationUser', () => {
-    const dto: SignUpIntegrationDto = {
-      email: 'test@example.com',
-    };
-
-    describe('success', () => {
-      it('should return user created id', async () => {
-        // Arrange
-        eventEmitterMock.emitAsync.mockResolvedValue([userResp]);
-        const paramEvent = new CreateUserIntegrationEvent({
-          email: dto.email,
-          ...expectTokens,
-        });
-        paramEvent.integrationEventId = expect.any(String);
-        paramEvent.integrationEventOccuredON = expect.any(Date);
-
-        // Act
-        const result = await service.createIntegrationUser(dto);
-
-        // Assert
-        expect(result).toEqual(userResp);
-        expect(eventEmitterMock.emitAsync).toHaveBeenNthCalledWith(1, CreateUserIntegrationEvent.eventName, paramEvent);
-      });
-    });
-
-    describe('failure', () => {
-      it('should throw CannotCreateUserError if no user returned', async () => {
-        // Arrange
-        eventEmitterMock.emitAsync.mockRejectedValueOnce(CannotCreateUserError.failed());
-        const paramEvent = new CreateUserIntegrationEvent({
-          email: dto.email,
-          ...expectTokens,
-        });
-        paramEvent.integrationEventId = expect.any(String);
-        paramEvent.integrationEventOccuredON = expect.any(Date);
-
-        // Act
-        const { error } = await catchActError(() => service.createIntegrationUser(dto));
-
-        // Assert
-        expect(error).toBeInstanceOf(CannotCreateUserError);
-        expect(eventEmitterMock.emitAsync).toHaveBeenNthCalledWith(1, CreateUserIntegrationEvent.eventName, paramEvent);
-      });
     });
   });
 });

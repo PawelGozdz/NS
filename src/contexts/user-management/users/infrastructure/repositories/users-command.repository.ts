@@ -8,7 +8,7 @@ import { EntityId } from '@libs/common';
 import { EventBus } from '@libs/cqrs';
 import { EntityRepository } from '@libs/ddd';
 
-import { IUsersCommandRepository, User, UserCreatedEvent, UserSnapshot } from '../../domain';
+import { IUsersCommandRepository, User, UserCreatedEvent, UserSnapshot, UserUpdatedEvent } from '../../domain';
 import { UserModel, UserProfileModel } from '../models';
 
 @Injectable()
@@ -73,7 +73,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
   }
 
   private getUserAndProfile() {
-    return this.txHost.tx
+    return this.db.tx
       .selectFrom(`${TableNames.USERS} as u`)
       .select((eb) => [
         'u.id',
@@ -107,7 +107,7 @@ export class UsersCommandRepository extends EntityRepository implements IUsersCo
       ]);
   }
 
-  public async handleUserUpdatedEvent(event: UserCreatedEvent) {
+  public async handleUserUpdatedEvent(event: UserUpdatedEvent) {
     await this.db.tx
       .updateTable(TableNames.USERS)
       .set({

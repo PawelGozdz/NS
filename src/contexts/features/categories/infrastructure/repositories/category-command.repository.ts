@@ -1,6 +1,8 @@
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Injectable } from '@nestjs/common';
 
-import { Database, TableNames } from '@app/core';
+import { IDatabaseModels, TableNames } from '@app/core';
 import { throwErrorBasedOnPostgresErrorCode } from '@libs/common';
 
 import { Category, ICategoriesCommandRepository, ICategoryCreateData, ICategoryUpdateData } from '../../domain';
@@ -8,7 +10,7 @@ import { CategoryModel } from '../models';
 
 @Injectable()
 export class CategoriesCommandRepository implements ICategoriesCommandRepository {
-  constructor(readonly db: Database) {}
+  constructor(private readonly txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>) {}
 
   async getOneById(id: number): Promise<Category | undefined> {
     try {
@@ -40,7 +42,7 @@ export class CategoriesCommandRepository implements ICategoriesCommandRepository
 
   public async save(category: ICategoryCreateData): Promise<{ id: number }> {
     try {
-      const model = await this.db
+      const model = await this.txHost.tx
         .insertInto(TableNames.CATEGORIES)
         .values({
           name: category.name,
@@ -61,7 +63,7 @@ export class CategoriesCommandRepository implements ICategoriesCommandRepository
 
   public async update(category: ICategoryUpdateData): Promise<void> {
     try {
-      await this.db
+      await this.txHost.tx
         .updateTable(TableNames.CATEGORIES)
         .set({
           name: category.name,
@@ -87,7 +89,7 @@ export class CategoriesCommandRepository implements ICategoriesCommandRepository
   }
 
   private getCategory() {
-    return this.db
+    return this.txHost.tx
       .selectFrom(`${TableNames.CATEGORIES} as c`)
       .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
   }

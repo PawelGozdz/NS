@@ -5,7 +5,6 @@ import request from 'supertest';
 
 import { AppModule } from '@app/app.module';
 import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { TestLoggerModule } from '@libs/testing';
 
 import { getCookies, loginUser } from '../builders/auth-user';
 import { CategorySeedBuilder } from '../builders/csategory-builder';
@@ -24,7 +23,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, TestLoggerModule.forRoot()],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
