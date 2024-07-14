@@ -8,29 +8,22 @@ export class Outbox<T = unknown> {
 
   public context: string;
 
-  public payload: Event<T>;
+  public data: Event<T>;
 
   public createdAt: Date;
 
   public publishedOn: Date | null;
 
-  constructor(props: { id: number; eventName: string; context: string; payload: Event<T>; createdAt: Date; publishedOn: Date | null }) {
+  constructor(props: { id: number; eventName: string; context: string; data: Event<T>; createdAt: Date; publishedOn: Date | null }) {
     this.id = props.id;
     this.eventName = props.eventName;
     this.context = props.context;
-    this.payload = props.payload;
+    this.data = props.data;
     this.createdAt = props.createdAt;
     this.publishedOn = props.publishedOn;
   }
 
-  static create<T>(props: {
-    id: number;
-    eventName: string;
-    context: string;
-    payload: Event<T>;
-    createdAt: Date;
-    publishedOn: Date | null;
-  }): Outbox<T> {
+  static create<T>(props: { id: number; eventName: string; context: string; data: Event<T>; createdAt: Date; publishedOn: Date | null }): Outbox<T> {
     return new Outbox(props);
   }
 }
@@ -42,17 +35,17 @@ export class OutboxModel implements IOutboxModel {
 
   public context: string;
 
-  public payload: Event<unknown>;
+  public data: Event<unknown>;
 
   public createdAt: Date;
 
   public publishedOn: Date | null;
 
-  constructor(props: { id: number; eventName: string; context: string; payload: Event<unknown>; createdAt: Date; publishedOn: Date | null }) {
+  constructor(props: { id: number; eventName: string; context: string; data: Event<unknown>; createdAt: Date; publishedOn: Date | null }) {
     this.id = props.id;
     this.eventName = props.eventName;
     this.context = props.context;
-    this.payload = props.payload;
+    this.data = props.data;
     this.createdAt = props.createdAt;
     this.publishedOn = props.publishedOn;
   }

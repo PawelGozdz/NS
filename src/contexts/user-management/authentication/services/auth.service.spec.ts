@@ -3,11 +3,12 @@ import { createMock } from '@golevelup/ts-jest';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { CannotCreateUserError } from '@app/core';
 import { ConflictError, UnauthorizedError } from '@libs/common';
-import { TestLoggerModule, catchActError } from '@libs/testing';
+import { CommandBus } from '@libs/cqrs';
+import { CommandBusMock, TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 
 import { SignUpDto } from '../dtos';
+import { AuthUser } from '../models';
 import { AuthUserFixture } from '../models/auth-user.fixture';
 import { ITokens } from '../types';
 import { AuthUsersService } from './auth-users.service';
@@ -23,6 +24,7 @@ describe('AuthService', () => {
   let hashServiceMock: jest.Mocked<HashService>;
   let authUsersServiceMock: jest.Mocked<AuthUsersService>;
   let jwtServiceMock: jest.Mocked<JwtService>;
+  let commandBus: CommandBusMock;
 
   beforeEach(async () => {
     hashServiceMock = createMock();
@@ -30,7 +32,7 @@ describe('AuthService', () => {
     jwtServiceMock = createMock();
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [TestLoggerModule.forRoot()],
+      imports: [TestCqrsModule, TestLoggerModule.forRoot()],
       providers: [
         AuthService,
         {
@@ -49,6 +51,7 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
+    commandBus = module.get(CommandBus);
   });
 
   afterEach(() => {
@@ -82,46 +85,41 @@ describe('AuthService', () => {
     describe('success', () => {
       it('should create a user and return their id', async () => {
         // Arrange
-
+        commandBus.execute.mockResolvedValueOnce({ id: user.id });
         hashServiceMock.hashData.mockResolvedValueOnce(hashedPassword);
-        authUsersServiceMock.createIntegrationUser.mockResolvedValueOnce(user);
         authUsersServiceMock.create.mockResolvedValueOnce({ id: user.id });
+
+        const authUser = AuthUser.create({
+          userId: user.id,
+          email: dto.email,
+          hash: hashedPassword,
+          hashedRt: null,
+        });
 
         // Act
         const result = await service.createUser(dto);
 
         // Assert
         expect(hashServiceMock.hashData).toHaveBeenCalledWith(dto.password);
-        expect(authUsersServiceMock.createIntegrationUser).toHaveBeenCalledWith(dto);
+        expect(authUsersServiceMock.create).toHaveBeenCalledWith({
+          ...authUser,
+          id: expect.any(String),
+        });
         expect(result).toMatchSnapshot({
           id: expect.any(String),
-          email: dto.email,
+          userId: expect.any(String),
           hash: hashedPassword,
           hashedRt: null,
-          userId: expect.any(String),
         });
       });
     });
 
     describe('failure', () => {
-      it('should throw CannotCreateUserError if user creation fails', async () => {
-        // Arrange
-        hashServiceMock.hashData.mockResolvedValueOnce(hashedPassword);
-        authUsersServiceMock.createIntegrationUser.mockRejectedValueOnce(new CannotCreateUserError('error'));
-        authUsersServiceMock.create.mockRejectedValue(new CannotCreateUserError('error'));
-
-        // Act
-        const { error } = await catchActError(() => service.createUser(dto));
-
-        // Assert
-        expect(error).toBeInstanceOf(CannotCreateUserError);
-        expect(error).toMatchSnapshot();
-      });
-
       it('should throw ConflictError if user with the same email already exists', async () => {
         // Arrange
+        commandBus.execute.mockResolvedValueOnce({ id: user.id });
         hashServiceMock.hashData.mockResolvedValueOnce(hashedPassword);
-        authUsersServiceMock.createIntegrationUser.mockRejectedValueOnce(new ConflictError('error'));
+        authUsersServiceMock.create.mockRejectedValueOnce(new ConflictError('error'));
 
         // Act
         const { error } = await catchActError(() => service.createUser(dto));

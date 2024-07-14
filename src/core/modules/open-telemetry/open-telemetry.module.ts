@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { OpenTelemetryModule } from 'nestjs-otel';
+import { OpenTelemetryModule as OTM } from 'nestjs-otel';
 
-const OpenTelemetryModuleConfig = OpenTelemetryModule.forRoot({
+const OpenTelemetryModuleConfig = OTM.forRoot({
   metrics: {
     hostMetrics: true, // Includes Host Metrics
     apiMetrics: {
@@ -20,4 +20,4 @@ const OpenTelemetryModuleConfig = OpenTelemetryModule.forRoot({
   imports: [OpenTelemetryModuleConfig],
   exports: [OpenTelemetryModuleConfig],
 })
-export class OpenTelemetryModuleModule {}
+export class OpenTelemetryModule {}

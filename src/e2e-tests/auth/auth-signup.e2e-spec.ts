@@ -5,7 +5,7 @@ import request from 'supertest';
 
 import { UserAlreadyExistsError } from '@app/contexts';
 import { ApiResponseStatusJsendEnum, AppRoutes, IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { TestLoggerModule, testingDefaults } from '@libs/testing';
+import { testingDefaults } from '@libs/testing';
 
 import { AppModule } from '../../app.module';
 import { UserSeedBuilder } from '../builders/user-builder';
@@ -24,7 +24,7 @@ describe('AuthJwtControllerV1 -> signup (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, TestLoggerModule.forRoot()],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();

@@ -6,7 +6,6 @@ import request from 'supertest';
 import { AppModule } from '@app/app.module';
 import { HashService } from '@app/contexts';
 import { AppRoutes, IDatabaseModels, dialect, kyselyPlugins } from '@app/core';
-import { TestLoggerModule } from '@libs/testing';
 
 import { getCookies, loginUser } from '../builders/auth-user';
 
@@ -21,7 +20,7 @@ describe('UsersControllerV1 -> getMany (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, TestLoggerModule.forRoot()],
+      imports: [AppModule],
       providers: [HashService],
     }).compile();
 

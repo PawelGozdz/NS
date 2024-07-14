@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AuthService createUser failure should throw CannotCreateUserError if user creation fails 1`] = `[CannotCreateUserError: error]`;
-
 exports[`AuthService createUser failure should throw ConflictError if user with the same email already exists 1`] = `[ConflictError: error]`;
 
 exports[`AuthService createUser success should create a user and return their id 1`] = `

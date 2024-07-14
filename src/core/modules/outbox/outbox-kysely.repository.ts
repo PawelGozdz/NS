@@ -1,23 +1,35 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
+import { Injectable } from '@nestjs/common';
 
-import { IDatabaseModels, IOutboxInput, TableNames } from '@app/core';
+import { IDatabaseModels, IEventLogModel, IOutboxInput, TableNames } from '@app/core';
 
 import { IOutboxRepository } from './outbox-repository.interface';
 import { Outbox, OutboxModel } from './outbox.model';
 
+@Injectable()
 export class OutboxKyselyRepository implements IOutboxRepository {
   constructor(private readonly txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>) {}
 
   async store(outboxInput: IOutboxInput) {
-    await this.txHost.tx
-      .insertInto(TableNames.OUTBOX)
-      .values({
-        eventName: outboxInput.eventName,
-        context: outboxInput.context,
-        payload: outboxInput.payload,
-      } as OutboxModel)
-      .execute();
+    await Promise.all([
+      this.txHost.tx
+        .insertInto(TableNames.OUTBOX)
+        .values({
+          eventName: outboxInput.eventName,
+          context: outboxInput.context,
+          data: outboxInput.data,
+        } as OutboxModel)
+        .execute(),
+
+      await this.txHost.tx
+        .insertInto(TableNames.EVENT_LOG)
+        .values({
+          eventName: outboxInput.eventName,
+          data: outboxInput.data,
+        } as IEventLogModel)
+        .execute(),
+    ]);
   }
 
   async findUnpublished(limit?: number) {
@@ -37,7 +49,7 @@ export class OutboxKyselyRepository implements IOutboxRepository {
       id: outbox.id,
       eventName: outbox.eventName,
       context: outbox.context,
-      payload: outbox.payload,
+      data: outbox.data,
       createdAt: outbox.createdAt,
       publishedOn: outbox.publishedOn,
     });

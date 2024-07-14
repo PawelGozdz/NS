@@ -19,6 +19,7 @@ const providers = [
 ];
 const queries = [GetManyCategoriesHandler];
 const commands = [CreateCategoryHandler, UpdateCategoryHandler];
+
 @Module({
   imports: [CqrsModule, DatabaseModule, OutboxModule],
   providers: [...providers, ...queries, ...commands],

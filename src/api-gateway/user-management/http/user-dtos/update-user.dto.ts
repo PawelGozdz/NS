@@ -1,5 +1,6 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsOptional, ValidateIf, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmptyObject, IsOptional, ValidateIf, ValidateNested } from 'class-validator';
 
 import { GlobalDto } from '@libs/common';
 
@@ -20,7 +21,9 @@ export class UpdateUserDto extends PickType(GlobalDto, ['email']) {
   })
   @ValidateIf(({ value }) => value !== null)
   @IsOptional()
+  @IsNotEmptyObject()
   @ValidateNested()
+  @Type(() => PartialUpdateProfileDto)
   profile?: PartialUpdateProfileDto;
 }
 
