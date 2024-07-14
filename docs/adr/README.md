@@ -15,3 +15,4 @@
 * [13. error-creation-method](0013-error-creation-method.md)
 * [14. log-level-usage](0014-log-level-usage.md)
 * [15. response-convention](0015-response-convention.md)
+* [16. transactions-in-busness-logic](0016-transactions-in-busness-logic.md)
