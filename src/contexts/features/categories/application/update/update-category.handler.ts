@@ -2,8 +2,8 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { IOutboxRepository } from '@app/core';
-import { AppContext, getCoalescedField, getNullOrValueField } from '@libs/common';
+import { AppContext, IOutboxRepository } from '@app/core';
+import { getCoalescedField, getNullOrValueField } from '@libs/common';
 import { IInferredCommandHandler } from '@libs/cqrs';
 
 import { Category, CategoryNotFoundError, CategoryUpdatedEvent, ICategoriesCommandRepository } from '../../domain';

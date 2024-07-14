@@ -2,7 +2,7 @@ import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsNotEmptyObject, IsOptional, ValidateIf, ValidateNested } from 'class-validator';
 
-import { GlobalDto } from '@libs/common';
+import { GlobalDto } from '@app/core';
 
 import { ProfileDto } from './profile.dto';
 

@@ -1,5 +1,7 @@
-import { EntityId, InvalidParameterError, MissingValueError } from '@libs/common';
+import { InvalidParameterError, MissingValueError } from '@libs/common';
 import { catchActError } from '@libs/testing';
+
+import { EntityId } from './id.value-object';
 
 describe('Id Value Object', () => {
   it('should create proper id', () => {

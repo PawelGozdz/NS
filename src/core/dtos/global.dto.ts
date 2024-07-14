@@ -14,8 +14,9 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+import { systemVariables } from '@libs/common';
+
 import { CountryCode } from '../enums';
-import { systemVariables } from '../system-variables';
 
 class AddressDto {
   @ApiProperty({

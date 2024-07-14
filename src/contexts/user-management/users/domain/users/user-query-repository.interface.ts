@@ -1,5 +1,5 @@
-import { IUsersQueryParams } from '@app/core';
-import { AddressData, EntityId } from '@libs/common';
+import { AddressData, IUsersQueryParams } from '@app/core';
+import { EntityId } from '@libs/common';
 
 export type UserInfo = {
   id: string;

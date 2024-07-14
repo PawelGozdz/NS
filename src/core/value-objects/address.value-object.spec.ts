@@ -1,5 +1,6 @@
-import { CountryCode, MissingValueError } from '@libs/common';
+import { MissingValueError } from '@libs/common';
 
+import { CountryCode } from '../enums';
 import { Address } from './address.value-object';
 
 describe('Address.create', () => {

@@ -1,4 +1,4 @@
-# 2. Changefiles
+# 7. Changelog files
 
 Date: 2024-02-11
 

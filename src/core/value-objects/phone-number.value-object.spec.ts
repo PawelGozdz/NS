@@ -1,5 +1,4 @@
-import { CountryCode } from '@libs/common';
-
+import { CountryCode } from '../enums';
 import { PhoneNumber } from './phone-number.value-object';
 
 describe('PhoneNumber.toJSON', () => {
