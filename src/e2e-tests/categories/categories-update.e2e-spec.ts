@@ -7,7 +7,7 @@ import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugin
 
 import { AppModule } from '../../app.module';
 import { getCookies, loginUser } from '../builders/auth-user';
-import { CategorySeedBuilder } from '../builders/csategory-builder';
+import { CategorySeedBuilder } from '../builders/category-builder';
 
 describe('CategoriesControllerV1 -> update (e2e)', () => {
   const dbConnection = new Kysely<IDatabaseModels>({

@@ -7,6 +7,7 @@ export enum TableNames {
 
   // FEATURES
   CATEGORIES = 'categories',
+  SKILLS = 'skills',
 
   // Event Sourcing
   EVENT_LOG = 'eventLogs',

@@ -2,7 +2,7 @@ interface ICategoriesRoutes {
   create: string;
   update: string;
   delete: string;
-  getCategories: string;
+  getMany: string;
 }
 
 const categoriesRoot = '/categories';
@@ -10,9 +10,27 @@ const CategoryRoutes: { root: string; v1: ICategoriesRoutes } = {
   root: categoriesRoot,
   v1: {
     create: `${categoriesRoot}`,
-    getCategories: `${categoriesRoot}`,
+    getMany: `${categoriesRoot}`,
     update: `${categoriesRoot}/:id`,
     delete: `${categoriesRoot}/:id`,
+  },
+};
+
+interface ISkillsRoutes {
+  create: string;
+  update: string;
+  delete: string;
+  getMany: string;
+}
+
+const skillsRoot = '/skills';
+const SkillRoutes: { root: string; v1: ISkillsRoutes } = {
+  root: skillsRoot,
+  v1: {
+    create: `${skillsRoot}`,
+    getMany: `${skillsRoot}`,
+    update: `${skillsRoot}/:id`,
+    delete: `${skillsRoot}/:id`,
   },
 };
 
@@ -54,4 +72,5 @@ export const AppRoutes = {
   USERS: UserRoutes,
   AUTH: AuthRoutes,
   CATEGORIES: CategoryRoutes,
+  SKILLS: SkillRoutes,
 };

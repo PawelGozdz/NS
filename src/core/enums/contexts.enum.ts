@@ -5,5 +5,6 @@ export enum AppContext {
 
   // Features
   CATEGORIES = 'categories',
+  SKILLS = 'skills',
   TAGS = 'tags',
 }

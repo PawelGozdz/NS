@@ -28,6 +28,10 @@ const defaultRodoAcceptanceDate = new Date('2024-01-01');
 const defaultCategoryName = 'Test category';
 const defaultCategoryDescription = 'Test description';
 
+// Skill
+const defaultSkillName = 'Test skill';
+const defaultSkillDescription = 'Test description';
+
 // Context
 const defaultCtx = 'categories';
 
@@ -57,5 +61,10 @@ export const testingDefaults = {
     name: defaultCategoryName,
     description: defaultCategoryDescription,
     context: defaultCtx,
+  },
+  skill: {
+    name: defaultSkillName,
+    description: defaultSkillDescription,
+    context: 'skills',
   },
 };
