@@ -5,9 +5,9 @@ export class CategoryCreatedEvent extends Event<CategoryCreatedEvent> {
 
   name: string;
 
-  description: string | null;
+  description?: string | null;
 
-  parentId: number | null;
+  parentId?: number | null;
 
   context: string;
 

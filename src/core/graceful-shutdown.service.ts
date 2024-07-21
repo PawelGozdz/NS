@@ -5,7 +5,7 @@ import { PinoLogger } from 'nestjs-pino';
 import { Database } from '@app/core';
 import { AppUtils } from '@libs/common';
 
-import { otelSDK } from './modules';
+import { JobManagerService, otelSDK } from './modules';
 
 export interface GracefulShutDownConfig {
   app: INestApplication;
@@ -21,9 +21,8 @@ export class GracefulShutdownService implements OnApplicationShutdown {
   constructor(
     private readonly logger: PinoLogger,
     private readonly db: Database,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+    private readonly jobManagerService: JobManagerService,
+  ) {}
 
   async onApplicationShutdown(signal?: string) {
     if (AppUtils.isEmpty(this.config)) return;
@@ -34,6 +33,8 @@ export class GracefulShutdownService implements OnApplicationShutdown {
 
     await this.shutdownOT();
 
+    await this.shutdownJobs();
+
     this.logger.info('****** All processes successfuly shut down ******');
   }
 
@@ -43,6 +44,16 @@ export class GracefulShutdownService implements OnApplicationShutdown {
       throw new Error('Invalid GracefulShutDown configuration');
     }
     this.config = config;
+  }
+
+  async shutdownJobs() {
+    try {
+      this.logger.info('Shutting down jobs connection');
+      await this.jobManagerService.stopJobs();
+      this.logger.info('Jobs connection closed');
+    } catch (error) {
+      this.logger.info(error, 'Jobs connection is already closed');
+    }
   }
 
   async shutdownDatabase() {

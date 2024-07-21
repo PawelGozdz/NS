@@ -7,7 +7,7 @@ import { IOutboxRepository } from './outbox-repository.interface';
 
 const provider = {
   provide: IOutboxRepository,
-  useValue: OutboxKyselyRepository,
+  useClass: OutboxKyselyRepository,
 };
 
 @Global()

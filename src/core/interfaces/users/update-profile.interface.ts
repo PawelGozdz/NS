@@ -1,4 +1,4 @@
-import { CountryCode } from '@libs/common';
+import { CountryCode } from '@app/core';
 
 export type IUpdateProfile = {
   firstName?: string | null;

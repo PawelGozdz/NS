@@ -3,12 +3,12 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import config from '@app/config';
-import { AuthenticationModule, ContextModule } from '@app/contexts';
+import { ContextModule } from '@app/contexts';
 import { AccessTokenGuard, GlobalExceptionFilter, JsendTransformSuccessInterceptor, LoggingInterceptor } from '@app/core';
 import { CqrsModule } from '@libs/cqrs';
 
-import { AuthJwtControllerV1, UsersControllerV1 } from './auth';
 import { CategoriesControllerV1 } from './features';
+import { AuthJwtControllerV1, UsersControllerV1 } from './user-management';
 
 const interceptors = [
   {
@@ -35,6 +35,7 @@ const guards = [
     useClass: ThrottlerGuard,
   },
 ];
+
 const pipes = [
   {
     provide: 'APP_PIPE',
@@ -51,7 +52,6 @@ const controllersV1 = [AuthJwtControllerV1, UsersControllerV1, CategoriesControl
 @Module({
   imports: [
     CqrsModule,
-    AuthenticationModule,
     ContextModule,
     ThrottlerModule.forRoot([
       {

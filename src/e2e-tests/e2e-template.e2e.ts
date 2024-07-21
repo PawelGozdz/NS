@@ -6,7 +6,6 @@ import request from 'supertest';
 
 import { AppModule } from '@app/app.module';
 import { IDatabaseModels, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
-import { TestLoggerModule } from '@libs/testing';
 
 type IDdbDaos = IDatabaseModels;
 
@@ -22,7 +21,7 @@ describe('Template (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, TestLoggerModule.forRoot()],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();

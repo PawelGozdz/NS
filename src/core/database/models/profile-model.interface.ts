@@ -1,4 +1,4 @@
-import { CountryCode } from '@libs/common';
+import { CountryCode } from '@app/core';
 
 export abstract class IUserProfileModel {
   id: string;

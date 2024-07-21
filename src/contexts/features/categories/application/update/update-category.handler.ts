@@ -1,21 +1,25 @@
+import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
+import { AppContext, IOutboxRepository } from '@app/core';
 import { getCoalescedField, getNullOrValueField } from '@libs/common';
 import { IInferredCommandHandler } from '@libs/cqrs';
 
-import { Category, CategoryNotFoundError, ICategoriesCommandRepository } from '../../domain';
+import { Category, CategoryNotFoundError, CategoryUpdatedEvent, ICategoriesCommandRepository } from '../../domain';
 import { UpdateCategoryCommand } from './update-category.command';
 
 @Injectable()
 export class UpdateCategoryHandler implements IInferredCommandHandler<UpdateCategoryCommand> {
   constructor(
     private readonly categoryCommandRepository: ICategoriesCommandRepository,
+    private readonly outboxRepository: IOutboxRepository,
     private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(this.constructor.name);
   }
 
+  @Transactional()
   async execute(command: UpdateCategoryCommand): Promise<void> {
     this.logger.info(command, 'Updating category:');
 
@@ -25,16 +29,28 @@ export class UpdateCategoryHandler implements IInferredCommandHandler<UpdateCate
       throw CategoryNotFoundError.withId(command.id);
     }
 
-    await this.categoryCommandRepository.update(this.updateCategoryInstance(command, currentEntity));
+    const categoryInstance = this.updateCategoryInstance(command, currentEntity);
+
+    await this.categoryCommandRepository.update(categoryInstance);
+
+    await this.outboxRepository.store(this.createOutbox(new CategoryUpdatedEvent(categoryInstance)));
   }
 
-  private updateCategoryInstance(command: UpdateCategoryCommand, currentEntity: Category) {
+  private updateCategoryInstance(command: UpdateCategoryCommand, currentEntity: Category): Category {
     return {
       id: currentEntity.id,
-      name: getCoalescedField(command.name, currentEntity.name),
-      context: getCoalescedField(command.context, currentEntity.context),
+      name: getCoalescedField(command.name, currentEntity.name) as string,
+      context: getCoalescedField(command.context, currentEntity.context) as string,
       description: getNullOrValueField(command.description, currentEntity.description),
       parentId: getNullOrValueField(command.parentId, currentEntity.parentId),
+    };
+  }
+
+  private createOutbox(event: CategoryUpdatedEvent) {
+    return {
+      context: AppContext.CATEGORIES,
+      eventName: CategoryUpdatedEvent.name,
+      data: event,
     };
   }
 }

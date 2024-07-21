@@ -6,7 +6,6 @@ import request from 'supertest';
 import { HashService } from '@app/contexts';
 import { ApiResponseStatusJsendEnum, AppRoutes, IDatabaseModels, dialect, kyselyPlugins } from '@app/core';
 import { UnauthorizedError } from '@libs/common';
-import { TestLoggerModule } from '@libs/testing';
 
 import { AppModule } from '../../app.module';
 import { getCookies, loginUser } from '../builders/auth-user';
@@ -22,7 +21,7 @@ describe('AuthJwtControllerV1 -> logout (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, TestLoggerModule.forRoot()],
+      imports: [AppModule],
       providers: [HashService],
     }).compile();
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-imports */
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { CommandBus, IEvent, QueryBus } from '@nestjs/cqrs';
 import { ExplorerService } from '@nestjs/cqrs/dist/services/explorer.service';

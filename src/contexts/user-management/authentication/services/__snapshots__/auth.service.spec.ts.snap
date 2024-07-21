@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AuthService createUser failure should throw ConflictError if user with the same email already exists 1`] = `[ConflictError: error]`;
+
+exports[`AuthService createUser success should create a user and return their id 1`] = `
+{
+  "email": "test@example.com",
+  "hash": "hashedPassword",
+  "hashedRt": null,
+  "id": Any<String>,
+  "lastLogin": null,
+  "tokenRefreshedAt": null,
+  "userId": Any<String>,
+}
+`;
+
+exports[`AuthService getAuthenticatedUserWithEmailAndPassword failure should throw UnauthorizedError if password does not match 1`] = `[UnauthorizedError: Unauthorized]`;
+
+exports[`AuthService getAuthenticatedUserWithEmailAndPassword failure should throw UnauthorizedError if user does not exist 1`] = `[UnauthorizedError: Unauthorized]`;
+
+exports[`AuthService getAuthenticatedUserWithEmailAndPassword success should return the user if email and password are valid 1`] = `
+{
+  "email": "test@email.com",
+  "hash": "hashedPassword",
+  "hashedRt": "hashedRefreshToken",
+  "id": Any<String>,
+  "lastLogin": Any<Date>,
+  "tokenRefreshedAt": Any<Date>,
+  "userId": Any<String>,
+}
+`;
+
+exports[`AuthService getAuthenticatedUserWithJwt failure should throw UnauthorizedError if user does not exist 1`] = `[UnauthorizedError: Unauthorized]`;
+
+exports[`AuthService getAuthenticatedUserWithJwt success should return the user if userId is valid 1`] = `
+{
+  "email": "test@email.com",
+  "hash": "hashedPassword",
+  "hashedRt": "hashedRefreshToken",
+  "id": Any<String>,
+  "lastLogin": Any<Date>,
+  "tokenRefreshedAt": Any<Date>,
+  "userId": Any<String>,
+}
+`;
+
+exports[`AuthService getAuthenticatedUserWithRefreshToken failure should throw UnauthorizedError if refreshToken is not a string 1`] = `[UnauthorizedError: Unauthorized]`;
+
+exports[`AuthService getAuthenticatedUserWithRefreshToken failure should throw UnauthorizedError if user does not exist 1`] = `[UnauthorizedError: Unauthorized]`;
+
+exports[`AuthService getAuthenticatedUserWithRefreshToken success should return the user if refreshToken is valid 1`] = `
+{
+  "email": "test@email.com",
+  "hash": "hashedPassword",
+  "hashedRt": "hashedRefreshToken",
+  "id": Any<String>,
+  "lastLogin": Any<Date>,
+  "tokenRefreshedAt": Any<Date>,
+  "userId": Any<String>,
+}
+`;
+
+exports[`AuthService getTokens success should return tokens 1`] = `
+{
+  "access_token": "accessToken",
+  "refresh_token": "newRefreshToken",
+}
+`;
+
+exports[`AuthService refreshTokens failure should throw UnauthorizedError if refreshToken does not match user.hashedRt 1`] = `[UnauthorizedError: Unauthorized]`;
+
+exports[`AuthService refreshTokens success should return new tokens if refreshToken is valid 1`] = `
+{
+  "access_token": "accessToken",
+  "refresh_token": "newRefreshToken",
+}
+`;
+
+exports[`AuthService signin failure should throw UnauthorizedError if password is not valid 1`] = `[UnauthorizedError: Unauthorized]`;
+
+exports[`AuthService signin success should return signin user and return tokens 1`] = `
+{
+  "access_token": "accessToken",
+  "refresh_token": "newRefreshToken",
+}
+`;
+
+exports[`AuthService signup failure should throw an error if getTokens fails 1`] = `"getTokens error"`;
+
+exports[`AuthService signup failure should throw an error if updateHash fails 1`] = `[Error: updateHash error]`;
+
+exports[`AuthService signup failure should throw an error if updateUser fails 1`] = `[Error: updateUser error]`;
+
+exports[`AuthService signup success should get tokens, update hash and update user 1`] = `
+{
+  "access_token": "accessToken",
+  "refresh_token": "newRefreshToken",
+}
+`;
+
+exports[`AuthService updateHash success should call updateUser 1`] = `"uptadet-some-text"`;
+
+exports[`AuthService verifyTextToHash failure should throw UnauthorizedError if hashAndTextVerify doesnt return bool 1`] = `[UnauthorizedError: Unauthorized]`;

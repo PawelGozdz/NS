@@ -1,29 +1,39 @@
-import { Kysely } from 'kysely';
+import { TransactionHost } from '@nestjs-cls/transactional';
+import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
+import { Injectable } from '@nestjs/common';
 
-import { IDatabaseModels, IOutboxInput, TableNames } from '@app/core';
+import { IDatabaseModels, IEventLogModel, IOutboxInput, TableNames } from '@app/core';
 
 import { IOutboxRepository } from './outbox-repository.interface';
 import { Outbox, OutboxModel } from './outbox.model';
 
+@Injectable()
 export class OutboxKyselyRepository implements IOutboxRepository {
-  constructor(private readonly db: Kysely<IDatabaseModels>) {}
+  constructor(private readonly txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>) {}
 
   async store(outboxInput: IOutboxInput) {
-    await this.withTransaction().execute(async (trx) => {
-      //   trx.insertInto(TableNames.EVENT_LOG).values({ eventName: outboxInput.eventName, data: outboxInput.payload }).execute();
-      trx
+    await Promise.all([
+      this.txHost.tx
         .insertInto(TableNames.OUTBOX)
         .values({
           eventName: outboxInput.eventName,
           context: outboxInput.context,
-          payload: outboxInput.payload,
+          data: outboxInput.data,
         } as OutboxModel)
-        .execute();
-    });
+        .execute(),
+
+      await this.txHost.tx
+        .insertInto(TableNames.EVENT_LOG)
+        .values({
+          eventName: outboxInput.eventName,
+          data: outboxInput.data,
+        } as IEventLogModel)
+        .execute(),
+    ]);
   }
 
   async findUnpublished(limit?: number) {
-    let query = this.db.selectFrom(TableNames.OUTBOX).where('publishedOn', '=', null);
+    let query = this.txHost.tx.selectFrom(TableNames.OUTBOX).where('publishedOn', '=', null);
 
     if (typeof limit === 'number') {
       query = query.limit(limit);
@@ -35,17 +45,13 @@ export class OutboxKyselyRepository implements IOutboxRepository {
   }
 
   mapResponse(outbox: OutboxModel) {
-    return new Outbox({
+    return Outbox.create({
       id: outbox.id,
       eventName: outbox.eventName,
       context: outbox.context,
-      payload: outbox.payload,
+      data: outbox.data,
       createdAt: outbox.createdAt,
       publishedOn: outbox.publishedOn,
     });
-  }
-
-  withTransaction() {
-    return this.db.transaction();
   }
 }

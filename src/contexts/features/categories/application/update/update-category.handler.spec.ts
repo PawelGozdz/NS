@@ -1,18 +1,25 @@
 import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 
+import { IOutboxRepository } from '@app/core';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 
 import { CategoryEntityFixtureFactory, CategoryNotFoundError, ICategoriesCommandRepository } from '../../domain';
 import { UpdateCategoryCommand } from './update-category.command';
 import { UpdateCategoryHandler } from './update-category.handler';
 
+jest.mock('@nestjs-cls/transactional', () => ({
+  Transactional: () => jest.fn(),
+}));
+
 describe('UpdateCategoryHandler', () => {
   let handler: UpdateCategoryHandler;
   let categoryCommandRepositoryMock: jest.Mocked<ICategoriesCommandRepository>;
+  let outboxRepositoryMock: jest.Mocked<IOutboxRepository>;
 
   beforeEach(async () => {
     categoryCommandRepositoryMock = createMock();
+    outboxRepositoryMock = createMock();
 
     const app = await Test.createTestingModule({
       imports: [TestLoggerModule.forRoot(), TestCqrsModule],
@@ -21,6 +28,10 @@ describe('UpdateCategoryHandler', () => {
         {
           provide: ICategoriesCommandRepository,
           useValue: categoryCommandRepositoryMock,
+        },
+        {
+          provide: IOutboxRepository,
+          useValue: outboxRepositoryMock,
         },
       ],
     }).compile();
@@ -62,6 +73,7 @@ describe('UpdateCategoryHandler', () => {
         description: null,
         parentId: null,
       });
+      expect(outboxRepositoryMock.store).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -76,6 +88,7 @@ describe('UpdateCategoryHandler', () => {
       // Assert
 
       expect(categoryCommandRepositoryMock.update).toHaveBeenCalledTimes(0);
+      expect(outboxRepositoryMock.store).toHaveBeenCalledTimes(0);
       expect(error).toBeInstanceOf(CategoryNotFoundError);
       expect(error).toMatchSnapshot();
     });

@@ -1,5 +1,3 @@
-import { AppContext } from '../enums';
-
 export const systemVariables = {
   dtos: {
     categories: {
@@ -9,8 +7,8 @@ export const systemVariables = {
         example1: 'Grocery',
       },
       context: {
-        AVAILABLE_OPTIONS: Object.values(AppContext),
-        example1: AppContext.CATEGORIES,
+        AVAILABLE_OPTIONS: ['categories', 'tags'],
+        example1: 'categories',
       },
       parentId: {
         MIN_VALUE: 1,
