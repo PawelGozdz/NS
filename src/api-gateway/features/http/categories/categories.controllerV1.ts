@@ -71,10 +71,10 @@ export class CategoriesControllerV1 {
   @ApiJsendResponse({
     statusCode: HttpStatus.OK,
     type: [CategoryResponseDto],
-    path: AppRoutes.CATEGORIES.v1.getCategories,
+    path: AppRoutes.CATEGORIES.v1.getMany,
   })
   @HttpCode(HttpStatus.OK)
-  @Get(AppRoutes.CATEGORIES.v1.getCategories)
+  @Get(AppRoutes.CATEGORIES.v1.getMany)
   async getMany(@Query() dto: CategoriesQueryParamsDto): Promise<CategoryResponseDto[]> {
     return this.getManyCategoriesHandler.execute(
       new GetManyCategoriesQuery({

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GetManySkillsHandler should get many skills 1`] = `
+[
+  {
+    "context": "context",
+    "description": "description",
+    "id": 2,
+    "name": "name",
+    "parentId": 1,
+  },
+]
+`;

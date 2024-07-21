@@ -7,7 +7,7 @@ import { ContextModule } from '@app/contexts';
 import { AccessTokenGuard, GlobalExceptionFilter, JsendTransformSuccessInterceptor, LoggingInterceptor } from '@app/core';
 import { CqrsModule } from '@libs/cqrs';
 
-import { CategoriesControllerV1 } from './features';
+import { CategoriesControllerV1, SkillsControllerV1 } from './features';
 import { AuthJwtControllerV1, UsersControllerV1 } from './user-management';
 
 const interceptors = [
@@ -47,7 +47,7 @@ const pipes = [
   },
 ];
 
-const controllersV1 = [AuthJwtControllerV1, UsersControllerV1, CategoriesControllerV1];
+const controllersV1 = [AuthJwtControllerV1, UsersControllerV1, CategoriesControllerV1, SkillsControllerV1];
 
 @Module({
   imports: [

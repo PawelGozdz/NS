@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateSkillHandler Success should create new skill 1`] = `
+{
+  "id": 1,
+}
+`;
+
+exports[`CreateSkillHandler failure should throw SkillAlreadyExistsError 1`] = `[SkillAlreadyExistsError: Entity with name test and context test-context already exists]`;
