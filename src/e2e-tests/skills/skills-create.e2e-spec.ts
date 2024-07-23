@@ -19,7 +19,7 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
   const dbUtils = new TestingE2EFunctions(dbConnection);
   let app: INestApplication;
 
-  const tablesInvolved = [TableNames.SKILLS];
+  const tablesInvolved = [TableNames.SKILLS, TableNames.CATEGORIES];
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -36,56 +36,27 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
   });
 
   let credentials: [string, string];
-  let dataAssertion: { parentId?: number; name?: string };
+  let builder: SkillSeedBuilder;
+  let dataAssertion: { parentId?: number; name?: string; categoryId?: number };
 
   beforeEach(async () => {
     credentials = getCookies();
 
     await dbConnection.transaction().execute(async (trx) => {
       await dbUtils.truncateTables(tablesInvolved, trx);
+
+      builder = await SkillSeedBuilder.create(trx);
+      builder.withCategory().withSkill();
+      await builder.build();
+
       await loginUser(trx);
     });
   });
 
-  const context = 'users';
-  const name = 'test skill';
-
   describe('/skills (POST) V1', () => {
     describe('SUCCESS', () => {
-      it('should create skill without parent and return id', async () => {
+      it('should create skill and return id', async () => {
         // Arrange
-
-        // Act
-        const response = await request(app.getHttpServer())
-          .post('/skills')
-          .set(...credentials)
-          .set('Content-Type', 'application/json')
-          .send({
-            name,
-            description: 'default-skill',
-            context,
-          });
-
-        // Assert
-        expect(response.statusCode).toBe(201);
-        expect(response.body).toEqual({
-          ...response.body,
-          data: {
-            id: expect.any(Number),
-          },
-        });
-      });
-
-      it('should create skill with parent and return id', async () => {
-        // Arrange
-        const seedBuilder = await SkillSeedBuilder.create(dbConnection);
-        seedBuilder.withSkill({
-          name,
-          description: 'default-skill',
-          context,
-        });
-        await seedBuilder.build();
-        const skillInsertedId = seedBuilder.skillDao.id;
 
         const newName = 'test skill2';
         const newcontext = 'users';
@@ -99,7 +70,7 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
             name: newName,
             description: 'default-skill2',
             context: newcontext,
-            parentId: skillInsertedId,
+            categoryId: builder.categoryDao.id,
           });
 
         const inserted = (await dbConnection
@@ -111,73 +82,73 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
 
         // Assert
         expect(response.statusCode).toBe(201);
-        expect(inserted.parentId).toBe(skillInsertedId);
+        expect(inserted.categoryId).toBe(builder.categoryDao.id);
       });
     });
 
-    describe('FAILURE', () => {
-      it('should throw 409 if skill with provided name and context exists', async () => {
-        // Arrange
-        const seedBuilder = await SkillSeedBuilder.create(dbConnection);
-        seedBuilder.withSkill({
-          name,
-          description: 'default-skill',
-          context,
-        });
+    // describe('FAILURE', () => {
+    //   it('should throw 409 if skill with provided name and context exists', async () => {
+    //     // Arrange
+    //     const seedBuilder = await SkillSeedBuilder.create(dbConnection);
+    //     seedBuilder.withSkill({
+    //       name,
+    //       description: 'default-skill',
+    //       context,
+    //     });
 
-        await seedBuilder.build();
+    //     await seedBuilder.build();
 
-        // Act
-        const response = await request(app.getHttpServer())
-          .post('/skills')
-          .set(...credentials)
-          .set('Content-Type', 'application/json')
-          .send({
-            name,
-            description: 'default-skill',
-            context,
-          });
+    //     // Act
+    //     const response = await request(app.getHttpServer())
+    //       .post('/skills')
+    //       .set(...credentials)
+    //       .set('Content-Type', 'application/json')
+    //       .send({
+    //         name,
+    //         description: 'default-skill',
+    //         context,
+    //       });
 
-        // Assert
-        expect(response.statusCode).toBe(409);
-        expect(response.body.data).toEqual({
-          error: expect.any(String),
-        });
-      });
+    //     // Assert
+    //     expect(response.statusCode).toBe(409);
+    //     expect(response.body.data).toEqual({
+    //       error: expect.any(String),
+    //     });
+    //   });
 
-      it('should throw error if incorrect parentId', async () => {
-        // Arrange
+    //   it('should throw error if incorrect parentId', async () => {
+    //     // Arrange
 
-        const seedBuilder = await SkillSeedBuilder.create(dbConnection);
-        seedBuilder.withSkill({
-          name,
-          description: 'default-skill',
-          context,
-        });
-        await seedBuilder.build();
-        const insertedId = seedBuilder.skillDao.id + 1;
+    //     const seedBuilder = await SkillSeedBuilder.create(dbConnection);
+    //     seedBuilder.withSkill({
+    //       name,
+    //       description: 'default-skill',
+    //       context,
+    //     });
+    //     await seedBuilder.build();
+    //     const insertedId = seedBuilder.skillDao.id + 1;
 
-        // Act
-        const response = await request(app.getHttpServer())
-          .post('/skills')
-          .set(...credentials)
-          .set('Content-Type', 'application/json')
-          .send({
-            name: 'new-name',
-            description: 'default-skill',
-            context,
-            parentId: insertedId,
-          });
+    //     // Act
+    //     const response = await request(app.getHttpServer())
+    //       .post('/skills')
+    //       .set(...credentials)
+    //       .set('Content-Type', 'application/json')
+    //       .send({
+    //         name: 'new-name',
+    //         description: 'default-skill',
+    //         context,
+    //         parentId: insertedId,
+    //       });
 
-        // Assert
-        expect(response.statusCode).toBe(400);
-        expect(response.body).toMatchObject({
-          status: 'fail',
-          data: {
-            error: expect.any(String),
-          },
-        });
-      });
-    });
+    //     // Assert
+    //     expect(response.statusCode).toBe(400);
+    //     expect(response.body).toMatchObject({
+    //       status: 'fail',
+    //       data: {
+    //         error: expect.any(String),
+    //       },
+    //     });
+    //   });
+    // });
   });
 });

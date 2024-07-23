@@ -11,6 +11,8 @@ export class SkillCreatedEvent extends Event<SkillCreatedEvent> {
 
   context: string;
 
+  categoryId: number;
+
   constructor(event: SkillCreatedEvent) {
     super(event);
 

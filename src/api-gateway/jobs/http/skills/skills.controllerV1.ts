@@ -51,6 +51,7 @@ export class SkillsControllerV1 {
         description: dto.description,
         parentId: dto.parentId,
         context: dto.context,
+        categoryId: dto.categoryId,
       }),
     );
   }

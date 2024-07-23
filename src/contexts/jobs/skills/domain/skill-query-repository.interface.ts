@@ -6,6 +6,7 @@ export type SkillInfo = {
   context: string;
   parentId: number | null;
   description: string | null;
+  categoryId: number;
 };
 
 export abstract class ISkillsQueryRepository {

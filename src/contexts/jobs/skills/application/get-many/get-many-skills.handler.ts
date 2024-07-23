@@ -26,6 +26,7 @@ export class GetManySkillsHandler implements IInferredQueryHandler<GetManySkills
       context: e.context,
       parentId: e.parentId,
       description: e.description,
+      categoryId: e.categoryId,
     }));
   }
 }

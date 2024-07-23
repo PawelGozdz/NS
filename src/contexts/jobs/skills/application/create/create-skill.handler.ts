@@ -45,6 +45,7 @@ export class CreateSkillHandler implements IInferredCommandHandler<CreateSkillCo
       context: command.context,
       description: command.description,
       parentId: command.parentId,
+      categoryId: command.categoryId,
     };
   }
 

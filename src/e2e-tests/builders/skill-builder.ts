@@ -1,9 +1,9 @@
 import { Kysely } from 'kysely';
 
-import { SkillModel } from '@app/contexts';
+import { CategoryModel, SkillModel } from '@app/contexts';
 import { IDatabaseModels, TableNames, dialect, kyselyPlugins } from '@app/core';
 
-import { SkillFixtureFactory } from '../fixtures';
+import { CategoryFixtureFactory, SkillFixtureFactory } from '../fixtures';
 
 type IDatabaseDaos = IDatabaseModels;
 
@@ -12,9 +12,12 @@ export class SkillSeedBuilder {
 
   public skillDao: SkillModel;
 
+  public categoryDao: CategoryModel;
+
   daos: {
     skillDaoObj: SkillModel | undefined;
-  } = { skillDaoObj: undefined };
+    categoryDaoObj: CategoryModel | undefined;
+  } = { skillDaoObj: undefined, categoryDaoObj: undefined };
 
   actions: { method: string }[] = [];
 
@@ -57,12 +60,39 @@ export class SkillSeedBuilder {
       .executeTakeFirst()) as SkillModel;
   }
 
+  private async insertCategory() {
+    if (!this.daos.categoryDaoObj) {
+      throw new Error('categoryDaoObj is not defined');
+    }
+
+    this.categoryDao = (await this.dbConnection
+      .insertInto(TableNames.CATEGORIES)
+      .values(this.daos.categoryDaoObj)
+      .returningAll()
+      .executeTakeFirst()) as CategoryModel;
+
+    if (this.daos.skillDaoObj) {
+      this.daos.skillDaoObj.categoryId = this.categoryDao.id;
+    }
+  }
+
   withSkill(model?: Partial<SkillModel>): this {
     this.daos.skillDaoObj = SkillFixtureFactory.create({
       ...model,
+      categoryId: this.daos.categoryDaoObj?.id,
     });
 
     this.actions.push({ method: 'insertSkill' });
+
+    return this;
+  }
+
+  withCategory(model?: Partial<CategoryModel>): this {
+    this.daos.categoryDaoObj = CategoryFixtureFactory.create({
+      ...model,
+    });
+
+    this.actions.push({ method: 'insertCategory' });
 
     return this;
   }
