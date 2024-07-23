@@ -7,7 +7,8 @@ import { ContextModule } from '@app/contexts';
 import { AccessTokenGuard, GlobalExceptionFilter, JsendTransformSuccessInterceptor, LoggingInterceptor } from '@app/core';
 import { CqrsModule } from '@libs/cqrs';
 
-import { CategoriesControllerV1, SkillsControllerV1 } from './features';
+import { CategoriesControllerV1 } from './features';
+import { SkillsControllerV1 } from './jobs';
 import { AuthJwtControllerV1, UsersControllerV1 } from './user-management';
 
 const interceptors = [

@@ -53,4 +53,13 @@ export class SkillGlobalDto {
   @Max(systemVariables.dtos.categories.parentId.MAX_VALUE)
   @IsNumber({ allowInfinity: false, allowNaN: false, maxDecimalPlaces: 0 })
   parentId: number | null;
+
+  @ApiProperty({
+    example: systemVariables.dtos.categories.parentId.example1,
+  })
+  @Type(() => Number)
+  @Min(1)
+  @Max(10000)
+  @IsNumber({ allowInfinity: false, allowNaN: false, maxDecimalPlaces: 0 })
+  categoryId: number;
 }

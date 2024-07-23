@@ -1,6 +1,8 @@
 import { Skill } from './skill.entity';
 
 describe('Skill', () => {
+  const categoryId = 3;
+
   describe('constructor', () => {
     it('should create a new Skill instance', () => {
       // Arrange
@@ -10,6 +12,7 @@ describe('Skill', () => {
         description: 'Test description',
         parentId: 2,
         context: 'Test context',
+        categoryId,
       };
 
       // Act
@@ -29,6 +32,7 @@ describe('Skill', () => {
         id: 1,
         name: 'Test Skill',
         context: 'Test context',
+        categoryId,
       };
 
       // Act
@@ -49,6 +53,7 @@ describe('Skill', () => {
         description: 'Test description',
         parentId: 2,
         context: 'Test context',
+        categoryId,
       };
 
       // Act
@@ -68,6 +73,7 @@ describe('Skill', () => {
         id: 1,
         name: 'Test Skill',
         context: 'Test context',
+        categoryId,
       };
 
       // Act

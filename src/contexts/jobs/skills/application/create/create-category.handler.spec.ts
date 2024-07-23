@@ -39,12 +39,14 @@ describe('CreateSkillHandler', () => {
     handler = app.get(CreateSkillHandler);
   });
 
+  const categoryId = 5;
   const name = 'test';
   const context = 'test-context';
   const id = 1;
   const command = new CreateSkillCommand({
     name,
     context,
+    categoryId,
   });
 
   const entity = SkillEntityFixtureFactory.create();

@@ -17,4 +17,5 @@ export type GetManySkillsResponseDto = Array<{
   context: string;
   description: string | null;
   parentId: number | null;
+  categoryId: number;
 }>;

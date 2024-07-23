@@ -66,5 +66,6 @@ export const testingDefaults = {
     name: defaultSkillName,
     description: defaultSkillDescription,
     context: 'skills',
+    categoryId: 1,
   },
 };

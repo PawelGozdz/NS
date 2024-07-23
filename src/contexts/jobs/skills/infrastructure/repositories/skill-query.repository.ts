@@ -42,12 +42,13 @@ export class SkillsQueryRepository implements ISkillsQueryRepository {
       description: model.description ?? null,
       parentId: model.parentId ?? null,
       context: model.context,
+      categoryId: model.categoryId,
     };
   }
 
   private getBuilder() {
     return this.db
       .selectFrom(`${TableNames.SKILLS} as c`)
-      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
+      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.categoryId', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
   }
 }

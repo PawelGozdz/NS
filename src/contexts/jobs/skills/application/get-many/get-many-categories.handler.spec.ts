@@ -36,6 +36,8 @@ describe('GetManySkillsHandler', () => {
     },
   };
 
+  const categoryId = 2;
+
   const skills: SkillInfo[] = [
     {
       id: 2,
@@ -43,6 +45,7 @@ describe('GetManySkillsHandler', () => {
       description: 'description',
       context: 'context',
       parentId: 1,
+      categoryId,
     },
   ];
 

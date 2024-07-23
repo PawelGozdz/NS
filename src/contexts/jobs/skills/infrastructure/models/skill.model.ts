@@ -12,6 +12,8 @@ export class SkillModel extends BaseModel implements ISkillModel {
 
   parentId: number | null;
 
+  categoryId: number;
+
   updatedAt: Date;
 
   createdAt: Date;

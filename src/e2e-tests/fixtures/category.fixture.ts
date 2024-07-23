@@ -10,6 +10,7 @@ export class CategoryFixtureFactory {
     categoryDao.description = 'Category description';
 
     const defaults = {
+      id: overrides?.id,
       name: testingDefaults.category.name,
       description: testingDefaults.category.description,
       context: testingDefaults.category.context,

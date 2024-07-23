@@ -7,6 +7,7 @@ type Input = {
   description?: string;
   context?: string;
   parentId?: number;
+  categoryId?: number;
 };
 
 export class SkillEntityFixtureFactory {
@@ -16,6 +17,7 @@ export class SkillEntityFixtureFactory {
     const description = overrides?.description ? overrides.description : 'Grocery Skill';
     const context = overrides?.context ? overrides.context : 'test-context';
     const parentId = overrides?.parentId ? overrides.parentId : null;
+    const categoryId = overrides?.categoryId ? overrides.categoryId : 3;
 
     return new Skill({
       id,
@@ -23,6 +25,7 @@ export class SkillEntityFixtureFactory {
       description,
       context,
       parentId,
+      categoryId,
     });
   }
 }

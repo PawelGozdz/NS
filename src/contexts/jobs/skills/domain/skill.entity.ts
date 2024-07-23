@@ -9,12 +9,15 @@ export class Skill {
 
   context: string;
 
+  categoryId: number;
+
   constructor(props: Skill) {
     this.id = props.id;
     this.name = props.name;
     this.description = props.description ?? null;
     this.parentId = props.parentId ?? null;
     this.context = props.context;
+    this.categoryId = props.categoryId;
   }
 
   public static create({
@@ -23,12 +26,14 @@ export class Skill {
     description,
     parentId,
     context,
+    categoryId,
   }: {
     id: number;
     name: string;
     description?: string | null;
     parentId?: number | null;
     context: string;
+    categoryId: number;
   }): Skill {
     const skill = new Skill({
       id,
@@ -36,6 +41,7 @@ export class Skill {
       description: description ?? null,
       parentId: parentId ?? null,
       context,
+      categoryId,
     });
 
     return skill;
@@ -47,6 +53,7 @@ export type ISkillCreateData = {
   description?: string | null;
   parentId?: number | null;
   context: string;
+  categoryId: number;
 };
 
 export type ISkillUpdateData = {
@@ -55,4 +62,5 @@ export type ISkillUpdateData = {
   description?: string | null;
   context?: string;
   parentId?: number | null;
+  categoryId?: number;
 };

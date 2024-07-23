@@ -12,6 +12,8 @@ export class CreateSkillCommand extends Command<CreateSkillCommand, CreateSkillR
 
   context: string;
 
+  categoryId: number;
+
   constructor(command: CreateSkillCommand) {
     super(command);
 

@@ -49,6 +49,7 @@ export class SkillsCommandRepository implements ISkillsCommandRepository {
           description: skill.description,
           context: skill.context,
           parentId: skill.parentId,
+          categoryId: skill.categoryId,
         } as SkillModel)
         .returning('id')
         .executeTakeFirstOrThrow();
@@ -68,12 +69,13 @@ export class SkillsCommandRepository implements ISkillsCommandRepository {
       description: model.description,
       parentId: model.parentId,
       context: model.context,
+      categoryId: model.categoryId,
     });
   }
 
   private getBuilder() {
     return this.txHost.tx
       .selectFrom(`${TableNames.SKILLS} as c`)
-      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
+      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.categoryId', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
   }
 }

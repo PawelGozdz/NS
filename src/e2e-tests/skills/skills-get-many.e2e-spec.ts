@@ -19,7 +19,7 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
   const dbUtils = new TestingE2EFunctions(dbConnection);
   let app: INestApplication;
 
-  const tablesInvolved = [TableNames.CATEGORIES];
+  const tablesInvolved = [TableNames.CATEGORIES, TableNames.SKILLS];
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

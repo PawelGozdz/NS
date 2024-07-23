@@ -9,6 +9,8 @@ export abstract class ISkillModel {
 
   parentId: number | null;
 
+  categoryId: number;
+
   updatedAt: Date;
 
   createdAt: Date;
