@@ -1,7 +1,7 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { PinoLogger } from 'nestjs-pino';
 
-import { Address } from '@app/core';
+import { Actor, Address } from '@app/core';
 import { ConflictError, EntityId } from '@libs/common';
 import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 
@@ -22,6 +22,8 @@ export class UpdateUserHandler implements IInferredCommandHandler<UpdateUserComm
     this.logger.info(command, 'Updating user:');
 
     const userId = EntityId.create(command.id);
+    const actor = Actor.create(command.actor.type, this.constructor.name, command.actor.id);
+
     const address = command?.profile?.address ? Address.create(command.profile.address) : undefined;
 
     const user = await this.userCommandRepository.getOneById(userId);
@@ -44,6 +46,7 @@ export class UpdateUserHandler implements IInferredCommandHandler<UpdateUserComm
         ...command.profile,
         address,
       },
+      actor,
     });
 
     await this.userCommandRepository.save(user);

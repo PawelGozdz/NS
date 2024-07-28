@@ -1,5 +1,6 @@
 import { PinoLogger } from 'nestjs-pino';
 
+import { Actor } from '@app/core';
 import { DomainErrorType, EntityId } from '@libs/common';
 import { IInferredQueryHandler, QueryHandler } from '@libs/cqrs';
 
@@ -17,6 +18,8 @@ export class GetUserByIdHandler implements IInferredQueryHandler<GetUserByIdQuer
 
   public async execute(query: GetUserByIdQuery): Promise<GetUserByIdQueryResult> {
     this.logger.info(query, 'Getting user by id');
+
+    Actor.create(query.actor.type, this.constructor.name, query.actor.id);
 
     const userId = new EntityId(query.userId);
     const userInfo = await this.userQueryRepository.getOneById(userId);

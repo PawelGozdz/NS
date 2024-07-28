@@ -1,4 +1,3 @@
-// eslint-disable @typescript-eslint/no-explicit-any
 import { Kysely, sql } from 'kysely';
 
 import { IDatabaseModels } from '@app/core';
@@ -16,8 +15,8 @@ export async function up(db: Kysely<IDatabaseModels>): Promise<void> {
     .addColumn('email', 'varchar', (col) => col.notNull().unique())
     .addColumn('version', 'integer', (col) => col.notNull().defaultTo(0))
 
-    .addColumn('createdAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
-    .addColumn('updatedAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
+    .addColumn('createdAt', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
+    .addColumn('updatedAt', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .execute()
     .then(() => sql.raw(`${onUpdateTriggerQuery}`).execute(db));
 }

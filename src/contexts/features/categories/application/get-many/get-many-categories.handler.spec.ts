@@ -2,6 +2,9 @@ import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 import { PinoLogger } from 'nestjs-pino';
 
+import { Actor } from '@app/core';
+import { ActorType } from '@libs/common';
+
 import { CategoryInfo, ICategoriesQueryRepository } from '../../domain';
 import { GetManyCategoriesHandler } from './get-many-categories.handler';
 import { GetManyCategoriesQuery } from './get-many-categories.query';
@@ -30,10 +33,13 @@ describe('GetManyCategoriesHandler', () => {
     handler = app.get(GetManyCategoriesHandler);
   });
 
+  const actor = Actor.create(ActorType.GUEST, GetManyCategoriesHandler.name, 'c8aa6154-dba2-466c-8858-64c755e71ff1');
+
   const query: GetManyCategoriesQuery = {
     _filter: {
       name: 'it',
     },
+    actor,
   };
 
   const categories: CategoryInfo[] = [

@@ -1,3 +1,4 @@
+import { IActor } from '@libs/common';
 import { Command } from '@libs/cqrs';
 
 export class UpdateCategoryCommand extends Command<UpdateCategoryCommand, UpdateCategoryResponseDto> {
@@ -8,6 +9,8 @@ export class UpdateCategoryCommand extends Command<UpdateCategoryCommand, Update
   description?: string | null;
 
   parentId?: number | null;
+
+  actor: IActor;
 
   constructor(command: UpdateCategoryCommand) {
     super(command);

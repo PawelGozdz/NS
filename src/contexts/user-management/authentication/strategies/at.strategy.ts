@@ -46,14 +46,12 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const user = await this.authService.getAuthenticatedUserWithJwt(userId.value);
 
     if (AppUtils.isNotEmpty(user)) {
-      req.authUser = user;
-
-      req.user = {
+      req.userData = {
         email: user.email,
         id: user.userId,
       };
 
-      return req.authUser;
+      return user;
     }
 
     this.logger.error('User not found with provided access token');

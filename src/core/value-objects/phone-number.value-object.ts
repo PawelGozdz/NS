@@ -9,6 +9,11 @@ export type PhoneNumberData = {
   countryCode: CountryCode;
 };
 
+export interface IPhoneNumber {
+  number: string;
+  countryCode: CountryCode;
+}
+
 export class PhoneNumber {
   public constructor(
     readonly number: string,

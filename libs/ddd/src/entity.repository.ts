@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Transaction } from 'kysely';
+import { omit } from 'lodash';
 
 import { ConflictError } from '@libs/common';
 import { EventBus, IEvent } from '@libs/cqrs';
@@ -14,7 +16,6 @@ export abstract class EntityRepository {
   protected constructor(
     private readonly eventBus: EventBus,
     protected model: typeof BaseModel,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     protected db: TransactionHost<TransactionalAdapterKysely<any>>,
   ) {}
 
@@ -46,9 +47,12 @@ export abstract class EntityRepository {
         throw new Error(`Missing handler ${handlerName} in repository ${this.constructor.name}`);
       }
 
+      const { actor } = event as any;
+      const noActorEvent = omit(event, 'actor');
+
       Promise.all([
-        this.db.tx.insertInto(eventLogTableName).values({ eventName: event.constructor.name, data: event }).execute(),
-        handler.call(this, event),
+        this.db.tx.insertInto(eventLogTableName).values({ eventName: noActorEvent.constructor.name, data: noActorEvent, actor }).execute(),
+        handler.call(this, noActorEvent),
       ]);
     }
 

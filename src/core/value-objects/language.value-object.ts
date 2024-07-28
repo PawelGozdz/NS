@@ -2,6 +2,10 @@ import { MissingValueError } from '@libs/common';
 
 import { Lang } from '../enums';
 
+export interface ILanguage {
+  name: Lang;
+}
+
 export class Language {
   private readonly name: Lang;
 

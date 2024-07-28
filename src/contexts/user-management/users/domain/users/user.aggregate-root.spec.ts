@@ -1,4 +1,5 @@
-import { EntityId } from '@libs/common';
+import { Actor } from '@app/core';
+import { ActorType, EntityId } from '@libs/common';
 
 import { Profile } from '../profiles';
 import { UserCreatedEvent, UserUpdatedEvent } from './events';
@@ -13,6 +14,8 @@ describe('User', () => {
     jest.restoreAllMocks();
   });
 
+  const actor = Actor.create(ActorType.USER, User.name, '34d90467-aeb4-4016-9791-86f9aec010e0');
+
   describe('create', () => {
     describe('Success', () => {
       it('should apply UserCreatedEvent with property values', () => {
@@ -26,6 +29,7 @@ describe('User', () => {
             userId: EntityId.createRandom(),
             firstName: 'test',
           },
+          actor,
         });
 
         // assert
@@ -54,12 +58,13 @@ describe('User', () => {
       const newEmail = 'new@test.pl';
 
       // act
-      user.update({ email: newEmail });
+      user.update({ email: newEmail, actor });
 
       // assert
       const events = user.getUncommittedEvents();
 
       expect(events[0]).toBeInstanceOf(UserUpdatedEvent);
+      expect(user.getEmail()).toEqual(newEmail);
     });
   });
 });

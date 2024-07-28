@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PinoLogger } from 'nestjs-pino';
 
 import config from '@app/config';
-import { ConflictError, UnauthorizedError } from '@libs/common';
+import { ActorType, ConflictError, UnauthorizedError } from '@libs/common';
 import { CommandBus } from '@libs/cqrs';
 
 import { CreateUserCommand, CreateUserResponse } from '../../users';
@@ -35,6 +35,11 @@ export class AuthService {
       const userCreatedResponse: CreateUserResponse = await this.commandBus.execute(
         new CreateUserCommand({
           email: dto.email,
+          actor: {
+            id: '',
+            type: ActorType.USER,
+            source: this.constructor.name,
+          },
         }),
       );
 

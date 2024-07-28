@@ -2,14 +2,20 @@ import { MissingValueError } from '@libs/common';
 
 import { EducationError } from '../errors';
 
+export interface IEducation {
+  degree: string;
+  institution: string;
+  graduateYear: number;
+}
+
 export class Education {
-  private readonly degree: string;
+  readonly degree: string;
 
-  private readonly institution: string;
+  readonly institution: string;
 
-  private readonly graduateYear: number;
+  readonly graduateYear: number;
 
-  private constructor(degree: string, institution: string, graduateYear: number) {
+  constructor(degree: string, institution: string, graduateYear: number) {
     this.degree = degree;
     this.institution = institution;
     this.graduateYear = graduateYear;

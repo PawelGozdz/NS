@@ -12,7 +12,8 @@ export async function up(db: Kysely<IDatabaseModels>): Promise<void> {
     .createTable(tableName)
     .addColumn('id', 'bigint', (col) => col.primaryKey().generatedAlwaysAsIdentity())
     .addColumn('data', 'jsonb', (col) => col.notNull())
-    .addColumn('createdAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
+    .addColumn('actor', 'jsonb', (col) => col.notNull())
+    .addColumn('createdAt', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .addColumn('eventName', 'text', (col) => col.notNull())
     .execute();
 }

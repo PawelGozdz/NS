@@ -1,5 +1,6 @@
 import { PinoLogger } from 'nestjs-pino';
 
+import { Actor } from '@app/core';
 import { IInferredQueryHandler, QueryHandler } from '@libs/cqrs';
 
 import { IUsersQueryRepository } from '../../domain';
@@ -16,6 +17,8 @@ export class GetUsersHandler implements IInferredQueryHandler<GetUsersQuery> {
 
   public async execute(query: GetUsersQuery): Promise<GetUsersQueryResult> {
     this.logger.info(query, 'Getting users');
+
+    Actor.create(query.actor.type, this.constructor.name, query.actor.id);
 
     const usersInfo = await this.userQueryRepository.getMany(query.queryParams);
 

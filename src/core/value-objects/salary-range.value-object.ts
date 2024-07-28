@@ -2,29 +2,34 @@ import { MissingValueError } from '@libs/common';
 
 import { IncorrectSalaryError } from '../errors';
 
+export interface ISalaryRange {
+  from: number;
+  to: number;
+}
+
 export class SalaryRange {
-  private readonly min: number;
+  readonly from: number;
 
-  private readonly max: number;
+  readonly to: number;
 
-  private constructor(min: number, max: number) {
-    this.min = min;
-    this.max = max;
+  constructor(from: number, to: number) {
+    this.from = from;
+    this.to = to;
   }
 
-  public static create(min: number, max: number): SalaryRange {
-    if (typeof min !== 'number') {
-      throw MissingValueError.withValue(`SalaryRange.min: ${min}`);
+  public static create(from: number, to: number): SalaryRange {
+    if (typeof from !== 'number') {
+      throw MissingValueError.withValue(`SalaryRange.from: ${from}`);
     }
 
-    if (typeof max !== 'number') {
-      throw MissingValueError.withValue(`SalaryRange.max: ${max}`);
+    if (typeof to !== 'number') {
+      throw MissingValueError.withValue(`SalaryRange.to: ${to}`);
     }
 
-    if (max < min) {
-      throw IncorrectSalaryError.withValue(min, max);
+    if (to < from) {
+      throw IncorrectSalaryError.withValue(from, to);
     }
 
-    return new SalaryRange(min, max);
+    return new SalaryRange(from, to);
   }
 }

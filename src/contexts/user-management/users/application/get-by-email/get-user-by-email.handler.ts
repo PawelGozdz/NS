@@ -1,5 +1,6 @@
 import { PinoLogger } from 'nestjs-pino';
 
+import { Actor } from '@app/core';
 import { DomainErrorType } from '@libs/common';
 import { IInferredQueryHandler, QueryHandler } from '@libs/cqrs';
 
@@ -17,6 +18,8 @@ export class GetUserByEmailHandler implements IInferredQueryHandler<GetUserByEma
 
   public async execute(query: GetUserByEmailQuery): Promise<GetUserByEmailQueryResult> {
     this.logger.info(query, 'Getting user by email');
+
+    Actor.create(query.actor.type, this.constructor.name, query.actor.id);
 
     const { email } = query;
     const userInfo = await this.userQueryRepository.getOneByEmail(email);

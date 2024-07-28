@@ -1,3 +1,4 @@
+export * from './actor.error';
 export * from './certification.error';
 export * from './education.error';
 export * from './experience.error';

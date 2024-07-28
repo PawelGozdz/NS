@@ -2,20 +2,26 @@ import { dayjs, MissingValueError } from '@libs/common'; // Adjust import path a
 
 import { CertificationError } from '../errors';
 
+export interface ICertification {
+  name: string;
+  institution: string;
+  completionYear: number;
+}
+
 export class Certification {
-  private readonly name: string;
+  readonly name: string;
 
-  private readonly institution: string;
+  readonly institution: string;
 
-  private readonly year: number;
+  readonly completionYear: number;
 
-  private constructor(name: string, institution: string, year: number) {
+  constructor(name: string, institution: string, completionYear: number) {
     this.name = name;
     this.institution = institution;
-    this.year = year;
+    this.completionYear = completionYear;
   }
 
-  public static create(name: string, institution: string, year: number): Certification {
+  public static create(name: string, institution: string, completionYear: number): Certification {
     if (!name) {
       throw new MissingValueError('Certification.name');
     }
@@ -24,18 +30,18 @@ export class Certification {
       throw new MissingValueError('Certification.institution');
     }
 
-    if (!year) {
-      throw new MissingValueError('Certification.year');
+    if (!completionYear) {
+      throw new MissingValueError('Certification.completionYear');
     }
 
-    if (typeof year !== 'number') {
-      throw new CertificationError(`Invalid year: ${year}`);
+    if (typeof completionYear !== 'number') {
+      throw new CertificationError(`Invalid completionYear: ${completionYear}`);
     }
 
-    if (dayjs(year).isAfter(dayjs().year())) {
-      throw new CertificationError(`Certification year cannot be in the future: ${year}`);
+    if (dayjs(completionYear).isAfter(dayjs().year())) {
+      throw new CertificationError(`Certification completionYear cannot be in the future: ${completionYear}`);
     }
 
-    return new Certification(name, institution, year);
+    return new Certification(name, institution, completionYear);
   }
 }

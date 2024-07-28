@@ -1,9 +1,11 @@
 import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 
+import { ActorType, IActor } from '@libs/common';
 import { TestCqrsModule, TestLoggerModule } from '@libs/testing';
 
 import { IUsersQueryRepository, UserInfo } from '../../domain';
+import { GetUserByIdHandler } from '../get-by-id/get-user-by-id.handler';
 import { GetUsersHandler } from './get-users.handler';
 import { GetUsersQuery } from './get-users.query';
 
@@ -11,7 +13,13 @@ describe('GetUsersQuery', () => {
   let userQueryRepositoryMock: jest.Mocked<IUsersQueryRepository>;
   let handler: GetUsersHandler;
 
-  const query = new GetUsersQuery({});
+  const actor: IActor = {
+    id: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
+    type: ActorType.USER,
+    source: GetUserByIdHandler.name,
+  };
+
+  const query = new GetUsersQuery({ actor });
   const userInfo: UserInfo = {
     id: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
     email: 'test@test.com',

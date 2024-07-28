@@ -38,4 +38,6 @@ export abstract class IUserProfileModel {
   updatedAt: Date;
 
   createdAt: Date;
+
+  version: number;
 }

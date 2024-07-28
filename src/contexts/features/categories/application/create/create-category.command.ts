@@ -1,6 +1,7 @@
 import { PickType } from '@nestjs/swagger';
 
 import { CategoryGlobalDto } from '@app/core';
+import { IActor } from '@libs/common';
 import { Command } from '@libs/cqrs';
 
 export class CreateCategoryCommand extends Command<CreateCategoryCommand, CreateCategoryResponseDto> {
@@ -9,6 +10,8 @@ export class CreateCategoryCommand extends Command<CreateCategoryCommand, Create
   description?: string;
 
   parentId?: number;
+
+  actor: IActor;
 
   constructor(command: CreateCategoryCommand) {
     super(command);

@@ -5,7 +5,7 @@ import { IsOptional, ValidateNested } from 'class-validator';
 import { ICategoriesQueryParams } from '../interfaces';
 import { CategoryGlobalDto } from './category-global.dto';
 
-class Filter extends PickType(CategoryGlobalDto, ['id', 'name', 'context', 'parentId']) {
+class Filter extends PickType(CategoryGlobalDto, ['id', 'name', 'parentId']) {
   @ApiProperty({
     required: false,
   })
@@ -17,12 +17,6 @@ class Filter extends PickType(CategoryGlobalDto, ['id', 'name', 'context', 'pare
   })
   @IsOptional()
   name: string;
-
-  @ApiProperty({
-    required: false,
-  })
-  @IsOptional()
-  context: string;
 
   @ApiProperty({
     required: false,

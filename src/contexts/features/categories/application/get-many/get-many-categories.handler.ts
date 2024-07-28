@@ -1,5 +1,6 @@
 import { PinoLogger } from 'nestjs-pino';
 
+import { Actor } from '@app/core';
 import { IInferredQueryHandler, QueryHandler } from '@libs/cqrs';
 
 import { ICategoriesQueryRepository } from '../../domain';
@@ -18,6 +19,8 @@ export class GetManyCategoriesHandler implements IInferredQueryHandler<GetManyCa
     this.logger.info(query, 'Getting categories:');
 
     const entities = await this.categoryQueryRepository.getManyBy(query);
+
+    Actor.create(query.actor.type, this.constructor.name, query.actor.id);
 
     return entities.map((e) => ({
       id: e.id,

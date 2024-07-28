@@ -1,7 +1,8 @@
 import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 
-import { IOutboxRepository } from '@app/core';
+import { Actor, IOutboxRepository } from '@app/core';
+import { ActorType } from '@libs/common';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 
 import { CategoryAlreadyExistsError, CategoryEntityFixtureFactory, ICategoriesCommandRepository } from '../../domain';
@@ -39,10 +40,12 @@ describe('CreateCategoryHandler', () => {
     handler = app.get(CreateCategoryHandler);
   });
 
+  const actor = Actor.create(ActorType.SYSTEM, 'test');
   const name = 'test';
   const id = 1;
   const command = new CreateCategoryCommand({
     name,
+    actor,
   });
 
   const categoryEntity = CategoryEntityFixtureFactory.create();
