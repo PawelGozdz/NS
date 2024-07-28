@@ -10,8 +10,6 @@ describe('Skill', () => {
         id: 1,
         name: 'Test Skill',
         description: 'Test description',
-        parentId: 2,
-        context: 'Test context',
         categoryId,
       };
 
@@ -22,25 +20,6 @@ describe('Skill', () => {
       expect(skill.id).toBe(props.id);
       expect(skill.name).toBe(props.name);
       expect(skill.description).toBe(props.description);
-      expect(skill.parentId).toBe(props.parentId);
-      expect(skill.context).toBe(props.context);
-    });
-
-    it('should set description and parentId to null if not provided', () => {
-      // Arrange
-      const props = {
-        id: 1,
-        name: 'Test Skill',
-        context: 'Test context',
-        categoryId,
-      };
-
-      // Act
-      const skill = new Skill(props);
-
-      // Assert
-      expect(skill.description).toBeNull();
-      expect(skill.parentId).toBeNull();
     });
   });
 
@@ -51,8 +30,6 @@ describe('Skill', () => {
         id: 1,
         name: 'Test Skill',
         description: 'Test description',
-        parentId: 2,
-        context: 'Test context',
         categoryId,
       };
 
@@ -63,16 +40,13 @@ describe('Skill', () => {
       expect(skill.id).toBe(props.id);
       expect(skill.name).toBe(props.name);
       expect(skill.description).toBe(props.description);
-      expect(skill.parentId).toBe(props.parentId);
-      expect(skill.context).toBe(props.context);
     });
 
-    it('should set description and parentId to null if not provided', () => {
+    it('should set description to null if not provided', () => {
       // Arrange
       const props = {
         id: 1,
         name: 'Test Skill',
-        context: 'Test context',
         categoryId,
       };
 
@@ -81,7 +55,6 @@ describe('Skill', () => {
 
       // Assert
       expect(skill.description).toBeNull();
-      expect(skill.parentId).toBeNull();
     });
   });
 });

@@ -5,5 +5,5 @@ export abstract class ISkillsCommandRepository {
 
   abstract getOneById(id: number): Promise<Skill | undefined>;
 
-  abstract getOneByNameAndContext(name: string, context: string): Promise<Skill | undefined>;
+  abstract getOneByNameAndCategoryId(name: string, categoryId: number): Promise<Skill | undefined>;
 }

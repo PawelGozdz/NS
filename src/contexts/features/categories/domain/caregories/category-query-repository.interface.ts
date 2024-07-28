@@ -3,7 +3,6 @@ import { ICategoriesQueryParams } from '@app/core';
 export type CategoryInfo = {
   id: number;
   name: string;
-  context: string;
   parentId: number | null;
   description: string | null;
 };

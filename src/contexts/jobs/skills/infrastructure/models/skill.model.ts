@@ -8,10 +8,6 @@ export class SkillModel extends BaseModel implements ISkillModel {
 
   description: string | null;
 
-  context: string;
-
-  parentId: number | null;
-
   categoryId: number;
 
   updatedAt: Date;

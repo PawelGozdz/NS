@@ -40,7 +40,6 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
 
   beforeEach(async () => {
     const name = 'test category';
-    const context = 'users';
 
     credentials = getCookies();
 
@@ -52,7 +51,6 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
       seedBuilder.withCategory({
         name,
         description: 'default-category',
-        context,
       });
       await seedBuilder.build();
 
@@ -60,7 +58,6 @@ describe('CategoriesControllerV1 -> getMany (e2e)', () => {
 
       seedBuilder.withCategory({
         name: 'new-name',
-        context,
         parentId,
       });
       await seedBuilder.build();

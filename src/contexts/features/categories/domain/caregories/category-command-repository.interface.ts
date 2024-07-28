@@ -7,5 +7,5 @@ export abstract class ICategoriesCommandRepository {
 
   abstract getOneById(id: number): Promise<Category | undefined>;
 
-  abstract getOneByNameAndContext(name: string, context: string): Promise<Category | undefined>;
+  abstract getOneByName(name: string): Promise<Category | undefined>;
 }

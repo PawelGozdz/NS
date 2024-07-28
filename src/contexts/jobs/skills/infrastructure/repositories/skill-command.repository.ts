@@ -26,9 +26,9 @@ export class SkillsCommandRepository implements ISkillsCommandRepository {
     }
   }
 
-  async getOneByNameAndContext(name: string, context: string): Promise<Skill | undefined> {
+  async getOneByNameAndCategoryId(name: string, categoryId: number): Promise<Skill | undefined> {
     try {
-      const entity = await this.getBuilder().where('c.name', '=', name).where('c.context', '=', context).executeTakeFirst();
+      const entity = await this.getBuilder().where('c.name', '=', name).where('c.categoryId', '=', categoryId).executeTakeFirst();
 
       if (!entity) {
         return undefined;
@@ -47,8 +47,6 @@ export class SkillsCommandRepository implements ISkillsCommandRepository {
         .values({
           name: skill.name,
           description: skill.description,
-          context: skill.context,
-          parentId: skill.parentId,
           categoryId: skill.categoryId,
         } as SkillModel)
         .returning('id')
@@ -67,8 +65,6 @@ export class SkillsCommandRepository implements ISkillsCommandRepository {
       id: model.id,
       name: model.name,
       description: model.description,
-      parentId: model.parentId,
-      context: model.context,
       categoryId: model.categoryId,
     });
   }
@@ -76,6 +72,6 @@ export class SkillsCommandRepository implements ISkillsCommandRepository {
   private getBuilder() {
     return this.txHost.tx
       .selectFrom(`${TableNames.SKILLS} as c`)
-      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.categoryId', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
+      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.categoryId', 'c.createdAt', 'c.updatedAt']);
   }
 }

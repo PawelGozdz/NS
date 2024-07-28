@@ -1,12 +1,11 @@
-import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { IInferredQueryHandler } from '@libs/cqrs';
+import { IInferredQueryHandler, QueryHandler } from '@libs/cqrs';
 
 import { ICategoriesQueryRepository } from '../../domain';
 import { GetManyCategoriesQuery, GetManyCategoriesResponseDto } from './get-many-categories.query';
 
-@Injectable()
+@QueryHandler(GetManyCategoriesQuery)
 export class GetManyCategoriesHandler implements IInferredQueryHandler<GetManyCategoriesQuery> {
   constructor(
     private readonly categoryQueryRepository: ICategoriesQueryRepository,
@@ -23,7 +22,6 @@ export class GetManyCategoriesHandler implements IInferredQueryHandler<GetManyCa
     return entities.map((e) => ({
       id: e.id,
       name: e.name,
-      context: e.context,
       parentId: e.parentId,
       description: e.description,
     }));

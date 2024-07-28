@@ -40,11 +40,9 @@ describe('CreateCategoryHandler', () => {
   });
 
   const name = 'test';
-  const context = 'test-context';
   const id = 1;
   const command = new CreateCategoryCommand({
     name,
-    context,
   });
 
   const categoryEntity = CategoryEntityFixtureFactory.create();
@@ -52,7 +50,7 @@ describe('CreateCategoryHandler', () => {
   describe('Success', () => {
     it('should create new category', async () => {
       // Arrange
-      categoryCommandRepositoryMock.getOneByNameAndContext.mockResolvedValueOnce(undefined);
+      categoryCommandRepositoryMock.getOneByName.mockResolvedValueOnce(undefined);
       categoryCommandRepositoryMock.save.mockResolvedValueOnce({ id });
 
       // Act
@@ -62,7 +60,6 @@ describe('CreateCategoryHandler', () => {
 
       expect(categoryCommandRepositoryMock.save).toHaveBeenCalledWith({
         name,
-        context,
         description: undefined,
         parentId: undefined,
       });
@@ -74,7 +71,7 @@ describe('CreateCategoryHandler', () => {
   describe('failure', () => {
     it('should throw CategoryAlreadyExistsError', async () => {
       // Arrange
-      categoryCommandRepositoryMock.getOneByNameAndContext.mockResolvedValueOnce(categoryEntity);
+      categoryCommandRepositoryMock.getOneByName.mockResolvedValueOnce(categoryEntity);
 
       // Act
       const { error } = await catchActError(() => handler.execute(command));

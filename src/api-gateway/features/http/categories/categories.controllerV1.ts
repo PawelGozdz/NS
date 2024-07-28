@@ -2,17 +2,10 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Query 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PinoLogger } from 'nestjs-pino';
 
-import {
-  CreateCategoryCommand,
-  CreateCategoryHandler,
-  CreateCategoryResponseDto,
-  GetManyCategoriesHandler,
-  GetManyCategoriesQuery,
-  UpdateCategoryCommand,
-  UpdateCategoryHandler,
-} from '@app/contexts';
+import { CreateCategoryCommand, CreateCategoryResponseDto, GetManyCategoriesQuery, UpdateCategoryCommand } from '@app/contexts';
 import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes, CategoriesQueryParamsDto, ValidationErrorDto } from '@app/core';
 import { ConflictErrorResponse, NotFoundErrorResponse } from '@libs/common';
+import { CommandBus, QueryBus } from '@libs/cqrs';
 
 import { CategoryResponseDto, CreateCategoryDto, UpdateCategoryDto, UpdateCategoryParamDto } from './category-dtos';
 
@@ -22,9 +15,8 @@ import { CategoryResponseDto, CreateCategoryDto, UpdateCategoryDto, UpdateCatego
 })
 export class CategoriesControllerV1 {
   constructor(
-    private readonly createCategoryHandler: CreateCategoryHandler,
-    private readonly updateCategoryHandler: UpdateCategoryHandler,
-    private readonly getManyCategoriesHandler: GetManyCategoriesHandler,
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
     private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -54,12 +46,11 @@ export class CategoriesControllerV1 {
   @HttpCode(HttpStatus.CREATED)
   @Post(AppRoutes.CATEGORIES.v1.create)
   async create(@Body() dto: CreateCategoryDto): Promise<CreateCategoryResponseDto> {
-    return this.createCategoryHandler.execute(
+    return this.commandBus.execute(
       new CreateCategoryCommand({
         name: dto.name,
         description: dto.description,
         parentId: dto.parentId,
-        context: dto.context,
       }),
     );
   }
@@ -76,12 +67,11 @@ export class CategoriesControllerV1 {
   @HttpCode(HttpStatus.OK)
   @Get(AppRoutes.CATEGORIES.v1.getMany)
   async getMany(@Query() dto: CategoriesQueryParamsDto): Promise<CategoryResponseDto[]> {
-    return this.getManyCategoriesHandler.execute(
+    return this.queryBus.execute(
       new GetManyCategoriesQuery({
         _filter: {
           id: dto?._filter?.id,
           name: dto?._filter?.name,
-          context: dto?._filter?.context,
           parentId: dto?._filter?.parentId,
         },
       }),
@@ -111,13 +101,12 @@ export class CategoriesControllerV1 {
   @HttpCode(HttpStatus.OK)
   @Patch(AppRoutes.CATEGORIES.v1.update)
   async update(@Param() paramDto: UpdateCategoryParamDto, @Body() dto: UpdateCategoryDto): Promise<void> {
-    return this.updateCategoryHandler.execute(
+    return this.commandBus.execute(
       new UpdateCategoryCommand({
         id: paramDto.id,
         name: dto.name,
         description: dto.description,
         parentId: dto.parentId,
-        context: dto.context,
       }),
     );
   }

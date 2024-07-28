@@ -1,10 +1,10 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { PinoLogger } from 'nestjs-pino';
 
-import { CreateSkillCommand, CreateSkillHandler, CreateSkillResponseDto, GetManySkillsHandler, GetManySkillsQuery } from '@app/contexts';
+import { CreateSkillCommand, CreateSkillResponseDto, GetManySkillsQuery } from '@app/contexts';
 import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes, SkillsQueryParamsDto, ValidationErrorDto } from '@app/core';
 import { ConflictErrorResponse } from '@libs/common';
+import { CommandBus, QueryBus } from '@libs/cqrs';
 
 import { CreateSkillDto, SkillResponseDto } from './skill-dtos';
 
@@ -14,12 +14,9 @@ import { CreateSkillDto, SkillResponseDto } from './skill-dtos';
 })
 export class SkillsControllerV1 {
   constructor(
-    private readonly createHandler: CreateSkillHandler,
-    private readonly getManyHandler: GetManySkillsHandler,
-    private readonly logger: PinoLogger,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+  ) {}
 
   @ApiOperation({
     summary: 'Create skill',
@@ -45,12 +42,10 @@ export class SkillsControllerV1 {
   @HttpCode(HttpStatus.CREATED)
   @Post(AppRoutes.SKILLS.v1.create)
   async create(@Body() dto: CreateSkillDto): Promise<CreateSkillResponseDto> {
-    return this.createHandler.execute(
+    return this.commandBus.execute(
       new CreateSkillCommand({
         name: dto.name,
         description: dto.description,
-        parentId: dto.parentId,
-        context: dto.context,
         categoryId: dto.categoryId,
       }),
     );
@@ -68,13 +63,11 @@ export class SkillsControllerV1 {
   @HttpCode(HttpStatus.OK)
   @Get(AppRoutes.SKILLS.v1.getMany)
   async getMany(@Query() dto: SkillsQueryParamsDto): Promise<SkillResponseDto[]> {
-    return this.getManyHandler.execute(
+    return this.queryBus.execute(
       new GetManySkillsQuery({
         _filter: {
           id: dto?._filter?.id,
           name: dto?._filter?.name,
-          context: dto?._filter?.context,
-          parentId: dto?._filter?.parentId,
         },
       }),
     );

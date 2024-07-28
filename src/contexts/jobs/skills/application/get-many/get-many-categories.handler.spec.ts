@@ -43,8 +43,6 @@ describe('GetManySkillsHandler', () => {
       id: 2,
       name: 'name',
       description: 'description',
-      context: 'context',
-      parentId: 1,
       categoryId,
     },
   ];

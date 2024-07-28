@@ -8,10 +8,6 @@ export class CreateSkillCommand extends Command<CreateSkillCommand, CreateSkillR
 
   description?: string;
 
-  parentId?: number;
-
-  context: string;
-
   categoryId: number;
 
   constructor(command: CreateSkillCommand) {

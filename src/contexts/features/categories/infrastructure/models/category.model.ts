@@ -8,8 +8,6 @@ export class CategoryModel extends BaseModel implements ICategoryModel {
 
   description: string | null;
 
-  context: string;
-
   parentId: number | null;
 
   updatedAt: Date;

@@ -1,18 +1,20 @@
 import { Transactional } from '@nestjs-cls/transactional';
-import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
+import { GetManyCategoriesQuery } from '@app/contexts/features';
 import { AppContext, IOutboxRepository } from '@app/core';
-import { IInferredCommandHandler } from '@libs/cqrs';
+import { AppUtils } from '@libs/common';
+import { CommandHandler, IInferredCommandHandler, QueryBus } from '@libs/cqrs';
 
-import { ISkillsCommandRepository, SkillAlreadyExistsError, SkillCreatedEvent } from '../../domain';
+import { ISkillsCommandRepository, SkillAlreadyExistsError, SkillCreatedEvent, SkillNotFoundError } from '../../domain';
 import { CreateSkillCommand, CreateSkillResponseDto } from './create-skill.command';
 
-@Injectable()
+@CommandHandler(CreateSkillCommand)
 export class CreateSkillHandler implements IInferredCommandHandler<CreateSkillCommand> {
   constructor(
     private readonly skillCommandRepository: ISkillsCommandRepository,
     private readonly outboxRepository: IOutboxRepository,
+    private readonly queryBus: QueryBus,
     private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -22,10 +24,16 @@ export class CreateSkillHandler implements IInferredCommandHandler<CreateSkillCo
   async execute(command: CreateSkillCommand): Promise<CreateSkillResponseDto> {
     this.logger.info(command, 'Creating skill:');
 
-    const currentEntity = await this.skillCommandRepository.getOneByNameAndContext(command.name, command.context);
+    const currentEntity = await this.skillCommandRepository.getOneByNameAndCategoryId(command.name, command.categoryId);
 
-    if (currentEntity) {
-      throw SkillAlreadyExistsError.withNameAndContext(command.name, command.context);
+    if (AppUtils.isNotEmpty(currentEntity)) {
+      throw SkillAlreadyExistsError.withNameAndCategoryId(command.name, command.categoryId);
+    }
+
+    const category = await this.queryBus.execute(new GetManyCategoriesQuery({ _filter: { id: command.categoryId } }));
+
+    if (AppUtils.isEmpty(category)) {
+      throw SkillNotFoundError.withCategoryId(command.categoryId);
     }
 
     const instance = this.createInstance(command);
@@ -42,9 +50,7 @@ export class CreateSkillHandler implements IInferredCommandHandler<CreateSkillCo
   private createInstance(command: CreateSkillCommand) {
     return {
       name: command.name,
-      context: command.context,
       description: command.description,
-      parentId: command.parentId,
       categoryId: command.categoryId,
     };
   }

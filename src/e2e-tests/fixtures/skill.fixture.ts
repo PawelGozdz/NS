@@ -12,7 +12,6 @@ export class SkillFixtureFactory {
     const defaults = {
       name: testingDefaults.skill.name,
       description: testingDefaults.skill.description,
-      context: testingDefaults.skill.context,
     };
 
     return _.merge(skillDao, defaults, overrides);
