@@ -9,8 +9,6 @@ export class CategoryUpdatedEvent extends Event<CategoryUpdatedEvent> {
 
   parentId?: number | null;
 
-  context: string;
-
   constructor(event: CategoryUpdatedEvent) {
     super(event);
 

@@ -5,8 +5,6 @@ export abstract class ICategoryModel {
 
   description: string | null;
 
-  context: string;
-
   parentId: number | null;
 
   updatedAt: Date;

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsAlphanumeric, IsDefined, IsNotIn, IsNumber, IsOptional, IsPositive, Length, Max, Min } from 'class-validator';
+import { IsDefined, IsNotIn, IsNumber, IsOptional, IsPositive, Length, Max, Min } from 'class-validator';
 
 import { systemVariables } from '@libs/common';
 
@@ -33,15 +33,6 @@ export class CategoryGlobalDto {
   @IsOptional()
   @Length(systemVariables.dtos.categories.description.MIN_LENGTH, systemVariables.dtos.categories.description.MAX_LENGTH)
   description: string | null;
-
-  @ApiProperty({
-    example: systemVariables.dtos.categories.context.example1,
-    examples: systemVariables.dtos.categories.context.AVAILABLE_OPTIONS,
-  })
-  @IsNotIn([null])
-  @IsDefined()
-  @IsAlphanumeric()
-  context: string;
 
   @ApiProperty({
     example: systemVariables.dtos.categories.parentId.example1,

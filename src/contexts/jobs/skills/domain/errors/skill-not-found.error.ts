@@ -9,4 +9,13 @@ export class SkillNotFoundError extends DomainError {
     };
     return new SkillNotFoundError(message, options);
   }
+
+  static withCategoryId(categoryId: number, data?: DomainErrorOptions): SkillNotFoundError {
+    const message = `Category with id ${categoryId} doesn't exists`;
+    const options = {
+      code: DomainErrorCode.NotFound,
+      data,
+    };
+    return new SkillNotFoundError(message, options);
+  }
 }

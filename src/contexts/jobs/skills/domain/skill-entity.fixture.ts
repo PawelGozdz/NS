@@ -5,8 +5,6 @@ type Input = {
   id?: number;
   name?: string;
   description?: string;
-  context?: string;
-  parentId?: number;
   categoryId?: number;
 };
 
@@ -15,16 +13,12 @@ export class SkillEntityFixtureFactory {
     const id = overrides?.id ?? 1;
     const name = overrides?.name ? overrides.name : 'Grocery';
     const description = overrides?.description ? overrides.description : 'Grocery Skill';
-    const context = overrides?.context ? overrides.context : 'test-context';
-    const parentId = overrides?.parentId ? overrides.parentId : null;
     const categoryId = overrides?.categoryId ? overrides.categoryId : 3;
 
     return new Skill({
       id,
       name,
       description,
-      context,
-      parentId,
       categoryId,
     });
   }

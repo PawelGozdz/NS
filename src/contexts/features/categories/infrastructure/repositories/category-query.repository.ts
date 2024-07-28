@@ -19,11 +19,7 @@ export class CategoriesQueryRepository implements ICategoriesQueryRepository {
     }
 
     if (_filter?.name) {
-      query = query.where('c.name', '=', _filter.name);
-    }
-
-    if (_filter?.context) {
-      query = query.where('c.context', '=', _filter.context);
+      query = query.where('c.name', 'ilike', `%${_filter.name}%`);
     }
 
     if (typeof _filter?.parentId === 'number') {
@@ -41,13 +37,12 @@ export class CategoriesQueryRepository implements ICategoriesQueryRepository {
       name: model.name,
       description: model.description ?? null,
       parentId: model.parentId ?? null,
-      context: model.context,
     };
   }
 
   private getCategory() {
     return this.db
       .selectFrom(`${TableNames.CATEGORIES} as c`)
-      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
+      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
   }
 }

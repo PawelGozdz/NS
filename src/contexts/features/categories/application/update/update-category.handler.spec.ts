@@ -40,12 +40,10 @@ describe('UpdateCategoryHandler', () => {
   });
 
   const name = 'test';
-  const context = 'test-context';
   const id = 1;
   const newName = 'new-name';
   const command = new UpdateCategoryCommand({
     name: newName,
-    context,
     id,
     description: null,
   });
@@ -69,7 +67,6 @@ describe('UpdateCategoryHandler', () => {
       expect(categoryCommandRepositoryMock.update).toHaveBeenCalledWith({
         id,
         name: newName,
-        context,
         description: null,
         parentId: null,
       });

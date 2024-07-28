@@ -5,10 +5,6 @@ export abstract class ISkillModel {
 
   description: string | null;
 
-  context: string;
-
-  parentId: number | null;
-
   categoryId: number;
 
   updatedAt: Date;

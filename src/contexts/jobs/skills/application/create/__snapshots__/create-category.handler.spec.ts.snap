@@ -6,4 +6,6 @@ exports[`CreateSkillHandler Success should create new skill 1`] = `
 }
 `;
 
-exports[`CreateSkillHandler failure should throw SkillAlreadyExistsError 1`] = `[SkillAlreadyExistsError: Entity with name test and context test-context already exists]`;
+exports[`CreateSkillHandler failure should throw SkillAlreadyExistsError 1`] = `[SkillAlreadyExistsError: Entity with name test and categoryId 5 already exists]`;
+
+exports[`CreateSkillHandler failure should throw SkillNotFoundError 1`] = `[SkillNotFoundError: Category with id 5 doesn't exists]`;

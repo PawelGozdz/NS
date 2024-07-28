@@ -22,14 +22,6 @@ export class SkillsQueryRepository implements ISkillsQueryRepository {
       query = query.where('c.name', '=', _filter.name);
     }
 
-    if (_filter?.context) {
-      query = query.where('c.context', '=', _filter.context);
-    }
-
-    if (typeof _filter?.parentId === 'number') {
-      query = query.where('c.parentId', '=', _filter.parentId);
-    }
-
     const entities = await query.execute();
 
     return entities.map(this.mapResponse);
@@ -40,8 +32,6 @@ export class SkillsQueryRepository implements ISkillsQueryRepository {
       id: model.id,
       name: model.name,
       description: model.description ?? null,
-      parentId: model.parentId ?? null,
-      context: model.context,
       categoryId: model.categoryId,
     };
   }
@@ -49,6 +39,6 @@ export class SkillsQueryRepository implements ISkillsQueryRepository {
   private getBuilder() {
     return this.db
       .selectFrom(`${TableNames.SKILLS} as c`)
-      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.context', 'c.categoryId', 'c.parentId', 'c.createdAt', 'c.updatedAt']);
+      .select((_eb) => ['c.id', 'c.name', 'c.description', 'c.categoryId', 'c.createdAt', 'c.updatedAt']);
   }
 }

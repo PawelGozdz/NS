@@ -3,7 +3,7 @@ import { IsOptional } from 'class-validator';
 
 import { CategoryGlobalDto } from '@app/core';
 
-export class UpdateCategoryDto extends PickType(CategoryGlobalDto, ['name', 'description', 'parentId', 'context']) {
+export class UpdateCategoryDto extends PickType(CategoryGlobalDto, ['name', 'description', 'parentId']) {
   @ApiProperty({
     nullable: false,
     required: false,
@@ -17,13 +17,6 @@ export class UpdateCategoryDto extends PickType(CategoryGlobalDto, ['name', 'des
   })
   @IsOptional()
   description: string | null;
-
-  @ApiProperty({
-    nullable: true,
-    required: false,
-  })
-  @IsOptional()
-  context: string;
 
   @ApiProperty({
     nullable: true,

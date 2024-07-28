@@ -13,7 +13,6 @@ export class CategoryFixtureFactory {
       id: overrides?.id,
       name: testingDefaults.category.name,
       description: testingDefaults.category.description,
-      context: testingDefaults.category.context,
     };
 
     return _.merge(categoryDao, defaults, overrides);

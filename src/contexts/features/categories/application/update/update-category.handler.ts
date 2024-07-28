@@ -1,15 +1,14 @@
 import { Transactional } from '@nestjs-cls/transactional';
-import { Injectable } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
 import { AppContext, IOutboxRepository } from '@app/core';
 import { getCoalescedField, getNullOrValueField } from '@libs/common';
-import { IInferredCommandHandler } from '@libs/cqrs';
+import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 
 import { Category, CategoryNotFoundError, CategoryUpdatedEvent, ICategoriesCommandRepository } from '../../domain';
 import { UpdateCategoryCommand } from './update-category.command';
 
-@Injectable()
+@CommandHandler(UpdateCategoryCommand)
 export class UpdateCategoryHandler implements IInferredCommandHandler<UpdateCategoryCommand> {
   constructor(
     private readonly categoryCommandRepository: ICategoriesCommandRepository,
@@ -40,7 +39,6 @@ export class UpdateCategoryHandler implements IInferredCommandHandler<UpdateCate
     return {
       id: currentEntity.id,
       name: getCoalescedField(command.name, currentEntity.name) as string,
-      context: getCoalescedField(command.context, currentEntity.context) as string,
       description: getNullOrValueField(command.description, currentEntity.description),
       parentId: getNullOrValueField(command.parentId, currentEntity.parentId),
     };

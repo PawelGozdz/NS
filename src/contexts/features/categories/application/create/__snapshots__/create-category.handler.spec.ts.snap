@@ -6,4 +6,4 @@ exports[`CreateCategoryHandler Success should create new category 1`] = `
 }
 `;
 
-exports[`CreateCategoryHandler failure should throw CategoryAlreadyExistsError 1`] = `[CategoryAlreadyExistsError: Entity with name test and context test-context already exists]`;
+exports[`CreateCategoryHandler failure should throw CategoryAlreadyExistsError 1`] = `[CategoryAlreadyExistsError: Entity with name test already exists]`;

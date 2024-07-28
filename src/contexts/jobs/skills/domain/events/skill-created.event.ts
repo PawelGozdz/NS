@@ -7,10 +7,6 @@ export class SkillCreatedEvent extends Event<SkillCreatedEvent> {
 
   description?: string | null;
 
-  parentId?: number | null;
-
-  context: string;
-
   categoryId: number;
 
   constructor(event: SkillCreatedEvent) {

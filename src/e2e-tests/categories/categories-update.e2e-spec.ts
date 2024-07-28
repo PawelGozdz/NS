@@ -38,7 +38,6 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
   let categoryInsertedId: number;
   let dataAssertion: { parentId?: number; name?: string };
 
-  const context = 'users';
   const name = 'test category';
 
   beforeEach(async () => {
@@ -52,7 +51,6 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
       builder.withCategory({
         name,
         description: 'default-category',
-        context,
       });
       await builder.build();
       categoryInsertedId = builder.categoryDao.id;
@@ -73,7 +71,6 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
           .send({
             name: newName,
             description: 'default-category',
-            context,
           });
 
         const updatedCategory = (await dbConnection
@@ -94,7 +91,6 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         seedBuilder2.withCategory({
           name: name2,
           description: 'default-category',
-          context,
         });
         await seedBuilder2.build();
         const categoryInsertedId2 = seedBuilder2.categoryDao.id;
@@ -109,7 +105,6 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
           .send({
             name: newName,
             description: 'default-category',
-            context,
             parentId: categoryInsertedId,
           });
 
@@ -126,33 +121,6 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
     });
 
     describe('FAILURE', () => {
-      it('should throw 409 if category with provided name and context exists', async () => {
-        // Arrange
-        const name2 = 'test category2';
-        const seedBuilder = await CategorySeedBuilder.create(dbConnection);
-        seedBuilder.withCategory({
-          name: name2,
-          description: 'default-category',
-          context,
-        });
-        await seedBuilder.build();
-        const categoryInsertedId2 = seedBuilder.categoryDao.id;
-
-        // Act
-        const response = await request(app.getHttpServer())
-          .patch(`/categories/${categoryInsertedId2}`)
-          .set(...credentials)
-          .set('Content-Type', 'application/json')
-          .send({
-            name,
-            description: 'default-category',
-            context,
-          });
-
-        // Assert
-        expect(response.statusCode).toBe(409);
-      });
-
       it('should throw error if incorrect parentId', async () => {
         // Arrange
 
@@ -160,7 +128,6 @@ describe('CategoriesControllerV1 -> update (e2e)', () => {
         seedBuilder.withCategory({
           name: 'new-name-55',
           description: 'default-category',
-          context,
         });
         await seedBuilder.build();
         const categoryInsertedId2 = seedBuilder.categoryDao.id;

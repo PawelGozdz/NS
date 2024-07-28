@@ -3,7 +3,7 @@ import { IsOptional } from 'class-validator';
 
 import { SkillGlobalDto } from '@app/core';
 
-export class CreateSkillDto extends PickType(SkillGlobalDto, ['name', 'description', 'parentId', 'context', 'categoryId']) {
+export class CreateSkillDto extends PickType(SkillGlobalDto, ['name', 'description', 'categoryId']) {
   @ApiProperty({
     required: false,
   })

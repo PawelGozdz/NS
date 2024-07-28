@@ -5,7 +5,7 @@ import { IsOptional, ValidateNested } from 'class-validator';
 import { ISkillsQueryParams } from '../interfaces';
 import { SkillGlobalDto } from './skill-global.dto';
 
-class Filter extends PickType(SkillGlobalDto, ['id', 'name', 'context', 'parentId']) {
+class Filter extends PickType(SkillGlobalDto, ['id', 'name']) {
   @ApiProperty({
     required: false,
   })
@@ -17,18 +17,6 @@ class Filter extends PickType(SkillGlobalDto, ['id', 'name', 'context', 'parentI
   })
   @IsOptional()
   name: string;
-
-  @ApiProperty({
-    required: false,
-  })
-  @IsOptional()
-  context: string;
-
-  @ApiProperty({
-    required: false,
-  })
-  @IsOptional()
-  parentId: number;
 }
 
 export class SkillsQueryParamsDto implements ISkillsQueryParams {
