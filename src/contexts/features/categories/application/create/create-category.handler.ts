@@ -1,7 +1,7 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { PinoLogger } from 'nestjs-pino';
 
-import { AppContext, IOutboxRepository } from '@app/core';
+import { Actor, AppContext, IOutboxRepository } from '@app/core';
 import { AppUtils } from '@libs/common';
 import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 
@@ -32,7 +32,9 @@ export class CreateCategoryHandler implements IInferredCommandHandler<CreateCate
 
     const category = await this.categoryCommandRepository.save(categoryInstance);
 
-    await this.outboxRepository.store(this.createOutbox(new CategoryCreatedEvent({ id: category.id, ...categoryInstance })));
+    const actor = Actor.create(command.actor.type, this.constructor.name, command.actor.id);
+
+    await this.outboxRepository.store(this.createOutbox(new CategoryCreatedEvent({ id: category.id, ...categoryInstance, actor })));
 
     return {
       id: category.id,
@@ -52,6 +54,7 @@ export class CreateCategoryHandler implements IInferredCommandHandler<CreateCate
       context: AppContext.CATEGORIES,
       eventName: CategoryCreatedEvent.name,
       data: event,
+      actor: event.actor,
     };
   }
 }

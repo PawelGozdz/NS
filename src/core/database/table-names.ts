@@ -3,11 +3,15 @@ export enum TableNames {
   AUTH_USERS = 'authUsers',
   USERS = 'users',
   USER_PROFILES = 'userProfiles',
-  // JOB_PROFILES = 'jobProfiles',
+
+  // JOBS
+  SKILLS = 'skills',
+  JOB_USER_PROFILES = 'jobUserProfiles',
+  JOB_POSITIONS = 'jobPositions',
+  JOBS = 'jobs',
 
   // FEATURES
   CATEGORIES = 'categories',
-  SKILLS = 'skills',
 
   // Event Sourcing
   EVENT_LOG = 'eventLogs',

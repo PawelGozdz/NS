@@ -6,13 +6,13 @@ import { jsonObjectFrom } from 'kysely/helpers/postgres';
 import { IDatabaseModels, TableNames } from '@app/core';
 import { EntityId } from '@libs/common';
 import { EventBus } from '@libs/cqrs';
-import { EntityRepository } from '@libs/ddd';
+import { EntityRepository, IEntityRepository } from '@libs/ddd';
 
-import { IUsersCommandRepository, User, UserCreatedEvent, UserSnapshot, UserUpdatedEvent } from '../../domain';
+import { IUsersCommandRepository, User, UserCreatedEvent, UserEvents, UserSnapshot, UserUpdatedEvent } from '../../domain';
 import { UserModel, UserProfileModel } from '../models';
 
 @Injectable()
-export class UsersCommandRepository extends EntityRepository implements IUsersCommandRepository {
+export class UsersCommandRepository extends EntityRepository implements IEntityRepository<UserEvents>, IUsersCommandRepository {
   constructor(
     eventBus: EventBus,
     private readonly txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>,

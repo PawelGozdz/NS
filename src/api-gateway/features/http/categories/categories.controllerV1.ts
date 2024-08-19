@@ -2,9 +2,9 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Query 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PinoLogger } from 'nestjs-pino';
 
-import { CreateCategoryCommand, CreateCategoryResponseDto, GetManyCategoriesQuery, UpdateCategoryCommand } from '@app/contexts';
-import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes, CategoriesQueryParamsDto, ValidationErrorDto } from '@app/core';
-import { ConflictErrorResponse, NotFoundErrorResponse } from '@libs/common';
+import { AuthUser, CreateCategoryCommand, CreateCategoryResponseDto, GetManyCategoriesQuery, UpdateCategoryCommand } from '@app/contexts';
+import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes, CategoriesQueryParamsDto, GetCurrentAuthUser, ValidationErrorDto } from '@app/core';
+import { ActorType, ConflictErrorResponse, NotFoundErrorResponse } from '@libs/common';
 import { CommandBus, QueryBus } from '@libs/cqrs';
 
 import { CategoryResponseDto, CreateCategoryDto, UpdateCategoryDto, UpdateCategoryParamDto } from './category-dtos';
@@ -45,12 +45,17 @@ export class CategoriesControllerV1 {
   })
   @HttpCode(HttpStatus.CREATED)
   @Post(AppRoutes.CATEGORIES.v1.create)
-  async create(@Body() dto: CreateCategoryDto): Promise<CreateCategoryResponseDto> {
+  async create(@Body() dto: CreateCategoryDto, @GetCurrentAuthUser() user: AuthUser): Promise<CreateCategoryResponseDto> {
     return this.commandBus.execute(
       new CreateCategoryCommand({
         name: dto.name,
         description: dto.description,
         parentId: dto.parentId,
+        actor: {
+          id: user.userId,
+          type: ActorType.USER,
+          source: this.constructor.name,
+        },
       }),
     );
   }
@@ -66,13 +71,18 @@ export class CategoriesControllerV1 {
   })
   @HttpCode(HttpStatus.OK)
   @Get(AppRoutes.CATEGORIES.v1.getMany)
-  async getMany(@Query() dto: CategoriesQueryParamsDto): Promise<CategoryResponseDto[]> {
+  async getMany(@Query() dto: CategoriesQueryParamsDto, @GetCurrentAuthUser() user: AuthUser): Promise<CategoryResponseDto[]> {
     return this.queryBus.execute(
       new GetManyCategoriesQuery({
         _filter: {
           id: dto?._filter?.id,
           name: dto?._filter?.name,
           parentId: dto?._filter?.parentId,
+        },
+        actor: {
+          id: user.userId,
+          type: ActorType.USER,
+          source: this.constructor.name,
         },
       }),
     );
@@ -100,13 +110,18 @@ export class CategoriesControllerV1 {
   })
   @HttpCode(HttpStatus.OK)
   @Patch(AppRoutes.CATEGORIES.v1.update)
-  async update(@Param() paramDto: UpdateCategoryParamDto, @Body() dto: UpdateCategoryDto): Promise<void> {
+  async update(@Param() paramDto: UpdateCategoryParamDto, @Body() dto: UpdateCategoryDto, @GetCurrentAuthUser() user: AuthUser): Promise<void> {
     return this.commandBus.execute(
       new UpdateCategoryCommand({
         id: paramDto.id,
         name: dto.name,
         description: dto.description,
         parentId: dto.parentId,
+        actor: {
+          id: user.userId,
+          type: ActorType.USER,
+          source: this.constructor.name,
+        },
       }),
     );
   }

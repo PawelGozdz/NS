@@ -46,8 +46,6 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     const user = await this.authService.getAuthenticatedUserWithRefreshToken(userId.value, refreshToken);
 
     if (AppUtils.isNotEmpty(user)) {
-      req.authUser = user;
-
       req.user = {
         email: user.email,
         id: user.userId,

@@ -2,7 +2,7 @@
 import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 
-import { ConflictError, EntityId } from '@libs/common';
+import { ActorType, ConflictError, EntityId, IActor } from '@libs/common';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 
 import { IUsersCommandRepository, User, UserAggregateRootFixtureFactory, UserNotFoundError, UserUpdatedEvent } from '../../domain';
@@ -41,9 +41,16 @@ describe('UpdateUserHandler', () => {
   const userId = new EntityId('34d90467-aeb4-4016-9791-86f9aec010e4');
   const email = 'test@test.com';
 
+  const actor: IActor = {
+    id: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
+    type: ActorType.USER,
+    source: UpdateUserHandler.name,
+  };
+
   const command = new UpdateUserCommand({
     id: userId.value,
     email,
+    actor,
   });
 
   const user = UserAggregateRootFixtureFactory.create({

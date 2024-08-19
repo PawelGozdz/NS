@@ -1,9 +1,9 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { CreateSkillCommand, CreateSkillResponseDto, GetManySkillsQuery } from '@app/contexts';
-import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes, SkillsQueryParamsDto, ValidationErrorDto } from '@app/core';
-import { ConflictErrorResponse } from '@libs/common';
+import { AuthUser, CreateSkillCommand, CreateSkillResponseDto, GetManySkillsQuery } from '@app/contexts';
+import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes, GetCurrentAuthUser, SkillsQueryParamsDto, ValidationErrorDto } from '@app/core';
+import { ActorType, ConflictErrorResponse } from '@libs/common';
 import { CommandBus, QueryBus } from '@libs/cqrs';
 
 import { CreateSkillDto, SkillResponseDto } from './skill-dtos';
@@ -41,12 +41,17 @@ export class SkillsControllerV1 {
   })
   @HttpCode(HttpStatus.CREATED)
   @Post(AppRoutes.SKILLS.v1.create)
-  async create(@Body() dto: CreateSkillDto): Promise<CreateSkillResponseDto> {
+  async create(@Body() dto: CreateSkillDto, @GetCurrentAuthUser() user: AuthUser): Promise<CreateSkillResponseDto> {
     return this.commandBus.execute(
       new CreateSkillCommand({
         name: dto.name,
         description: dto.description,
         categoryId: dto.categoryId,
+        actor: {
+          id: user.userId,
+          type: ActorType.USER,
+          source: this.constructor.name,
+        },
       }),
     );
   }
@@ -62,12 +67,17 @@ export class SkillsControllerV1 {
   })
   @HttpCode(HttpStatus.OK)
   @Get(AppRoutes.SKILLS.v1.getMany)
-  async getMany(@Query() dto: SkillsQueryParamsDto): Promise<SkillResponseDto[]> {
+  async getMany(@Query() dto: SkillsQueryParamsDto, @GetCurrentAuthUser() user: AuthUser): Promise<SkillResponseDto[]> {
     return this.queryBus.execute(
       new GetManySkillsQuery({
         _filter: {
           id: dto?._filter?.id,
           name: dto?._filter?.name,
+        },
+        actor: {
+          id: user.userId,
+          type: ActorType.USER,
+          source: this.constructor.name,
         },
       }),
     );

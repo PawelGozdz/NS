@@ -1,3 +1,4 @@
+import { Actor } from '@app/core';
 import { EntityId, getNullOrValueField } from '@libs/common';
 import { AggregateRoot } from '@libs/ddd';
 
@@ -43,10 +44,12 @@ export class User extends AggregateRoot {
       email,
       id,
       profile,
+      actor,
     }: {
       id?: EntityId;
       email: string;
       profile: IProfileCreateData;
+      actor: Actor;
     },
     version?: number,
   ): User {
@@ -64,6 +67,7 @@ export class User extends AggregateRoot {
         id: user.id,
         email: user.email,
         profile: user.profile,
+        actor,
       }),
     );
 
@@ -105,8 +109,14 @@ export class User extends AggregateRoot {
           profilePicture: potentialNewProfilePicture,
           rodoAcceptanceDate: potentialNewRodoAcceptanceDate,
         },
+        actor: user.actor,
       }),
     );
+  }
+
+  private onUserUpdatedEvent(event: UserUpdatedEvent) {
+    this.email = event.email;
+    this.profile = event.profile ?? this.profile;
   }
 
   public static restoreFromSnapshot(dao: UserSnapshot): User {
@@ -134,4 +144,5 @@ export class User extends AggregateRoot {
 type UpdateUserData = {
   email?: string;
   profile?: IProfileUpdateData;
+  actor: Actor;
 };

@@ -3,7 +3,7 @@ import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 
 import { UserUpdatedEvent } from '@app/contexts';
-import { EntityId } from '@libs/common';
+import { ActorType, EntityId, IActor } from '@libs/common';
 import { TestLoggerModule } from '@libs/testing';
 
 import { AuthUserFixture } from '../../models';
@@ -37,6 +37,11 @@ describe('OnUserUpdatedHandler', () => {
     email: 'old@email.com',
   });
 
+  const actor: IActor = {
+    type: ActorType.SYSTEM,
+    source: 'someSource',
+  };
+
   it('should update auth-user', async () => {
     // arrange
     const newEmail = 'new@email.com';
@@ -44,6 +49,7 @@ describe('OnUserUpdatedHandler', () => {
       id: new EntityId(userId),
       email: newEmail,
       profile: { userId: new EntityId(userId) } as any,
+      actor,
     });
 
     authUserRepositoryMock.getByUserId.mockResolvedValueOnce(authUser);

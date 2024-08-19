@@ -1,4 +1,5 @@
 import { IUpdateProfile } from '@app/core';
+import { IActor } from '@libs/common';
 
 import { IntegrationEvent } from '../integration-base.event';
 import { IntegrationEventNames } from '../integration-events.enum';
@@ -13,6 +14,8 @@ export class UpdateUserIntegrationEvent extends IntegrationEvent {
   static readonly eventName = IntegrationEventNames.updateUser;
 
   payload: IUserUpdateIntegration;
+
+  actor: IActor;
 
   constructor(user: IUserUpdateIntegration) {
     super();

@@ -1,4 +1,6 @@
-export abstract class IUserModel {
+import { IUser } from '@app/core';
+
+export abstract class IUserModel implements IUser {
   id: string;
 
   email: string;

@@ -1,4 +1,4 @@
-import { Address } from '@app/core';
+import { Actor, Address } from '@app/core';
 import { EntityId } from '@libs/common';
 import { Event } from '@libs/cqrs';
 
@@ -23,6 +23,8 @@ export class UserCreatedEvent extends Event<UserCreatedEvent> {
     profilePicture: string | null;
     rodoAcceptanceDate: Date | null;
   };
+
+  actor: Actor;
 
   constructor(event: UserCreatedEvent) {
     super(event);

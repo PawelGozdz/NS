@@ -1,6 +1,7 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { PinoLogger } from 'nestjs-pino';
 
+import { Actor } from '@app/core';
 import { EntityId } from '@libs/common';
 import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
 
@@ -43,6 +44,7 @@ export class CreateUserHandler implements IInferredCommandHandler<CreateUserComm
         id: EntityId.createRandom(),
         userId,
       },
+      actor: Actor.create(command.actor.type, this.constructor.name, userId.value),
     });
   }
 }

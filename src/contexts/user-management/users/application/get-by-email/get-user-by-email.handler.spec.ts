@@ -1,6 +1,7 @@
 import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 
+import { ActorType, IActor } from '@libs/common';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 
 import { IUsersQueryRepository, UserInfo, UserNotFoundError } from '../../domain';
@@ -13,7 +14,13 @@ describe('GetUserByIdQuery', () => {
 
   const userEmail = 'test5@gmail.com';
 
-  const query = new GetUserByEmailQuery({ email: userEmail });
+  const actor: IActor = {
+    id: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
+    type: ActorType.USER,
+    source: GetUserByEmailHandler.name,
+  };
+
+  const query = new GetUserByEmailQuery({ email: userEmail, actor });
   const userInfo: UserInfo = {
     id: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
     email: 'test@test.com',

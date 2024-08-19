@@ -1,6 +1,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Injectable } from '@nestjs/common';
+import { omit } from 'lodash';
 
 import { IDatabaseModels, IEventLogModel, IOutboxInput, TableNames } from '@app/core';
 
@@ -12,22 +13,25 @@ export class OutboxKyselyRepository implements IOutboxRepository {
   constructor(private readonly txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>) {}
 
   async store(outboxInput: IOutboxInput) {
+    const noActorOutboxInput = omit(outboxInput.data, 'actor');
+
     await Promise.all([
       this.txHost.tx
         .insertInto(TableNames.OUTBOX)
         .values({
           eventName: outboxInput.eventName,
           context: outboxInput.context,
-          data: outboxInput.data,
-        } as OutboxModel)
+          data: noActorOutboxInput,
+        } as unknown as OutboxModel)
         .execute(),
 
       await this.txHost.tx
         .insertInto(TableNames.EVENT_LOG)
         .values({
           eventName: outboxInput.eventName,
-          data: outboxInput.data,
-        } as IEventLogModel)
+          data: noActorOutboxInput,
+          actor: outboxInput.data.actor,
+        } as unknown as IEventLogModel)
         .execute(),
     ]);
   }

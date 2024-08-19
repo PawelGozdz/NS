@@ -16,7 +16,7 @@ export async function up(db: Kysely<IDatabaseModels>): Promise<void> {
     .addColumn('data', 'jsonb', (col) => col.notNull())
     .addColumn('publishedOn', 'date')
 
-    .addColumn('createdAt', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
+    .addColumn('createdAt', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();
 }
 

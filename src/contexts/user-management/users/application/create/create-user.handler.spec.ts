@@ -3,6 +3,7 @@
 import { createMock } from '@golevelup/ts-jest';
 import { Test } from '@nestjs/testing';
 
+import { ActorType, IActor } from '@libs/common';
 import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 
 import { IUsersCommandRepository, User, UserAggregateRootFixtureFactory, UserAlreadyExistsError } from '../../domain';
@@ -34,8 +35,15 @@ describe('CreateUserHandler', () => {
     handler = app.get(CreateUserHandler);
   });
 
+  const actor: IActor = {
+    id: 'c8aa6154-dba2-466c-8858-64c755e71ff6',
+    type: ActorType.USER,
+    source: CreateUserHandler.name,
+  };
+
   const command = new CreateUserCommand({
     email: 'test@test.com',
+    actor,
   });
 
   const user = UserAggregateRootFixtureFactory.create();
@@ -55,7 +63,6 @@ describe('CreateUserHandler', () => {
       // Assert
 
       expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(saveduser!);
-      // expect(userCommandRepositoryMock.save).toHaveBeenCalledWith(expect.any(User));
       expect(result).toStrictEqual({ id: expect.any(String) });
     });
   });

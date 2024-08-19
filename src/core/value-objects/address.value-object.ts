@@ -18,6 +18,14 @@ export type AddressData = {
   postalCode: string;
 };
 
+export interface IAddress {
+  street: string;
+  streetNumber: string | undefined;
+  city: string;
+  countryCode: CountryCode;
+  postalCode: string;
+}
+
 export class Address {
   public constructor(
     readonly street: string,

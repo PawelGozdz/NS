@@ -2,6 +2,11 @@
 
 exports[`User create Success should apply UserCreatedEvent with property values 1`] = `
 {
+  "actor": Actor {
+    "id": "34d90467-aeb4-4016-9791-86f9aec010e0",
+    "source": "User",
+    "type": "user",
+  },
   "email": "test@test.pl",
   "id": Any<EntityId>,
   "profile": {

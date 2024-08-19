@@ -34,5 +34,7 @@ export class UserProfileModel extends BaseModel implements IUserProfileModel {
 
   createdAt: Date;
 
+  version: number;
+
   static tableName = TableNames.USER_PROFILES;
 }

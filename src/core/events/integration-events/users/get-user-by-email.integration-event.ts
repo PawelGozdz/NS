@@ -1,3 +1,5 @@
+import { IActor } from '@libs/common';
+
 import { IntegrationEvent } from '../integration-base.event';
 import { IntegrationEventNames } from '../integration-events.enum';
 
@@ -7,6 +9,8 @@ export class GetUserByEmailIntegrationEvent extends IntegrationEvent {
   payload: {
     email: string;
   };
+
+  actor: IActor;
 
   constructor(email: string) {
     super();

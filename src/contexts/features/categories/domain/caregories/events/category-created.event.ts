@@ -1,3 +1,4 @@
+import { Actor } from '@app/core';
 import { Event } from '@libs/cqrs';
 
 export class CategoryCreatedEvent extends Event<CategoryCreatedEvent> {
@@ -8,6 +9,8 @@ export class CategoryCreatedEvent extends Event<CategoryCreatedEvent> {
   description?: string | null;
 
   parentId?: number | null;
+
+  actor: Actor;
 
   constructor(event: CategoryCreatedEvent) {
     super(event);

@@ -1,3 +1,4 @@
+export * from './actor.value-object';
 export * from './address.value-object';
 export * from './certification.value-object';
 export * from './education.value-object';

@@ -9,7 +9,7 @@ export async function up(db: Kysely<IDatabaseModels>): Promise<void> {
         CREATE OR REPLACE FUNCTION on_update_timestamp()
         RETURNS trigger AS $$
         BEGIN
-        NEW.updated_at = now();
+        NEW.updated_at = now() AT TIME ZONE 'UTC';
         RETURN NEW;
         END;
         $$ language 'plpgsql';
