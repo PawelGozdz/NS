@@ -9,4 +9,4 @@ import { PgBossProvider } from './pg-boss.provider';
   providers: [JobManagerService, PgBossProvider],
   exports: [JobManagerService],
 })
-export class JobModule {}
+export class JobWorkerModule {}
