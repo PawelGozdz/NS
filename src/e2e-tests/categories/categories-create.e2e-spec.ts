@@ -3,9 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Kysely } from 'kysely';
 import request from 'supertest';
 
+import { AppModule } from '@app/app.module';
 import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugins } from '@app/core';
 
-import { AppModule } from '../../app.module';
 import { getCookies, loginUser } from '../builders/auth-user';
 import { CategorySeedBuilder } from '../builders/category-builder';
 

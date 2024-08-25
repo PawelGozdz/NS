@@ -17,4 +17,8 @@ module.exports = {
     '@libs/testing/(.*)': '<rootDir>/libs/testing/src/$1',
     '@libs/testing': '<rootDir>/libs/testing/src'
   },
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+  ],
 }

@@ -1,6 +1,5 @@
 /* eslint-disable import/no-named-as-default-member */
 import dotenv from 'dotenv';
-import { join } from 'path';
 import { z } from 'zod';
 
 export enum Environment {
@@ -10,11 +9,9 @@ export enum Environment {
   TEST = 'test',
 }
 
-const envFileName = process.env.NODE_ENV === Environment.TEST ? '.env.test' : '.env';
-
-dotenv.config({
-  path: join(process.cwd(), envFileName),
-});
+if (process.env.NODE_ENV !== Environment.TEST) {
+  dotenv.config();
+}
 
 export const globalVersioning = '1';
 export const v1 = 'v1';
@@ -30,7 +27,7 @@ const envSchema = z.object({
   LOG_LEVEL: z.string().optional(),
   NODE_VERSION: z.string().default(nodeVersion),
   DATABASE_NAME: z.string(),
-  DATABASE_PORT: z.coerce.number().positive().max(9999),
+  DATABASE_PORT: z.coerce.number().positive().max(65000),
   DATABASE_USER: z.string(),
   DATABASE_PASSWORD: z.string(),
   DATABASE_LOGGING: z.string().transform((val) => val === 'true'),
