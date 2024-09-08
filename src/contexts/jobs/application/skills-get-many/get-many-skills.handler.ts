@@ -18,7 +18,7 @@ export class GetManySkillsHandler implements IInferredQueryHandler<GetManySkills
   async execute(query: GetManySkillsQuery): Promise<GetManySkillsResponseDto> {
     this.logger.info(query, 'Getting Skills:');
 
-    Actor.create(query.actor.type, query.actor.source, query.actor.id);
+    Actor.create(query.actor.type, this.constructor.name, query.actor.id);
 
     const entities = await this.skillQueryRepository.getManyBy(query);
 

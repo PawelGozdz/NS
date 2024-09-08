@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
 
 import { SkillGlobalDto } from '@app/core';
-import { IActor } from '@libs/common';
+import { IActorBase } from '@libs/common';
 import { Command } from '@libs/cqrs';
 
 export class CreateSkillCommand extends Command<CreateSkillCommand, CreateSkillResponseDto> {
@@ -11,7 +11,7 @@ export class CreateSkillCommand extends Command<CreateSkillCommand, CreateSkillR
 
   categoryId: number;
 
-  actor: IActor;
+  actor: IActorBase;
 
   constructor(command: CreateSkillCommand) {
     super(command);

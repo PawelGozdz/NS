@@ -28,7 +28,7 @@ export class Experience {
   }
 
   public static create(skillId: number, startDate: Date | null, endDate: Date | null, experienceInMonths: number | null): Experience {
-    let expInMonths = experienceInMonths ?? 3;
+    let expInMonths = 0;
 
     if (!skillId) {
       throw new MissingValueError('Experience.skillId');
@@ -55,6 +55,8 @@ export class Experience {
       throw new MissingValueError('Experience.startDate');
     } else if (!startDate && AppUtils.isEmpty(endDate) && AppUtils.isEmpty(experienceInMonths)) {
       throw new MissingValueError('Experience.experienceInMonths');
+    } else if (!startDate && !endDate && experienceInMonths) {
+      expInMonths = experienceInMonths;
     }
 
     if (expInMonths < 0) {

@@ -19,7 +19,7 @@ export class GetJobUserProfileByIdHandler implements IInferredQueryHandler<GetJo
   public async execute(query: GetJobUserProfileByIdQuery): Promise<GetJobUserProfileByIdQueryResult> {
     this.logger.info(query, 'Getting job user profile by id');
 
-    Actor.create(query.actor.type, query.actor.source, query.actor.id);
+    Actor.create(query.actor.type, this.constructor.name, query.actor.id);
 
     const id = new EntityId(query.id);
     const userJobProfileInfo = await this.userQueryRepository.getOneById(id);

@@ -62,7 +62,7 @@ describe('Experience', () => {
       expect(experience.skillId).toBe(skillId);
       expect(experience.startDate).toBe(startDate);
       expect(experience.endDate).toBeNull();
-      expect(experience.experienceInMonths).toBe(3); // Default value
+      expect(experience.experienceInMonths).toBe(0); // Default value
     });
 
     it('should throw MissingValueError if only endDate is provided', () => {

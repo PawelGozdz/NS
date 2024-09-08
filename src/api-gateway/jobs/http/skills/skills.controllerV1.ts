@@ -50,7 +50,6 @@ export class SkillsControllerV1 {
         actor: {
           id: user.userId,
           type: ActorType.USER,
-          source: this.constructor.name,
         },
       }),
     );
@@ -77,7 +76,6 @@ export class SkillsControllerV1 {
         actor: {
           id: user.userId,
           type: ActorType.USER,
-          source: this.constructor.name,
         },
       }),
     );

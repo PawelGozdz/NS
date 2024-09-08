@@ -24,7 +24,7 @@ export class CreateSkillHandler implements IInferredCommandHandler<CreateSkillCo
   async execute(command: CreateSkillCommand): Promise<CreateSkillResponseDto> {
     this.logger.info(command, 'Creating skill:');
 
-    const actor = Actor.create(command.actor.type, command.actor.source, command.actor.id);
+    const actor = Actor.create(command.actor.type, this.constructor.name, command.actor.id);
 
     const currentEntity = await this.skillCommandRepository.getOneByNameAndCategoryId(command.name, command.categoryId);
 

@@ -1,17 +1,17 @@
 import { ICertification, IEducation, IExperience, ISalaryRange } from '@app/core';
-import { IActor } from '@libs/common';
+import { IActorBase } from '@libs/common';
 import { Command } from '@libs/cqrs';
 
-export class CreateJobUserProfileCommand extends Command<CreateJobUserProfileCommand, CreateJobUserProfileResponse> {
+export class CreateJobUserProfileCommand extends Command<CreateJobUserProfileCommand, CreateJobUserProfileResponseDto> {
   userId: string;
 
   bio?: string;
 
   salaryRange: ISalaryRange;
 
-  jobs?: string[];
+  jobIds?: string[];
 
-  jobPositions?: string[];
+  jobPositionIds?: string[];
 
   experience?: IExperience[];
 
@@ -19,9 +19,7 @@ export class CreateJobUserProfileCommand extends Command<CreateJobUserProfileCom
 
   certificates?: ICertification[];
 
-  requestedBy: string;
-
-  actor: IActor;
+  actor: IActorBase;
 
   constructor(command: CreateJobUserProfileCommand) {
     super(command);
@@ -30,6 +28,6 @@ export class CreateJobUserProfileCommand extends Command<CreateJobUserProfileCom
   }
 }
 
-export type CreateJobUserProfileResponse = {
+export type CreateJobUserProfileResponseDto = {
   id: string;
 };

@@ -1,5 +1,5 @@
 import { ICertification, IEducation, IExperience, ISalaryRange } from '@app/core';
-import { IActor } from '@libs/common';
+import { IActorBase } from '@libs/common';
 import { Command } from '@libs/cqrs';
 
 export class UpdateJobUserProfileCommand extends Command<UpdateJobUserProfileCommand, void> {
@@ -19,7 +19,7 @@ export class UpdateJobUserProfileCommand extends Command<UpdateJobUserProfileCom
 
   certificates?: ICertification[];
 
-  actor: IActor;
+  actor: IActorBase;
 
   constructor(command: UpdateJobUserProfileCommand) {
     super(command);

@@ -1,16 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
 import {
   IsDateString,
   IsDefined,
   IsEmail,
+  IsISO8601,
   IsIn,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsPhoneNumber,
+  IsPositive,
   IsString,
   IsUUID,
   IsUrl,
   Length,
+  Matches,
+  Max,
+  Min,
   ValidateNested,
 } from 'class-validator';
 
@@ -18,7 +25,7 @@ import { systemVariables } from '@libs/common';
 
 import { CountryCode } from '../enums';
 
-class AddressDto {
+export class AddressDto {
   @ApiProperty({
     example: systemVariables.dtos.address.street.example1,
     nullable: false,
@@ -64,6 +71,168 @@ class AddressDto {
   @IsString()
   @Length(systemVariables.dtos.address.postalCode.MIN_LENGTH, systemVariables.dtos.address.postalCode.MAX_LENGTH)
   postalCode: string;
+}
+
+export class CertificateDto {
+  @ApiProperty({
+    example: systemVariables.dtos.certificate.name.example1,
+    minLength: systemVariables.dtos.certificate.name.MIN_LENGTH,
+    maxLength: systemVariables.dtos.certificate.name.MAX_LENGTH,
+    required: true,
+    nullable: false,
+  })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : null))
+  @IsDefined()
+  @Matches(/^[a-zA-Z0-9]+(?:[ _-][a-zA-Z0-9]+)*$/, { message: 'Invalid certificate name' })
+  @Length(systemVariables.dtos.certificate.name.MIN_LENGTH, systemVariables.dtos.certificate.name.MAX_LENGTH)
+  name: string;
+
+  @ApiProperty({
+    example: systemVariables.dtos.certificate.institution.example1,
+    minLength: systemVariables.dtos.certificate.institution.MIN_LENGTH,
+    maxLength: systemVariables.dtos.certificate.institution.MAX_LENGTH,
+    required: true,
+    nullable: false,
+  })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : null))
+  @IsDefined()
+  @Matches(/^[a-zA-Z0-9]+(?:[ _-][a-zA-Z0-9]+)*$/, { message: 'Invalid certificate institution' })
+  @Length(systemVariables.dtos.certificate.institution.MIN_LENGTH, systemVariables.dtos.certificate.institution.MAX_LENGTH)
+  institution: string;
+
+  @ApiProperty({
+    example: systemVariables.dtos.certificate.completionUear.example1,
+    maximum: systemVariables.dtos.certificate.completionUear.MAX_VALUE,
+    minimum: systemVariables.dtos.certificate.completionUear.MIN_VALUE,
+    required: true,
+    nullable: false,
+  })
+  @IsDefined()
+  @Max(systemVariables.dtos.certificate.completionUear.MAX_VALUE)
+  @Min(systemVariables.dtos.certificate.completionUear.MIN_VALUE)
+  @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 })
+  completionYear: number;
+}
+
+export class EducationDto {
+  @ApiProperty({
+    example: systemVariables.dtos.education.degree.example1,
+    minLength: systemVariables.dtos.education.degree.MIN_LENGTH,
+    maxLength: systemVariables.dtos.education.degree.MAX_LENGTH,
+    required: true,
+    nullable: false,
+  })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : null))
+  @IsDefined()
+  @Matches(/^[a-zA-Z0-9]+(?:[ _-][a-zA-Z0-9]+)*$/, { message: 'Invalid degree name' })
+  @Length(systemVariables.dtos.education.degree.MIN_LENGTH, systemVariables.dtos.education.degree.MAX_LENGTH)
+  degree: string;
+
+  @ApiProperty({
+    example: systemVariables.dtos.education.institution.example1,
+    minLength: systemVariables.dtos.education.institution.MIN_LENGTH,
+    maxLength: systemVariables.dtos.education.institution.MAX_LENGTH,
+    required: true,
+    nullable: false,
+  })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : null))
+  @IsDefined()
+  @Matches(/^[a-zA-Z0-9]+(?:[ _-][a-zA-Z0-9]+)*$/, { message: 'Invalid education institution' })
+  @Length(systemVariables.dtos.education.institution.MIN_LENGTH, systemVariables.dtos.education.institution.MAX_LENGTH)
+  institution: string;
+
+  @ApiProperty({
+    example: systemVariables.dtos.education.graduateYear.example1,
+    maximum: systemVariables.dtos.education.graduateYear.MAX_VALUE,
+    minimum: systemVariables.dtos.education.graduateYear.MIN_VALUE,
+    required: true,
+    nullable: false,
+  })
+  @IsDefined()
+  @Max(systemVariables.dtos.education.graduateYear.MAX_VALUE)
+  @Min(systemVariables.dtos.education.graduateYear.MIN_VALUE)
+  @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 })
+  graduateYear: number;
+}
+
+export class ExperienceDto {
+  @ApiProperty({
+    example: systemVariables.dtos.experience.skillId.example1,
+    minLength: systemVariables.dtos.experience.skillId.MIN_VALUE,
+    maxLength: systemVariables.dtos.experience.skillId.MAX_VALUE,
+    required: true,
+    nullable: false,
+  })
+  @IsDefined()
+  @Type(() => Number)
+  @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 })
+  @IsPositive()
+  @Min(systemVariables.dtos.experience.skillId.MIN_VALUE)
+  @Max(systemVariables.dtos.experience.skillId.MAX_VALUE)
+  skillId: number;
+
+  @ApiProperty({
+    example: systemVariables.dtos.experience.startDate.example1,
+    required: true,
+    nullable: false,
+  })
+  @IsDefined()
+  @IsISO8601()
+  startDate: Date;
+
+  @ApiProperty({
+    example: systemVariables.dtos.experience.endDate.example1,
+    required: true,
+    nullable: false,
+  })
+  @IsDefined()
+  @IsISO8601()
+  endDate: Date;
+
+  @ApiProperty({
+    example: systemVariables.dtos.experience.endDate.example1,
+    required: true,
+    nullable: false,
+  })
+  @IsDefined()
+  @Type(() => Number)
+  @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 })
+  @IsPositive()
+  @Min(systemVariables.dtos.experience.experienceInMonths.MIN_VALUE)
+  @Max(systemVariables.dtos.experience.experienceInMonths.MAX_VALUE)
+  experienceInMonths: number;
+}
+
+export class SalaryRangeDto {
+  @ApiProperty({
+    example: systemVariables.dtos.salaryRange.from.example1,
+    minLength: systemVariables.dtos.salaryRange.from.MIN_VALUE,
+    maxLength: systemVariables.dtos.salaryRange.from.MAX_VALUE,
+    required: true,
+    nullable: false,
+  })
+  @IsDefined()
+  @Type(() => Number)
+  @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 })
+  @IsPositive()
+  @Min(systemVariables.dtos.salaryRange.from.MIN_VALUE)
+  @Max(systemVariables.dtos.salaryRange.from.MAX_VALUE)
+  from: number;
+
+  @ApiProperty({
+    example: systemVariables.dtos.salaryRange.to.example1,
+    minLength: systemVariables.dtos.salaryRange.to.MIN_VALUE,
+    maxLength: systemVariables.dtos.salaryRange.to.MAX_VALUE,
+    required: true,
+    nullable: false,
+  })
+  @IsDefined()
+  @Type(() => Number)
+  @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 })
+  @IsPositive()
+  @Min(systemVariables.dtos.salaryRange.to.MIN_VALUE)
+  @Max(systemVariables.dtos.salaryRange.to.MAX_VALUE)
+  to: number;
 }
 
 export class GlobalDto {
@@ -176,7 +345,7 @@ export class GlobalDto {
   @IsDefined()
   @IsString()
   @Length(systemVariables.dtos.bio.MIN_LENGTH, systemVariables.dtos.bio.MAX_LENGTH)
-  bio: string;
+  bio: string | null;
 
   @ApiProperty({
     example: systemVariables.dtos.hobbies.example1,
@@ -217,6 +386,39 @@ export class GlobalDto {
     type: AddressDto,
   })
   @IsDefined()
+  @Type(() => AddressDto)
   @ValidateNested()
   address: AddressDto;
+
+  @ApiProperty({
+    type: [CertificateDto],
+  })
+  @IsDefined()
+  @Type(() => CertificateDto)
+  @ValidateNested({ each: true })
+  certificates: CertificateDto[];
+
+  @ApiProperty({
+    type: [EducationDto],
+  })
+  @IsDefined()
+  @Type(() => EducationDto)
+  @ValidateNested({ each: true })
+  education: EducationDto[];
+
+  @ApiProperty({
+    type: [ExperienceDto],
+  })
+  @IsDefined()
+  @Type(() => ExperienceDto)
+  @ValidateNested({ each: true })
+  experience: ExperienceDto[];
+
+  @ApiProperty({
+    type: SalaryRangeDto,
+  })
+  @IsDefined()
+  @Type(() => SalaryRangeDto)
+  @ValidateNested()
+  salaryRange: SalaryRangeDto;
 }

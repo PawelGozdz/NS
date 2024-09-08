@@ -1,0 +1,53 @@
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { IsOptional } from 'class-validator';
+
+import { CertificateDto, EducationDto, ExperienceDto, JobUserProfileGlobalDto } from '@app/core';
+
+export class CreateJobProfileDto extends PickType(JobUserProfileGlobalDto, [
+  'bio',
+  'certificates',
+  'userId',
+  'education',
+  'experience',
+  'jobIds',
+  'jobPositionIds',
+  'salaryRange',
+]) {
+  @ApiProperty({
+    required: false,
+    nullable: true,
+  })
+  @IsOptional()
+  bio: string;
+
+  @ApiProperty({
+    required: false,
+    nullable: true,
+  })
+  @IsOptional()
+  certificates: CertificateDto[];
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  education: EducationDto[];
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  experience: ExperienceDto[];
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  jobIds: string[];
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  jobPositionIds: string[];
+}
