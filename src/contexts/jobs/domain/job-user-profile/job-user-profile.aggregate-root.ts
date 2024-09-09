@@ -98,6 +98,8 @@ export class JobUserProfile extends AggregateRoot {
       version,
     );
 
+    console.log('ENTITY', entity);
+
     entity.apply(
       new JobUserProfileCreatedEvent({
         id: entity.id,

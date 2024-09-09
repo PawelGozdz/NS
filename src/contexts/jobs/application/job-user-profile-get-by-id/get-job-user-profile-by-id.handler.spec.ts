@@ -27,11 +27,11 @@ describe('GetJobUserProfileByIdQuery', () => {
       from: 1000,
       to: 2000,
     },
-    jobs: ['c8aa6154-dba2-466c-8858-64c755e71ff1'],
-    jobPositions: ['c8aa6154-dba2-466c-8858-64c755e71ff2'],
+    jobIds: ['c8aa6154-dba2-466c-8858-64c755e71ff1'],
+    jobPositionIds: ['c8aa6154-dba2-466c-8858-64c755e71ff2'],
     experience: [
       {
-        id: 'c8aa6154-dba2-466c-8858-64c755e71ff3',
+        skillId: 1,
         startDate: new Date(),
         endDate: new Date(),
         experienceInMonths: 12,

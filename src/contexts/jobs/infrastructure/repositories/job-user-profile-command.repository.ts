@@ -3,7 +3,7 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { TransactionalAdapterKysely } from '@nestjs-cls/transactional-adapter-kysely';
 import { Injectable } from '@nestjs/common';
 
-import { IDatabaseModels, TableNames } from '@app/core';
+import { Certification, Education, Experience, IDatabaseModels, TableNames } from '@app/core';
 import { EntityId } from '@libs/common';
 import { EventBus } from '@libs/cqrs';
 import { EntityRepository, IEntityRepository } from '@libs/ddd';
@@ -98,6 +98,7 @@ export class JobUserProfileCommandRepository
         'c.jobIds',
         'c.createdAt',
         'c.updatedAt',
+        'c.version',
       ]);
   }
 
@@ -106,9 +107,9 @@ export class JobUserProfileCommandRepository
       .updateTable(TableNames.JOB_USER_PROFILES)
       .set({
         bio: event.bio,
-        certificates: event.certificates,
-        education: event.education,
-        experience: event.experience,
+        certificates: JSON.stringify(event.certificates) as unknown as Certification[],
+        education: JSON.stringify(event.education) as unknown as Education[],
+        experience: JSON.stringify(event.experience) as unknown as Experience[],
         jobPositionIds: event.jobPositionIds.map((jp) => jp.value),
         salaryRange: event.salaryRange,
         jobIds: event.jobIds.map((j) => j.value),
@@ -124,9 +125,9 @@ export class JobUserProfileCommandRepository
         id: event.id.value,
         userId: event.userId.value,
         bio: event.bio,
-        certificates: event.certificates,
-        education: event.education,
-        experience: event.experience,
+        certificates: JSON.stringify(event.certificates) as unknown as Certification[],
+        education: JSON.stringify(event.education) as unknown as Education[],
+        experience: JSON.stringify(event.experience) as unknown as Experience[],
         jobPositionIds: event.jobPositionIds.map((jp) => jp.value),
         salaryRange: event.salaryRange,
         jobIds: event.jobIds.map((j) => j.value),

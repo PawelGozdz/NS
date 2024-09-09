@@ -1,7 +1,10 @@
 import { ActorType } from '../enums';
 
-export interface IActor {
-  type: ActorType;
-  source: string;
+export interface IActorBase {
   id?: string;
+  type: ActorType;
+}
+
+export interface IActor extends IActorBase {
+  source: string;
 }

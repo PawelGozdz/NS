@@ -29,6 +29,70 @@ export const systemVariables = {
     email: {
       example: 'test@test.com',
     },
+    certificate: {
+      name: {
+        MIN_LENGTH: 2,
+        MAX_LENGTH: 50,
+        example1: 'CCNA',
+      },
+      institution: {
+        MIN_LENGTH: 2,
+        MAX_LENGTH: 100,
+        example1: 'Evil Corp',
+      },
+      completionUear: {
+        MIN_VALUE: 1900,
+        MAX_VALUE: 2100,
+        example1: 2021,
+      },
+    },
+    education: {
+      degree: {
+        MIN_LENGTH: 2,
+        MAX_LENGTH: 50,
+        example1: 'Computer Science',
+      },
+      institution: {
+        MIN_LENGTH: 2,
+        MAX_LENGTH: 100,
+        example1: 'MIT',
+      },
+      graduateYear: {
+        MIN_VALUE: 1900,
+        MAX_VALUE: 2100,
+        example1: 2021,
+      },
+    },
+    experience: {
+      skillId: {
+        MIN_VALUE: 1,
+        MAX_VALUE: 10000000000000000000,
+        example1: 1,
+      },
+      startDate: {
+        example1: '2021-01-01',
+      },
+      endDate: {
+        example1: '2021-02-01',
+      },
+      experienceInMonths: {
+        MIN_VALUE: 1,
+        MAX_VALUE: 1000,
+        example1: 12,
+      },
+    },
+    salaryRange: {
+      from: {
+        MIN_VALUE: 1,
+        MAX_VALUE: 1000000,
+        example1: 1000,
+      },
+      to: {
+        MIN_VALUE: 1,
+        MAX_VALUE: 1000000,
+        example1: 2000,
+      },
+    },
     uuid: {
       example1: 'a6185a9f-8873-4f1b-b630-3729318bc600',
       example2: 'a6185a9f-8873-4f1b-b630-3729318bc111',

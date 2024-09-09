@@ -34,6 +34,24 @@ const SkillRoutes: { root: string; v1: ISkillsRoutes } = {
   },
 };
 
+interface IJobUserProfileRoutes {
+  create: string;
+  update: string;
+  getOneByUserId: string;
+  getOneById: string;
+}
+
+const jobUserProfileRoot = '/job-profiles';
+const JobUserProfileRoutes: { root: string; v1: IJobUserProfileRoutes } = {
+  root: jobUserProfileRoot,
+  v1: {
+    create: `${jobUserProfileRoot}`,
+    getOneByUserId: `${jobUserProfileRoot}/:id/user`,
+    getOneById: `${jobUserProfileRoot}/:id`,
+    update: `${jobUserProfileRoot}/:id`,
+  },
+};
+
 interface IUsersRoutes {
   getUsers: string;
   getUser: string;
@@ -73,4 +91,5 @@ export const AppRoutes = {
   AUTH: AuthRoutes,
   CATEGORIES: CategoryRoutes,
   SKILLS: SkillRoutes,
+  JOB_USER_PROFILES: JobUserProfileRoutes,
 };

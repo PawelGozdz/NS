@@ -1,4 +1,4 @@
-import { IActor } from '@libs/common';
+import { IActorBase } from '@libs/common';
 import { Query } from '@libs/cqrs';
 
 import { JobUserProfileInfo } from '../../domain';
@@ -6,7 +6,7 @@ import { JobUserProfileInfo } from '../../domain';
 export class GetJobUserProfileByUserIdQuery extends Query<GetJobUserProfileByUserIdQuery, GetJobUserProfileByUserIdQueryResult> {
   userId: string;
 
-  actor: IActor;
+  actor: IActorBase;
 
   constructor(command: GetJobUserProfileByUserIdQuery) {
     super(command);

@@ -51,7 +51,7 @@ export abstract class EntityRepository {
       const noActorEvent = omit(event, 'actor');
 
       Promise.all([
-        this.db.tx.insertInto(eventLogTableName).values({ eventName: noActorEvent.constructor.name, data: noActorEvent, actor }).execute(),
+        this.db.tx.insertInto(eventLogTableName).values({ eventName: event.constructor.name, data: noActorEvent, actor }).execute(),
         handler.call(this, noActorEvent),
       ]);
     }

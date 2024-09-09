@@ -44,7 +44,6 @@ describe('CreateJobUserProfileHandler', () => {
   const actor = Actor.create(ActorType.USER, CreateJobUserProfileHandler.name, 'c8aa6154-dba2-466c-8858-64c755e71ff0');
 
   const command = new CreateJobUserProfileCommand({
-    requestedBy: '34d90467-aeb4-4016-9791-86f9aec01333',
     bio: 'bio',
     salaryRange: {
       from: 1000,
