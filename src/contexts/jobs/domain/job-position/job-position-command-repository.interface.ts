@@ -8,4 +8,6 @@ export abstract class IJobPositionCommandRepository {
   abstract update(position: IJobPositionUpdateData): Promise<void>;
 
   abstract getOneById(id: EntityId): Promise<JobPosition | undefined>;
+
+  abstract getOneByCategoryIdAndSlug(categoryId: number, slug: string): Promise<JobPosition | undefined>;
 }

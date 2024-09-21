@@ -1,6 +1,11 @@
 export const systemVariables = {
   dtos: {
     categories: {
+      id: {
+        example1: 12,
+        MAX_VALUE: 10000000,
+        MIN_VALUE: 1,
+      },
       name: {
         MIN_LENGTH: 2,
         MAX_LENGTH: 30,
@@ -20,6 +25,19 @@ export const systemVariables = {
         MAX_LENGTH: 60,
         example1: 'This is a grocery category',
       },
+    },
+    jobs: {
+      jobs: {},
+      jobPositions: {
+        title: {
+          MIN_LENGTH: 2,
+          MAX_LENGTH: 50,
+          example1: 'Software Developer',
+        },
+      },
+    },
+    slug: {
+      example1: 'software-developer',
     },
     password: {
       MIN_LENGTH: 8,

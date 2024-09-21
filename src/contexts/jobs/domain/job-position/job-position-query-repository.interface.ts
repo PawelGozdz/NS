@@ -4,12 +4,15 @@ import { EntityId } from '@libs/common';
 export type JobPositionInfo = {
   id: string;
   title: string;
+  slug: string;
   skillIds: number[];
   categoryId: number;
 };
 
 export abstract class IJobPositionQueryRepository {
   abstract getOneById(id: EntityId): Promise<JobPositionInfo | undefined>;
+
+  abstract getOneByCategoryIdAndSlug(categoryId: number, slug: string): Promise<JobPositionInfo | undefined>;
 
   abstract getManyBy(query: IJobPositionQueryParams): Promise<JobPositionInfo[]>;
 }

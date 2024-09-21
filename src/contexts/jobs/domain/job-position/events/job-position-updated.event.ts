@@ -7,6 +7,8 @@ export class JobPositionUpdatedEvent extends Event<JobPositionUpdatedEvent> {
 
   title: string;
 
+  slug: string;
+
   categoryId: number;
 
   skillIds: number[];

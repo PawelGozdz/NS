@@ -3,6 +3,8 @@ export type JobPositionSnapshot = {
 
   title: string;
 
+  slug: string;
+
   categoryId: number;
 
   skillIds: number[];

@@ -7,6 +7,8 @@ import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugin
 
 import { AppModule } from '../../app.module';
 import { getCookies, loginUser } from '../builders/auth-user';
+import { SkillSeedBuilder } from '../builders/skill-builder';
+import { JobPositionFixtureFactory } from '../fixtures/job.fixture';
 
 type IDdbDaos = IDatabaseModels;
 
@@ -35,6 +37,7 @@ describe('JobssControllerV1 -> create (e2e)', () => {
   });
 
   let credentials: [string, string];
+  let skillBuilder: SkillSeedBuilder;
 
   beforeEach(async () => {
     credentials = getCookies();
@@ -42,33 +45,54 @@ describe('JobssControllerV1 -> create (e2e)', () => {
     await dbConnection.transaction().execute(async (trx) => {
       await dbUtils.truncateTables(tablesInvolved, trx);
       await loginUser(trx);
+
+      skillBuilder = await SkillSeedBuilder.create(trx);
+      skillBuilder
+        .withCategory({
+          name: 'IT',
+          description: 'IT category',
+        })
+        .withSkill({
+          name: 'Backend',
+          description: 'Backend programming',
+        });
+      await skillBuilder.build();
     });
   });
 
-  const name = 'test category';
+  // const name = 'test category';
 
-  describe('/jos (POST) V1', () => {
+  describe('/jos-positions (POST) V1', () => {
     describe('SUCCESS', () => {
       it('should create job and return id', async () => {
         // Arrange
+        const entity = JobPositionFixtureFactory.create();
 
         // Act
         const response = await request(app.getHttpServer())
-          .post('/jobs')
+          .post('/job-positions')
           .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
-            name,
-            description: 'default-category',
+            ...entity,
+            skillIds: [skillBuilder.skillDao.id],
+            categoryId: skillBuilder.categoryDao.id,
           });
+
+        const inserted = await dbConnection
+          .selectFrom(TableNames.JOB_POSITIONS)
+          .selectAll()
+          .where('id', '=', response.body.data.id)
+          .executeTakeFirst();
 
         // Assert
         expect(response.statusCode).toBe(201);
-        expect(response.body).toEqual({
-          ...response.body,
-          data: {
-            id: expect.any(Number),
-          },
+        expect(response.body.data).toEqual({
+          id: inserted?.id,
+        });
+        expect(inserted).toMatchObject({
+          title: entity.title,
+          slug: entity.slug,
         });
       });
 

@@ -1,8 +1,8 @@
 import { DomainError, DomainErrorCode, DomainErrorOptions } from '@libs/common';
 
 export class JobPositionAlreadyExistsError extends DomainError {
-  static withTitleAndCategoryId(title: string, categoryId: number, data?: DomainErrorOptions): JobPositionAlreadyExistsError {
-    const message = `Entity with title ${title} and categoryId ${categoryId} already exists`;
+  static withSlugAndCategoryId(slug: string, categoryId: number, data?: DomainErrorOptions): JobPositionAlreadyExistsError {
+    const message = `Entity with title ${slug} and categoryId ${categoryId} already exists`;
     const options = {
       code: DomainErrorCode.DuplicateEntry,
       data,

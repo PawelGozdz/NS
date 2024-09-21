@@ -1,3 +1,5 @@
+export * from './job-position-create/create-job-position.command';
+export * from './job-position-create/create-job-position.handler';
 export * from './job-user-profile-create/create-job-user-profile.command';
 export * from './job-user-profile-create/create-job-user-profile.handler';
 export * from './job-user-profile-get-by-id/get-job-user-profile-by-id.handler';

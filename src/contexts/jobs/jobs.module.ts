@@ -4,6 +4,7 @@ import { DatabaseModule, OutboxModule } from '@app/core';
 import { CqrsModule } from '@libs/cqrs';
 
 import {
+  CreateJobPositionHandler,
   CreateJobUserProfileHandler,
   CreateSkillHandler,
   GetJobUserProfileByIdHandler,
@@ -68,7 +69,7 @@ const providers = [
 ];
 
 const queries = [GetManySkillsHandler, GetJobUserProfileByIdHandler, GetJobUserProfileByUserIdIdHandler];
-const commands = [CreateSkillHandler, CreateJobUserProfileHandler, UpdateJobUserProfileHandler];
+const commands = [CreateSkillHandler, CreateJobUserProfileHandler, UpdateJobUserProfileHandler, CreateJobPositionHandler];
 
 @Module({
   imports: [CqrsModule, DatabaseModule, OutboxModule],

@@ -11,10 +11,11 @@ export async function up(db: Kysely<IDatabaseModels>): Promise<void> {
     .createTable(tableName)
     .addColumn('id', 'uuid', (col) => col.primaryKey())
     .addColumn('title', 'varchar(60)', (col) => col.notNull())
+    .addColumn('slug', 'varchar(60)', (col) => col.notNull())
     .addColumn('categoryId', 'integer', (col) => col.references(`${TableNames.CATEGORIES}.id`).onDelete('set null'))
     .addColumn('skillIds', sql`integer[]`, (col) => col.defaultTo('{}'))
 
-    .addUniqueConstraint('job_position_title_category_id_uq', ['title', 'categoryId'])
+    .addUniqueConstraint('job_position_slug_category_id_uq', ['slug', 'categoryId'])
     .addColumn('createdAt', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .addColumn('updatedAt', 'timestamptz', (col) => col.defaultTo(sql`now()`).notNull())
     .execute();

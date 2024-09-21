@@ -4,7 +4,7 @@ import { CONTAINERS } from './container.enum';
 import { ContainerManager, IInitFunctionProps } from './container.manager';
 
 const localEnv = {
-  APP_NAME: process.env.APP_NAME ?? 'e2e-app',
+  APP_NAME: process.env.APP_NAME ?? 'app-e2e-test',
   APP_VERSION: process.env.APP_VERSION ?? '0.0.1',
   NODE_ENV: process.env.NODE_ENV ?? 'test',
   PORT: process.env.PORT ?? '3000',
@@ -13,7 +13,7 @@ const localEnv = {
   NODE_VERSION: process.env.NODE_VERSION ?? '18.17.1-alpine',
 
   DATABASE_SCHEMA: process.env.DATABASE_SCHEMA ?? 'public',
-  DATABASE_NAME: process.env.DATABASE_NAME ?? 'test',
+  DATABASE_NAME: process.env.DATABASE_NAME ?? 'e2e-test',
   DATABASE_USER: process.env.DATABASE_USER ?? 'test',
   DATABASE_PASSWORD: process.env.DATABASE_PASSWORD ?? 'test',
 

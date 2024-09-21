@@ -1,4 +1,4 @@
-import { EntityId } from '@libs/common';
+import { EntityId, generateSlug } from '@libs/common';
 
 import { JobPositionEntityFixtureFactory } from './job-position-entity.fixture';
 import { JobPosition } from './job-position.entity';
@@ -24,7 +24,10 @@ describe('JobPosition', () => {
       // Arrange
 
       // Act
-      const skill = new JobPosition(props);
+      const skill = new JobPosition({
+        ...props,
+        slug: generateSlug(props.title),
+      });
 
       // Assert
       expect(skill).toEqual(props);
@@ -81,6 +84,7 @@ describe('JobPosition', () => {
       const snapshot: JobPositionSnapshot = {
         id: props.id.value,
         title: props.title,
+        slug: generateSlug(props.title),
         categoryId: props.categoryId,
         skillIds: props.skillIds,
         createdAt: new Date(),

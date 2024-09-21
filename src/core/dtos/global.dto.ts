@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
   IsDateString,
@@ -24,6 +24,9 @@ import {
 import { systemVariables } from '@libs/common';
 
 import { CountryCode } from '../enums';
+
+export const BasicTextRegexp = /^[a-zA-Z0-9]+(?:[ _-][a-zA-Z0-9]+)*$/;
+export const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export class AddressDto {
   @ApiProperty({
@@ -83,7 +86,7 @@ export class CertificateDto {
   })
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : null))
   @IsDefined()
-  @Matches(/^[a-zA-Z0-9]+(?:[ _-][a-zA-Z0-9]+)*$/, { message: 'Invalid certificate name' })
+  @Matches(BasicTextRegexp, { message: 'Invalid certificate name' })
   @Length(systemVariables.dtos.certificate.name.MIN_LENGTH, systemVariables.dtos.certificate.name.MAX_LENGTH)
   name: string;
 
@@ -96,7 +99,7 @@ export class CertificateDto {
   })
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : null))
   @IsDefined()
-  @Matches(/^[a-zA-Z0-9]+(?:[ _-][a-zA-Z0-9]+)*$/, { message: 'Invalid certificate institution' })
+  @Matches(BasicTextRegexp, { message: 'Invalid certificate institution' })
   @Length(systemVariables.dtos.certificate.institution.MIN_LENGTH, systemVariables.dtos.certificate.institution.MAX_LENGTH)
   institution: string;
 
@@ -124,7 +127,7 @@ export class EducationDto {
   })
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : null))
   @IsDefined()
-  @Matches(/^[a-zA-Z0-9]+(?:[ _-][a-zA-Z0-9]+)*$/, { message: 'Invalid degree name' })
+  @Matches(BasicTextRegexp, { message: 'Invalid degree name' })
   @Length(systemVariables.dtos.education.degree.MIN_LENGTH, systemVariables.dtos.education.degree.MAX_LENGTH)
   degree: string;
 
@@ -137,7 +140,7 @@ export class EducationDto {
   })
   @Transform(({ value }) => (typeof value === 'string' ? value.trim() : null))
   @IsDefined()
-  @Matches(/^[a-zA-Z0-9]+(?:[ _-][a-zA-Z0-9]+)*$/, { message: 'Invalid education institution' })
+  @Matches(BasicTextRegexp, { message: 'Invalid education institution' })
   @Length(systemVariables.dtos.education.institution.MIN_LENGTH, systemVariables.dtos.education.institution.MAX_LENGTH)
   institution: string;
 
@@ -155,7 +158,7 @@ export class EducationDto {
   graduateYear: number;
 }
 
-export class ExperienceDto {
+export class SkillIdDto {
   @ApiProperty({
     example: systemVariables.dtos.experience.skillId.example1,
     minLength: systemVariables.dtos.experience.skillId.MIN_VALUE,
@@ -170,7 +173,26 @@ export class ExperienceDto {
   @Min(systemVariables.dtos.experience.skillId.MIN_VALUE)
   @Max(systemVariables.dtos.experience.skillId.MAX_VALUE)
   skillId: number;
+}
 
+export class CategoryIdDto {
+  @ApiProperty({
+    example: systemVariables.dtos.categories.id.example1,
+    minLength: systemVariables.dtos.categories.id.MIN_VALUE,
+    maxLength: systemVariables.dtos.categories.id.MAX_VALUE,
+    required: true,
+    nullable: false,
+  })
+  @IsDefined()
+  @Type(() => Number)
+  @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 0 })
+  @IsPositive()
+  @Min(systemVariables.dtos.categories.id.MIN_VALUE)
+  @Max(systemVariables.dtos.categories.id.MAX_VALUE)
+  categoryId: number;
+}
+
+export class ExperienceDto extends SkillIdDto {
   @ApiProperty({
     example: systemVariables.dtos.experience.startDate.example1,
     required: true,
@@ -235,7 +257,7 @@ export class SalaryRangeDto {
   to: number;
 }
 
-export class GlobalDto {
+export class GlobalDto extends IntersectionType(SkillIdDto, CategoryIdDto) {
   // GENERAL
   @ApiProperty({
     example: systemVariables.dtos.uuid.example1,
@@ -421,4 +443,11 @@ export class GlobalDto {
   @Type(() => SalaryRangeDto)
   @ValidateNested()
   salaryRange: SalaryRangeDto;
+
+  @ApiProperty({
+    example: systemVariables.dtos.slug.example1,
+  })
+  @IsDefined()
+  @Matches(slugRegex, { message: 'Invalid slug' })
+  slug: string;
 }

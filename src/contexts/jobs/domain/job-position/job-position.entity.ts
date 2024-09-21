@@ -1,4 +1,4 @@
-import { EntityId } from '@libs/common';
+import { EntityId, generateSlug } from '@libs/common';
 
 import { JobPositionSnapshot } from './job-position.snapshot';
 
@@ -7,21 +7,25 @@ export class JobPosition {
 
   title: string;
 
+  slug: string;
+
   categoryId: number;
 
   skillIds: number[];
 
-  constructor(props: { id: EntityId; title: string; skillIds: number[]; categoryId: number }) {
+  constructor(props: { id: EntityId; title: string; slug: string; skillIds: number[]; categoryId: number }) {
     this.id = props.id;
     this.title = props.title;
+    this.slug = props.slug;
     this.skillIds = props.skillIds ?? [];
     this.categoryId = props.categoryId;
   }
 
-  public static create({ id, title, skillIds, categoryId }: IJobPositionCreateData): JobPosition {
+  public static create({ id, title, skillIds, categoryId, slug }: IJobPositionCreateData): JobPosition {
     const entity = new JobPosition({
       id: id ?? EntityId.createRandom(),
       title,
+      slug: slug ?? generateSlug(title),
       skillIds,
       categoryId,
     });
@@ -33,6 +37,7 @@ export class JobPosition {
     return new JobPosition({
       id: new EntityId(snapshot.id),
       title: snapshot.title,
+      slug: snapshot.slug,
       skillIds: snapshot.skillIds,
       categoryId: snapshot.categoryId,
     });
@@ -50,6 +55,7 @@ export class JobPosition {
 export type IJobPositionCreateData = {
   id?: EntityId;
   title: string;
+  slug?: string;
   categoryId: number;
   skillIds: number[];
 };
@@ -57,6 +63,7 @@ export type IJobPositionCreateData = {
 export type IJobPositionUpdateData = {
   id: EntityId;
   title?: string;
+  slug?: string;
   categoryId?: number;
   skillIds?: number[];
 };

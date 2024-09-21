@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { JobModel, JobPositionModel, JobUserProfileModel } from '@app/contexts';
-import { AppUtils } from '@libs/common';
+import { AppUtils, generateSlug } from '@libs/common';
 import { testingDefaults } from '@libs/testing';
 
 export class JobFixtureFactory {
@@ -37,6 +37,7 @@ export class JobPositionFixtureFactory {
     const defaults = {
       id: overrides?.id,
       ...testingDefaults.jobPosition,
+      slug: generateSlug(overrides?.title ?? testingDefaults.jobPosition.title),
     };
 
     return _.merge(skillDao, defaults, overrides);

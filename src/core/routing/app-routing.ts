@@ -52,6 +52,22 @@ const JobUserProfileRoutes: { root: string; v1: IJobUserProfileRoutes } = {
   },
 };
 
+interface IJobPositionRoutes {
+  create: string;
+  update: string;
+  getOneById: string;
+}
+
+const jobPositionRoot = '/job-positions';
+const JobPositionRoutes: { root: string; v1: IJobPositionRoutes } = {
+  root: jobPositionRoot,
+  v1: {
+    create: `${jobPositionRoot}`,
+    getOneById: `${jobPositionRoot}/:id`,
+    update: `${jobPositionRoot}/:id`,
+  },
+};
+
 interface IUsersRoutes {
   getUsers: string;
   getUser: string;
@@ -92,4 +108,5 @@ export const AppRoutes = {
   CATEGORIES: CategoryRoutes,
   SKILLS: SkillRoutes,
   JOB_USER_PROFILES: JobUserProfileRoutes,
+  JOB_POSITIONS: JobPositionRoutes,
 };
