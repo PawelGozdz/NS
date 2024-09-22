@@ -30,7 +30,10 @@ describe('JobPosition', () => {
       });
 
       // Assert
-      expect(skill).toEqual(props);
+      expect(skill).toEqual({
+        ...props,
+        slug: generateSlug(props.title),
+      });
     });
   });
 
@@ -98,6 +101,7 @@ describe('JobPosition', () => {
       expect(jobPosition).toEqual({
         id: props.id,
         title: props.title,
+        slug: generateSlug(props.title),
         categoryId: props.categoryId,
         skillIds: props.skillIds,
       });

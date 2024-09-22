@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import {
@@ -7,13 +7,14 @@ import {
   CreateJobPositionResponseDto,
   GetManyJobPositionsQuery,
   GetManyJobPositionsResponseDto,
+  UpdateJobPositionCommand,
 } from '@app/contexts';
-import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes, GetCurrentAuthUser, ValidationErrorDto } from '@app/core';
+import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes, GetCurrentAuthUser, IdDto, ValidationErrorDto } from '@app/core';
 import { JobPositionsQueryParamsDto } from '@app/core/dtos/job-position-query-params.dto';
 import { ActorType, ConflictErrorResponse } from '@libs/common';
 import { CommandBus, QueryBus } from '@libs/cqrs';
 
-import { CreateJobPositionDto, JobPositionResponseDto } from './job-position-dtos';
+import { CreateJobPositionDto, JobPositionResponseDto, UpdateJobPositionDto } from './job-position-dtos';
 
 @ApiTags('Job-positions')
 @Controller({
@@ -62,50 +63,46 @@ export class JobPositionsControllerV1 {
     );
   }
 
-  // @ApiOperation({
-  //   summary: 'Update job profile',
-  //   description: 'Update user job profile with given options',
-  // })
-  // @ApiJsendResponse({
-  //   statusCode: HttpStatus.OK,
-  //   type: CreateJobPositionDto,
-  //   path: AppRoutes.JOB_POSITIONS.v1.update,
-  // })
-  // @ApiJsendResponse({
-  //   statusCode: HttpStatus.BAD_REQUEST,
-  //   type: ValidationErrorDto,
-  //   path: AppRoutes.JOB_POSITIONS.v1.update,
-  //   status: ApiResponseStatusJsendEnum.FAIL,
-  // })
-  // @ApiJsendResponse({
-  //   statusCode: HttpStatus.CONFLICT,
-  //   type: ConflictErrorResponse,
-  //   path: AppRoutes.JOB_POSITIONS.v1.update,
-  //   status: ApiResponseStatusJsendEnum.FAIL,
-  // })
-  // @HttpCode(HttpStatus.OK)
-  // @Patch(AppRoutes.JOB_POSITIONS.v1.update)
-  // async update(@Param() paramDto: IdDto, @Body() dto: UpdateJobPositionDto, @GetCurrentAuthUser() user: AuthUser): Promise<void> {
-  //   return this.commandBus.execute(
-  //     new UpdateJobPositionCommand({
-  //       id: paramDto.id,
-  //       bio: dto.bio,
-  //       certificates: dto.certificates,
-  //       education: dto.education,
-  //       experience: dto.experience,
-  //       jobPositionIds: dto.jobPositionIds,
-  //       salaryRange: dto.salaryRange,
-  //       jobIds: dto.jobIds,
-  //       actor: {
-  //         id: user.userId,
-  //         type: ActorType.USER,
-  //       },
-  //     }),
-  //   );
-  // }
+  @ApiOperation({
+    summary: 'Update job profile',
+    description: 'Update user job profile with given options',
+  })
+  @ApiJsendResponse({
+    statusCode: HttpStatus.OK,
+    type: CreateJobPositionDto,
+    path: AppRoutes.JOB_POSITIONS.v1.update,
+  })
+  @ApiJsendResponse({
+    statusCode: HttpStatus.BAD_REQUEST,
+    type: ValidationErrorDto,
+    path: AppRoutes.JOB_POSITIONS.v1.update,
+    status: ApiResponseStatusJsendEnum.FAIL,
+  })
+  @ApiJsendResponse({
+    statusCode: HttpStatus.CONFLICT,
+    type: ConflictErrorResponse,
+    path: AppRoutes.JOB_POSITIONS.v1.update,
+    status: ApiResponseStatusJsendEnum.FAIL,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Patch(AppRoutes.JOB_POSITIONS.v1.update)
+  async update(@Param() paramDto: IdDto, @Body() dto: UpdateJobPositionDto, @GetCurrentAuthUser() user: AuthUser): Promise<void> {
+    return this.commandBus.execute(
+      new UpdateJobPositionCommand({
+        id: paramDto.id,
+        categoryId: dto.categoryId,
+        skillIds: dto.skillIds,
+        title: dto.title,
+        actor: {
+          id: user.userId,
+          type: ActorType.USER,
+        },
+      }),
+    );
+  }
 
   @ApiOperation({
-    summary: 'Get job position',
+    summary: 'Get job positions',
     description: 'Get job positions',
   })
   @ApiJsendResponse({

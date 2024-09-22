@@ -11,6 +11,7 @@ import {
   GetJobUserProfileByUserIdIdHandler,
   GetManyJobPositionsHandler,
   GetManySkillsHandler,
+  UpdateJobPositionHandler,
   UpdateJobUserProfileHandler,
 } from './application';
 import {
@@ -70,7 +71,7 @@ const providers = [
 ];
 
 const queries = [GetManySkillsHandler, GetJobUserProfileByIdHandler, GetJobUserProfileByUserIdIdHandler, GetManyJobPositionsHandler];
-const commands = [CreateSkillHandler, CreateJobUserProfileHandler, UpdateJobUserProfileHandler, CreateJobPositionHandler];
+const commands = [CreateSkillHandler, CreateJobUserProfileHandler, UpdateJobUserProfileHandler, CreateJobPositionHandler, UpdateJobPositionHandler];
 
 @Module({
   imports: [CqrsModule, DatabaseModule, OutboxModule],

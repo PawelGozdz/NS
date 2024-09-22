@@ -15,9 +15,9 @@ import { JobPositionModel } from '../models';
 export class JobPositionCommandRepository extends EntityRepository implements IJobPositionCommandRepository {
   constructor(
     eventBus: EventBus,
-    private readonly txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>,
+    private readonly _txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>,
   ) {
-    super(eventBus, JobPositionModel, txHost);
+    super(eventBus, JobPositionModel, _txHost);
   }
 
   async getOneById(id: EntityId): Promise<JobPosition | undefined> {
@@ -48,7 +48,7 @@ export class JobPositionCommandRepository extends EntityRepository implements IJ
 
   public async save(position: JobPosition): Promise<{ id: string }> {
     try {
-      const model = await this.txHost.tx
+      const model = await this.db.tx
         .insertInto(TableNames.JOB_POSITIONS)
         .values({
           id: position.id.value,
@@ -70,7 +70,7 @@ export class JobPositionCommandRepository extends EntityRepository implements IJ
 
   public async update(position: IJobPositionUpdateData): Promise<void> {
     try {
-      await this.txHost.tx
+      await this.db.tx
         .updateTable(TableNames.JOB_POSITIONS)
         .set({
           title: position.title,
@@ -98,7 +98,7 @@ export class JobPositionCommandRepository extends EntityRepository implements IJ
   }
 
   private getBuilder() {
-    return this.txHost.tx
+    return this.db.tx
       .selectFrom(`${TableNames.JOB_POSITIONS} as c`)
       .select((_eb) => ['c.id', 'c.title', 'c.slug', 'c.categoryId', 'c.skillIds', 'c.createdAt', 'c.updatedAt']);
   }

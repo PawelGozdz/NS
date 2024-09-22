@@ -35,9 +35,3 @@ exports[`JobsControllerV1 -> create (e2e) /jos-positions (POST) V1 SUCCESS shoul
   "updatedAt": Any<Date>,
 }
 `;
-
-exports[`JobsControllerV1 -> create (e2e) /jos-positions (POST) V1 should return error if given skill id no exists 1`] = `
-{
-  "error": "Requested skill ids [1,2,3] don't exists",
-}
-`;
