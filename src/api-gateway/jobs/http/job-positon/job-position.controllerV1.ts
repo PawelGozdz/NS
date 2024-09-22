@@ -1,12 +1,19 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { AuthUser, CreateJobPositionCommand, CreateJobPositionResponseDto } from '@app/contexts';
+import {
+  AuthUser,
+  CreateJobPositionCommand,
+  CreateJobPositionResponseDto,
+  GetManyJobPositionsQuery,
+  GetManyJobPositionsResponseDto,
+} from '@app/contexts';
 import { ApiJsendResponse, ApiResponseStatusJsendEnum, AppRoutes, GetCurrentAuthUser, ValidationErrorDto } from '@app/core';
+import { JobPositionsQueryParamsDto } from '@app/core/dtos/job-position-query-params.dto';
 import { ActorType, ConflictErrorResponse } from '@libs/common';
 import { CommandBus, QueryBus } from '@libs/cqrs';
 
-import { CreateJobPositionDto } from './job-position-dtos';
+import { CreateJobPositionDto, JobPositionResponseDto } from './job-position-dtos';
 
 @ApiTags('Job-positions')
 @Controller({
@@ -97,32 +104,31 @@ export class JobPositionsControllerV1 {
   //   );
   // }
 
-  // @ApiOperation({
-  //   summary: 'Get user job profile',
-  //   description: 'Get user job profile by id',
-  // })
-  // @ApiJsendResponse({
-  //   statusCode: HttpStatus.OK,
-  //   type: JobPositionResponseDto,
-  //   path: AppRoutes.JOB_POSITIONS.v1.getOneById,
-  // })
-  // @ApiJsendResponse({
-  //   statusCode: HttpStatus.NOT_FOUND,
-  //   type: NotFoundErrorResponse,
-  //   path: AppRoutes.JOB_POSITIONS.v1.getOneById,
-  //   status: ApiResponseStatusJsendEnum.FAIL,
-  // })
-  // @HttpCode(HttpStatus.OK)
-  // @Get(AppRoutes.JOB_POSITIONS.v1.getOneById)
-  // async getOneById(@Param() dto: GetJobPositionByIdDto, @GetCurrentAuthUser() user: AuthUser): Promise<GetJobPositionByIdQueryResult> {
-  //   return this.queryBus.execute(
-  //     new GetJobPositionByIdQuery({
-  //       actor: {
-  //         id: user.userId,
-  //         type: ActorType.USER,
-  //       },
-  //       id: dto.id,
-  //     }),
-  //   );
-  // }
+  @ApiOperation({
+    summary: 'Get job position',
+    description: 'Get job positions',
+  })
+  @ApiJsendResponse({
+    statusCode: HttpStatus.OK,
+    type: [JobPositionResponseDto],
+    path: AppRoutes.JOB_POSITIONS.v1.getMany,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Get(AppRoutes.JOB_POSITIONS.v1.getMany)
+  async getMany(@Query() dto: JobPositionsQueryParamsDto, @GetCurrentAuthUser() user: AuthUser): Promise<GetManyJobPositionsResponseDto> {
+    return this.queryBus.execute(
+      new GetManyJobPositionsQuery({
+        _filter: {
+          id: dto?._filter?.id,
+          title: dto?._filter?.title,
+          categoryId: dto?._filter?.categoryId,
+          skillIds: dto?._filter?.skillIds,
+        },
+        actor: {
+          id: user.userId,
+          type: ActorType.USER,
+        },
+      }),
+    );
+  }
 }

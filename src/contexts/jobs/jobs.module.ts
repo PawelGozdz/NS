@@ -9,6 +9,7 @@ import {
   CreateSkillHandler,
   GetJobUserProfileByIdHandler,
   GetJobUserProfileByUserIdIdHandler,
+  GetManyJobPositionsHandler,
   GetManySkillsHandler,
   UpdateJobUserProfileHandler,
 } from './application';
@@ -68,7 +69,7 @@ const providers = [
   },
 ];
 
-const queries = [GetManySkillsHandler, GetJobUserProfileByIdHandler, GetJobUserProfileByUserIdIdHandler];
+const queries = [GetManySkillsHandler, GetJobUserProfileByIdHandler, GetJobUserProfileByUserIdIdHandler, GetManyJobPositionsHandler];
 const commands = [CreateSkillHandler, CreateJobUserProfileHandler, UpdateJobUserProfileHandler, CreateJobPositionHandler];
 
 @Module({

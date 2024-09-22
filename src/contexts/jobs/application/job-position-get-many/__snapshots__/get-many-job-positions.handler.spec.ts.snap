@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GetManyJobPositionsHandler should get many job positions 1`] = `
+[
+  {
+    "categoryId": 2,
+    "id": "position-id",
+    "skillIds": [],
+    "slug": "backend-developser",
+    "title": "Backend Developer",
+  },
+]
+`;

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JobsControllerV1 -> getMany (e2e) /jos-positions (POST) V1 SUCCESS should return filtered job-positions 1`] = `
+[
+  {
+    "categoryId": Any<Number>,
+    "id": Any<String>,
+    "skillIds": [],
+    "slug": "second-jp",
+    "title": "Second JP",
+  },
+]
+`;

@@ -55,7 +55,7 @@ const JobUserProfileRoutes: { root: string; v1: IJobUserProfileRoutes } = {
 interface IJobPositionRoutes {
   create: string;
   update: string;
-  getOneById: string;
+  getMany: string;
 }
 
 const jobPositionRoot = '/job-positions';
@@ -63,7 +63,7 @@ const JobPositionRoutes: { root: string; v1: IJobPositionRoutes } = {
   root: jobPositionRoot,
   v1: {
     create: `${jobPositionRoot}`,
-    getOneById: `${jobPositionRoot}/:id`,
+    getMany: `${jobPositionRoot}`,
     update: `${jobPositionRoot}/:id`,
   },
 };

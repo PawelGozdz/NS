@@ -35,9 +35,10 @@ export class JobPositionFixtureFactory {
     const skillDao = new JobPositionModel();
 
     const defaults = {
-      id: overrides?.id,
+      id: overrides?.id ?? AppUtils.getUUID(),
       ...testingDefaults.jobPosition,
       slug: generateSlug(overrides?.title ?? testingDefaults.jobPosition.title),
+      skillIds: overrides?.skillIds ?? testingDefaults.jobPosition.skillIds,
     };
 
     return _.merge(skillDao, defaults, overrides);
