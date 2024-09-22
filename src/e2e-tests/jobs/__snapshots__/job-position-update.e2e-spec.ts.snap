@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JobsControllerV1 -> create (e2e) /jos-positions (PATCH) V1 FAILURE should throw 409 for combination title + categoryId 1`] = `
+{
+  "error": StringContaining "Entity with title",
+}
+`;
+
+exports[`JobsControllerV1 -> create (e2e) /jos-positions (PATCH) V1 SUCCESS should create job with existing title but different categoryId 1`] = `
+{
+  "categoryId": Any<Number>,
+  "createdAt": Any<Date>,
+  "id": Any<String>,
+  "skillIds": Any<Array>,
+  "slug": "backend-developer",
+  "title": "Backend Developer",
+  "updatedAt": Any<Date>,
+}
+`;
+
+exports[`JobsControllerV1 -> create (e2e) /jos-positions (PATCH) V1 SUCCESS should update job 1`] = `
+{
+  "categoryId": Any<Number>,
+  "createdAt": Any<Date>,
+  "id": Any<String>,
+  "skillIds": Any<Array>,
+  "slug": "test-job-position",
+  "title": "Test job position",
+  "updatedAt": Any<Date>,
+}
+`;
+
+exports[`JobsControllerV1 -> create (e2e) /jos-positions (POST) V1 FAILURE should throw 409 for combination title + categoryId 1`] = `
+{
+  "error": StringContaining "Entity with title",
+}
+`;
+
+exports[`JobsControllerV1 -> create (e2e) /jos-positions (POST) V1 SUCCESS should create job and return id 1`] = `
+{
+  "categoryId": Any<Number>,
+  "createdAt": Any<Date>,
+  "id": Any<String>,
+  "skillIds": Any<Array>,
+  "slug": "test-job-position",
+  "title": "Test job position",
+  "updatedAt": Any<Date>,
+}
+`;
+
+exports[`JobsControllerV1 -> create (e2e) /jos-positions (POST) V1 SUCCESS should create job with existing title but different categoryId 1`] = `
+{
+  "categoryId": Any<Number>,
+  "createdAt": Any<Date>,
+  "id": Any<String>,
+  "skillIds": Any<Array>,
+  "slug": "backend-developer",
+  "title": "Backend Developer",
+  "updatedAt": Any<Date>,
+}
+`;

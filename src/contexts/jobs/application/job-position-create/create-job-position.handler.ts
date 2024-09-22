@@ -1,17 +1,21 @@
 import { Transactional } from '@nestjs-cls/transactional';
+import { difference } from 'lodash';
 import { PinoLogger } from 'nestjs-pino';
 
 import { Actor, AppContext, IOutboxRepository } from '@app/core';
 import { generateSlug } from '@libs/common';
-import { CommandHandler, IInferredCommandHandler } from '@libs/cqrs';
+import { CommandHandler, IInferredCommandHandler, QueryBus } from '@libs/cqrs';
 
 import { IJobPositionCommandRepository, JobPosition, JobPositionAlreadyExistsError, JobPositionCreatedEvent } from '../../domain';
+import { JobPositionIncorrectIdsError } from '../../domain/job-position/errors/job-position-incorrect-skill-ids.error';
+import { GetManySkillsQuery, GetManySkillsResponseDto } from '../skills-get-many/get-many-skills.query';
 import { CreateJobPositionCommand, CreateJobPositionResponseDto } from './create-job-position.command';
 
 @CommandHandler(CreateJobPositionCommand)
 export class CreateJobPositionHandler implements IInferredCommandHandler<CreateJobPositionCommand> {
   constructor(
     private readonly jobPositionRepository: IJobPositionCommandRepository,
+    private readonly queryBus: QueryBus,
     private readonly outboxRepository: IOutboxRepository,
     private readonly logger: PinoLogger,
   ) {
@@ -30,15 +34,32 @@ export class CreateJobPositionHandler implements IInferredCommandHandler<CreateJ
       throw JobPositionAlreadyExistsError.withSlugAndCategoryId(slug, command.categoryId);
     }
 
+    const actor = Actor.create(command.actor.type, this.constructor.name, command.actor.id);
+
+    if (command?.skillIds?.length) {
+      await this.validateSkillIds(actor, command.skillIds);
+    }
+
     const jobPositionInstance = this.createInstance(command, slug);
 
     await this.jobPositionRepository.save(jobPositionInstance);
 
-    const actor = Actor.create(command.actor.type, this.constructor.name, command.actor.id);
-
     await this.outboxRepository.store(this.createOutbox(new JobPositionCreatedEvent({ ...jobPositionInstance, actor })));
 
     return { id: jobPositionInstance.id.value };
+  }
+
+  private async validateSkillIds(actor: Actor, skillIds?: number[]) {
+    const skills = await this.queryBus.execute<GetManySkillsResponseDto>(new GetManySkillsQuery({ _filter: { ids: [...new Set(skillIds)] }, actor }));
+
+    const comparedIds = difference(
+      skillIds ?? [],
+      skills.map((s) => s.id),
+    );
+
+    if (comparedIds.length) {
+      throw JobPositionIncorrectIdsError.withSkillIds(comparedIds);
+    }
   }
 
   private createInstance(command: CreateJobPositionCommand, slug: string) {

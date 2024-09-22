@@ -4,5 +4,6 @@ export interface ISkillsQueryParams extends IQueryParams {
   _filter?: {
     id?: number;
     name?: string;
+    ids?: number[];
   };
 }

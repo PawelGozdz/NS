@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createMock } from '@golevelup/ts-jest';
+import { QueryBus } from '@nestjs/cqrs';
 import { Test } from '@nestjs/testing';
 
 import { Actor, AppContext, IOutboxRepository } from '@app/core';
 import { ActorType, EntityId } from '@libs/common';
-import { TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
+import { QueryBusMock, TestCqrsModule, TestLoggerModule, catchActError } from '@libs/testing';
 
 import { IJobPositionCommandRepository, JobPositionAlreadyExistsError, JobPositionCreatedEvent, JobPositionEntityFixtureFactory } from '../../domain';
+import { JobPositionIncorrectIdsError } from '../../domain/job-position/errors/job-position-incorrect-skill-ids.error';
+import { GetManySkillsQuery } from '../skills-get-many/get-many-skills.query';
 import { CreateJobPositionCommand } from './create-job-position.command';
 import { CreateJobPositionHandler } from './create-job-position.handler';
 
@@ -19,6 +22,7 @@ describe('CreateJobPositionHandler', () => {
   let handler: CreateJobPositionHandler;
   let commandRepositoryMock: jest.Mocked<IJobPositionCommandRepository>;
   let outboxRepositoryMock: jest.Mocked<IOutboxRepository>;
+  let queryBusMock: QueryBusMock;
 
   beforeEach(async () => {
     commandRepositoryMock = createMock();
@@ -40,6 +44,7 @@ describe('CreateJobPositionHandler', () => {
     }).compile();
 
     handler = app.get(CreateJobPositionHandler);
+    queryBusMock = app.get(QueryBus);
   });
 
   const actor = Actor.create(ActorType.USER, CreateJobPositionHandler.name, 'c8aa6154-dba2-466c-8858-64c755e71ff0');
@@ -56,10 +61,13 @@ describe('CreateJobPositionHandler', () => {
     id: undefined,
   });
 
+  const skills = [{ id: 1 }, { id: 2 }] as unknown as GetManySkillsQuery;
+
   describe('Success', () => {
     it('should create new job position', async () => {
       // Arrange
       commandRepositoryMock.getOneByCategoryIdAndSlug.mockResolvedValueOnce(undefined);
+      queryBusMock.execute.mockResolvedValueOnce(skills);
 
       // Act
       const result = await handler.execute(command);
@@ -84,7 +92,7 @@ describe('CreateJobPositionHandler', () => {
   });
 
   describe('failure', () => {
-    it('should throw JobUserProfileAlreadyExistsError', async () => {
+    it('should throw JobPositionAlreadyExistsError', async () => {
       // Arrange
       commandRepositoryMock.getOneByCategoryIdAndSlug.mockResolvedValueOnce(entity);
 
@@ -95,6 +103,20 @@ describe('CreateJobPositionHandler', () => {
 
       expect(commandRepositoryMock.save).toHaveBeenCalledTimes(0);
       expect(error).toBeInstanceOf(JobPositionAlreadyExistsError);
+    });
+
+    it('should throw JobPositionIncorrectIdsError', async () => {
+      // Arrange
+      commandRepositoryMock.getOneByCategoryIdAndSlug.mockResolvedValueOnce(undefined);
+      queryBusMock.execute.mockResolvedValueOnce([skills[0]]);
+
+      // Act
+      const { error } = await catchActError(() => handler.execute(command));
+
+      // Assert
+
+      expect(commandRepositoryMock.save).toHaveBeenCalledTimes(0);
+      expect(error).toBeInstanceOf(JobPositionIncorrectIdsError);
     });
   });
 });

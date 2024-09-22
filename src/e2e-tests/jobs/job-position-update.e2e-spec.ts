@@ -75,9 +75,9 @@ describe('JobsControllerV1 -> create (e2e)', () => {
     });
   });
 
-  describe('/jos-positions (POST) V1', () => {
+  describe('/jos-positions (PATCH) V1', () => {
     describe('SUCCESS', () => {
-      it('should create job and return id', async () => {
+      it('should update job', async () => {
         // Arrange
         const entity = JobPositionFixtureFactory.create();
 
@@ -205,26 +205,6 @@ describe('JobsControllerV1 -> create (e2e)', () => {
         expect(response.body.data).toMatchSnapshot({
           error: expect.stringContaining('Entity with title'),
         });
-      });
-
-      it('should return error if given skill id no exists', async () => {
-        // Arrange
-        const entity = JobPositionFixtureFactory.create();
-
-        // Act
-        const response = await request(app.getHttpServer())
-          .post('/job-positions')
-          .set(...credentials)
-          .set('Content-Type', 'application/json')
-          .send({
-            ...entity,
-            skillIds: [skillBuilder.skillDao.id, 1, 2, 3],
-            categoryId: skillBuilder.categoryDao.id,
-          });
-
-        // Assert
-        // expect(response.statusCode).toBe(400);
-        expect(response.body.data).toMatchSnapshot();
       });
     });
   });
