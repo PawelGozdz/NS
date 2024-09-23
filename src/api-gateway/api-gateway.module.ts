@@ -8,7 +8,7 @@ import { AccessTokenGuard, GlobalExceptionFilter, JsendTransformSuccessIntercept
 import { CqrsModule } from '@libs/cqrs';
 
 import { CategoriesControllerV1 } from './features';
-import { JobUserProfilesControllerV1 } from './jobs';
+import { JobPositionsControllerV1, JobUserProfilesControllerV1, SkillsControllerV1 } from './jobs';
 import { AuthJwtControllerV1, UsersControllerV1 } from './user-management';
 
 const interceptors = [
@@ -48,7 +48,14 @@ const pipes = [
   },
 ];
 
-const controllersV1 = [AuthJwtControllerV1, UsersControllerV1, CategoriesControllerV1, JobUserProfilesControllerV1];
+const controllersV1 = [
+  AuthJwtControllerV1,
+  UsersControllerV1,
+  CategoriesControllerV1,
+  JobUserProfilesControllerV1,
+  SkillsControllerV1,
+  JobPositionsControllerV1,
+];
 
 @Module({
   imports: [

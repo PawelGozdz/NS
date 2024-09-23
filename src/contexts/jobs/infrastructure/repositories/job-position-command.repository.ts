@@ -15,9 +15,9 @@ import { JobPositionModel } from '../models';
 export class JobPositionCommandRepository extends EntityRepository implements IJobPositionCommandRepository {
   constructor(
     eventBus: EventBus,
-    private readonly txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>,
+    private readonly _txHost: TransactionHost<TransactionalAdapterKysely<IDatabaseModels>>,
   ) {
-    super(eventBus, JobPositionModel, txHost);
+    super(eventBus, JobPositionModel, _txHost);
   }
 
   async getOneById(id: EntityId): Promise<JobPosition | undefined> {
@@ -32,13 +32,28 @@ export class JobPositionCommandRepository extends EntityRepository implements IJ
     return JobPosition.restoreFromSnapshot(snapshot);
   }
 
+  async getOneByCategoryIdAndSlug(categoryId: number, slug: string): Promise<JobPosition | undefined> {
+    const entity = (await this.getBuilder().where('c.categoryId', '=', categoryId).where('c.slug', '=', slug).executeTakeFirst()) as
+      | JobPositionModel
+      | undefined;
+
+    if (!entity) {
+      return undefined;
+    }
+
+    const snapshot = this.toSnapshot(entity);
+
+    return JobPosition.restoreFromSnapshot(snapshot);
+  }
+
   public async save(position: JobPosition): Promise<{ id: string }> {
     try {
-      const model = await this.txHost.tx
+      const model = await this.db.tx
         .insertInto(TableNames.JOB_POSITIONS)
         .values({
           id: position.id.value,
           title: position.title,
+          slug: position.slug,
           categoryId: position.categoryId,
           skillIds: position.skillIds,
         } as JobPositionModel)
@@ -55,10 +70,11 @@ export class JobPositionCommandRepository extends EntityRepository implements IJ
 
   public async update(position: IJobPositionUpdateData): Promise<void> {
     try {
-      await this.txHost.tx
+      await this.db.tx
         .updateTable(TableNames.JOB_POSITIONS)
         .set({
           title: position.title,
+          slug: position.slug,
           categoryId: position.categoryId,
           skillIds: position.skillIds,
         })
@@ -73,6 +89,7 @@ export class JobPositionCommandRepository extends EntityRepository implements IJ
     return {
       id: model.id,
       title: model.title,
+      slug: model.slug,
       categoryId: model.categoryId,
       skillIds: model.skillIds,
       createdAt: model.createdAt,
@@ -81,8 +98,8 @@ export class JobPositionCommandRepository extends EntityRepository implements IJ
   }
 
   private getBuilder() {
-    return this.txHost.tx
+    return this.db.tx
       .selectFrom(`${TableNames.JOB_POSITIONS} as c`)
-      .select((_eb) => ['c.id', 'c.title', 'c.categoryId', 'c.skillIds', 'c.createdAt', 'c.updatedAt']);
+      .select((_eb) => ['c.id', 'c.title', 'c.slug', 'c.categoryId', 'c.skillIds', 'c.createdAt', 'c.updatedAt']);
   }
 }

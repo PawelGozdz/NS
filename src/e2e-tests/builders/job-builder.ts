@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
-import { Kysely, Transaction } from 'kysely';
+import { Kysely } from 'kysely';
 
-import { JobModel, JobPositionModel, JobUserProfileModel, UserProfileModel } from '@app/contexts';
+import { JobModel, JobPositionModel, JobUserProfileModel } from '@app/contexts';
 import { IDatabaseModels, TableNames, dialect, kyselyPlugins } from '@app/core';
 
 import { JobFixtureFactory, JobPositionFixtureFactory, JobUserProfileFixtureFactory } from '../fixtures/job.fixture';
@@ -39,7 +39,7 @@ export class JobSeedBuilder {
     return this;
   }
 
-  static async create(db?: Transaction<IDatabaseDaos>): Promise<JobSeedBuilder> {
+  static async create(db?: Kysely<IDatabaseDaos>): Promise<JobSeedBuilder> {
     const builder = new JobSeedBuilder(
       db ??
         new Kysely<IDatabaseDaos>({
@@ -121,11 +121,8 @@ export class JobSeedBuilder {
       .executeTakeFirst()) as JobPositionModel;
   }
 
-  withJobPosition(profile: Partial<UserProfileModel> & { categoryId: number }): this {
-    this.daos.jobPositionDaoObj = JobPositionFixtureFactory.create({
-      ...profile,
-      categoryId: profile.categoryId,
-    });
+  withJobPosition(profile: Partial<JobPositionModel> & { categoryId: number }): this {
+    this.daos.jobPositionDaoObj = JobPositionFixtureFactory.create(profile);
 
     this.actions.push({ method: 'insertJobPosition' });
 

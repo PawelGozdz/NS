@@ -7,10 +7,14 @@ import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugin
 
 import { AppModule } from '../../app.module';
 import { getCookies, loginUser } from '../builders/auth-user';
+import { CategorySeedBuilder } from '../builders/category-builder';
+import { JobSeedBuilder } from '../builders/job-builder';
+import { SkillSeedBuilder } from '../builders/skill-builder';
+import { JobPositionFixtureFactory } from '../fixtures/job.fixture';
 
 type IDdbDaos = IDatabaseModels;
 
-describe('JobssControllerV1 -> create (e2e)', () => {
+describe('JobsControllerV1 -> create (e2e)', () => {
   const dbConnection = new Kysely<IDdbDaos>({
     dialect,
     plugins: kyselyPlugins,
@@ -18,7 +22,7 @@ describe('JobssControllerV1 -> create (e2e)', () => {
   const dbUtils = new TestingE2EFunctions(dbConnection);
   let app: INestApplication;
 
-  const tablesInvolved = [TableNames.CATEGORIES, TableNames.SKILLS, TableNames.JOB_POSITIONS, TableNames.JOBS, TableNames.JOB_USER_PROFILES];
+  const tablesInvolved = [TableNames.CATEGORIES, TableNames.SKILLS, TableNames.JOB_POSITIONS, TableNames.JOBS];
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -35,6 +39,8 @@ describe('JobssControllerV1 -> create (e2e)', () => {
   });
 
   let credentials: [string, string];
+  let skillBuilder: SkillSeedBuilder;
+  let skillBuilder2: SkillSeedBuilder;
 
   beforeEach(async () => {
     credentials = getCookies();
@@ -42,131 +48,184 @@ describe('JobssControllerV1 -> create (e2e)', () => {
     await dbConnection.transaction().execute(async (trx) => {
       await dbUtils.truncateTables(tablesInvolved, trx);
       await loginUser(trx);
+
+      skillBuilder = await SkillSeedBuilder.create(trx);
+      skillBuilder
+        .withCategory({
+          name: 'IT',
+          description: 'IT category',
+        })
+        .withSkill({
+          name: 'Backend',
+          description: 'Backend programming',
+        });
+      await skillBuilder.build();
+
+      skillBuilder2 = await SkillSeedBuilder.create(trx);
+      skillBuilder2
+        .withCategory({
+          name: 'IT',
+          description: 'IT category',
+        })
+        .withSkill({
+          name: 'HR',
+          description: 'Researcher',
+        });
+      await skillBuilder2.build();
     });
   });
 
-  const name = 'test category';
-
-  describe('/jos (POST) V1', () => {
+  describe('/jos-positions (POST) V1', () => {
     describe('SUCCESS', () => {
       it('should create job and return id', async () => {
         // Arrange
+        const entity = JobPositionFixtureFactory.create();
 
         // Act
         const response = await request(app.getHttpServer())
-          .post('/jobs')
+          .post('/job-positions')
           .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
-            name,
-            description: 'default-category',
+            ...entity,
+            skillIds: [skillBuilder.skillDao.id, skillBuilder2.skillDao.id],
+            categoryId: skillBuilder.categoryDao.id,
           });
+
+        const inserted = await dbConnection
+          .selectFrom(TableNames.JOB_POSITIONS)
+          .selectAll()
+          .where('id', '=', response.body.data.id)
+          .executeTakeFirst();
 
         // Assert
         expect(response.statusCode).toBe(201);
-        expect(response.body).toEqual({
-          ...response.body,
-          data: {
-            id: expect.any(Number),
-          },
+        expect(response.body.data).toEqual({
+          id: inserted?.id,
+        });
+        expect(inserted).toMatchSnapshot({
+          title: entity.title,
+          slug: entity.slug,
+          categoryId: expect.any(Number),
+          skillIds: expect.any(Array),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          id: expect.any(String),
         });
       });
 
-      // it('should create category with parent and return id', async () => {
-      //   // Arrange
-      //   const seedBuilder = await CategorySeedBuilder.create(dbConnection);
-      //   seedBuilder.withCategory({
-      //     name,
-      //     description: 'default-category',
-      //   });
-      //   await seedBuilder.build();
-      //   const categoryInsertedId = seedBuilder.categoryDao.id;
+      it('should create job with existing title but different categoryId', async () => {
+        // Arrange
+        const entity = JobPositionFixtureFactory.create({
+          title: 'Backend Developer',
+        });
 
-      //   const newCategoryName = 'test category2';
+        const categoryBuilder = await CategorySeedBuilder.create(dbConnection);
+        categoryBuilder.withCategory({
+          name: 'IT',
+          description: 'IT category',
+        });
+        await categoryBuilder.build();
 
-      //   // Act
-      //   const response = await request(app.getHttpServer())
-      //     .post('/categories')
-      //     .set(...credentials)
-      //     .set('Content-Type', 'application/json')
-      //     .send({
-      //       name: newCategoryName,
-      //       description: 'default-category2',
-      //       parentId: categoryInsertedId,
-      //     });
+        const jobPositionBuilder = await JobSeedBuilder.create(dbConnection);
+        jobPositionBuilder.withJobPosition({
+          ...entity,
+          categoryId: categoryBuilder.categoryDao.id,
+        });
+        await jobPositionBuilder.build();
 
-      //   const insertedCategory = (await dbConnection
-      //     .selectFrom(TableNames.CATEGORIES)
-      //     .selectAll()
-      //     .where('name', '=', newCategoryName)
-      //     .executeTakeFirst()) as typeof dataAssertion;
+        // Act
+        const response = await request(app.getHttpServer())
+          .post('/job-positions')
+          .set(...credentials)
+          .set('Content-Type', 'application/json')
+          .send({
+            ...entity,
+            skillIds: [skillBuilder.skillDao.id],
+            categoryId: skillBuilder.categoryDao.id,
+          });
 
-      //   // Assert
-      //   expect(response.statusCode).toBe(201);
-      //   expect(insertedCategory.parentId).toBe(categoryInsertedId);
-      // });
+        const inserted = await dbConnection
+          .selectFrom(TableNames.JOB_POSITIONS)
+          .selectAll()
+          .where('id', '=', response.body.data.id)
+          .executeTakeFirst();
+
+        // Assert
+        expect(response.statusCode).toBe(201);
+        expect(response.body.data).toEqual({
+          id: inserted?.id,
+        });
+        expect(inserted).toMatchSnapshot({
+          title: entity.title,
+          slug: entity.slug,
+          categoryId: expect.any(Number),
+          skillIds: expect.any(Array),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+          id: expect.any(String),
+        });
+      });
     });
 
-    // describe('FAILURE', () => {
-    //   it('should throw 409 if category with provided name (case-insensitive) and parentId exists', async () => {
-    //     // Arrange
-    //     const seedBuilder = await CategorySeedBuilder.create(dbConnection);
-    //     seedBuilder.withCategory({
-    //       name,
-    //       description: 'default-category',
-    //     });
+    describe('FAILURE', () => {
+      it('should throw 409 for combination title + categoryId', async () => {
+        // Arrange
+        const entity = JobPositionFixtureFactory.create({
+          title: 'Backend Developer',
+        });
 
-    //     await seedBuilder.build();
+        const categoryBuilder = await CategorySeedBuilder.create(dbConnection);
+        categoryBuilder.withCategory({
+          name: 'IT',
+          description: 'IT category',
+        });
+        await categoryBuilder.build();
 
-    //     // Act
-    //     const response = await request(app.getHttpServer())
-    //       .post('/categories')
-    //       .set(...credentials)
-    //       .set('Content-Type', 'application/json')
-    //       .send({
-    //         name: 'TEST CATEGORY',
-    //         description: 'default-category',
-    //         parentId: seedBuilder.categoryDao.id,
-    //       });
+        const jobPositionBuilder = await JobSeedBuilder.create(dbConnection);
+        jobPositionBuilder.withJobPosition({
+          ...entity,
+          categoryId: categoryBuilder.categoryDao.id,
+        });
+        await jobPositionBuilder.build();
 
-    //     // Assert
-    //     expect(response.statusCode).toBe(409);
-    //     expect(response.body.data).toEqual({
-    //       error: expect.any(String),
-    //     });
-    //   });
+        // Act
+        const response = await request(app.getHttpServer())
+          .post('/job-positions')
+          .set(...credentials)
+          .set('Content-Type', 'application/json')
+          .send({
+            ...entity,
+            skillIds: [skillBuilder.skillDao.id],
+            categoryId: categoryBuilder.categoryDao.id,
+          });
 
-    //   it('should throw error if incorrect parentId', async () => {
-    //     // Arrange
+        // Assert
+        expect(response.statusCode).toBe(409);
+        expect(response.body.data).toMatchSnapshot({
+          error: expect.stringContaining('Entity with title'),
+        });
+      });
 
-    //     const seedBuilder = await CategorySeedBuilder.create(dbConnection);
-    //     seedBuilder.withCategory({
-    //       name,
-    //       description: 'default-category',
-    //     });
-    //     await seedBuilder.build();
-    //     const categoryInsertedId = seedBuilder.categoryDao.id + 1;
+      it('should return error if given skill id no exists', async () => {
+        // Arrange
+        const entity = JobPositionFixtureFactory.create();
 
-    //     // Act
-    //     const response = await request(app.getHttpServer())
-    //       .post('/categories')
-    //       .set(...credentials)
-    //       .set('Content-Type', 'application/json')
-    //       .send({
-    //         name: 'new-name',
-    //         description: 'default-category',
-    //         parentId: categoryInsertedId,
-    //       });
+        // Act
+        const response = await request(app.getHttpServer())
+          .post('/job-positions')
+          .set(...credentials)
+          .set('Content-Type', 'application/json')
+          .send({
+            ...entity,
+            skillIds: [skillBuilder.skillDao.id, 1, 2, 3],
+            categoryId: skillBuilder.categoryDao.id,
+          });
 
-    //     // Assert
-    //     expect(response.statusCode).toBe(400);
-    //     expect(response.body).toMatchObject({
-    //       status: 'fail',
-    //       data: {
-    //         error: expect.any(String),
-    //       },
-    //     });
-    //   });
-    // });
+        // Assert
+        // expect(response.statusCode).toBe(400);
+        expect(response.body.data).toMatchSnapshot();
+      });
+    });
   });
 });

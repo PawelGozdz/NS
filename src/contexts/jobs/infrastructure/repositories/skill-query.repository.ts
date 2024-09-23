@@ -12,10 +12,20 @@ export class SkillsQueryRepository implements ISkillsQueryRepository {
   async getManyBy(queryProps: ISkillsQueryParams): Promise<SkillInfo[]> {
     const { _filter } = queryProps;
 
+    const ids: number[] = [];
+
     let query = this.getBuilder();
 
     if (typeof _filter?.id === 'number') {
-      query = query.where('c.id', '=', _filter.id);
+      ids.push(_filter.id);
+    }
+
+    if (_filter?.ids) {
+      ids.push(..._filter.ids);
+    }
+
+    if (ids.length > 0) {
+      query = query.where('c.id', 'in', ids);
     }
 
     if (_filter?.name) {

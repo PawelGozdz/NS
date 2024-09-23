@@ -3,6 +3,8 @@ export abstract class IJobPositionModel {
 
   title: string;
 
+  slug: string;
+
   categoryId: number;
 
   skillIds: number[];

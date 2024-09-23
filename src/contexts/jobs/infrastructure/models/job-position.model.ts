@@ -6,6 +6,8 @@ export class JobPositionModel extends BaseModel implements IJobPositionModel {
 
   title: string;
 
+  slug: string;
+
   categoryId: number;
 
   skillIds: number[];
@@ -13,8 +15,6 @@ export class JobPositionModel extends BaseModel implements IJobPositionModel {
   createdAt: Date;
 
   updatedAt: Date;
-
-  version: number;
 
   static tableName = TableNames.JOB_POSITIONS;
 }

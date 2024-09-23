@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { Database, IJobPositionQueryParams, TableNames } from '@app/core';
-import { EntityId } from '@libs/common';
+import { EntityId, generateSlug } from '@libs/common';
 
 import { IJobPositionQueryRepository, JobPositionInfo } from '../../domain';
 import { JobPositionModel } from '../models';
@@ -30,7 +30,7 @@ export class JobPositionQueryRepository implements IJobPositionQueryRepository {
     }
 
     if (_filter?.title) {
-      query = query.where('c.title', '=', _filter.title);
+      query = query.where('c.slug', '=', generateSlug(_filter.title));
     }
 
     if (_filter?.categoryId) {
@@ -46,10 +46,23 @@ export class JobPositionQueryRepository implements IJobPositionQueryRepository {
     return entities.map(this.mapResponse);
   }
 
+  async getOneByCategoryIdAndSlug(categoryId: number, slug: string): Promise<JobPositionInfo | undefined> {
+    const entity = (await this.getBuilder().where('c.categoryId', '=', categoryId).where('c.slug', '=', slug).executeTakeFirst()) as
+      | JobPositionModel
+      | undefined;
+
+    if (!entity) {
+      return undefined;
+    }
+
+    return this.mapResponse(entity);
+  }
+
   mapResponse(model: JobPositionModel): JobPositionInfo {
     return {
       id: model.id,
       title: model.title,
+      slug: model.slug,
       skillIds: model.skillIds,
       categoryId: model.categoryId,
     };
@@ -58,6 +71,6 @@ export class JobPositionQueryRepository implements IJobPositionQueryRepository {
   private getBuilder() {
     return this.db
       .selectFrom(`${TableNames.JOB_POSITIONS} as c`)
-      .select((_eb) => ['c.id', 'c.title', 'c.categoryId', 'c.skillIds', 'c.createdAt', 'c.updatedAt']);
+      .select((_eb) => ['c.id', 'c.title', 'c.slug', 'c.categoryId', 'c.skillIds', 'c.createdAt', 'c.updatedAt']);
   }
 }

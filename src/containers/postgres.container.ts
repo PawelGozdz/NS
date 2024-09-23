@@ -3,7 +3,7 @@ import { GenericContainer, Wait } from 'testcontainers';
 import { IInitFunctionProps } from './container.manager';
 
 const localEnv = {
-  POSTGRES_DB: 'test',
+  POSTGRES_DB: 'e2e-test',
   POSTGRES_USER: 'test',
   POSTGRES_PASSWORD: 'test',
 };

@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JobsControllerV1 -> update (e2e) /jos-positions/:id (PATCH) V1 FAILURE should throw 409 for combination title + categoryId 1`] = `
+{
+  "error": StringContaining "Entity with title",
+}
+`;
+
+exports[`JobsControllerV1 -> update (e2e) /jos-positions/:id (PATCH) V1 SUCCESS should update job 1`] = `
+{
+  "categoryId": Any<Number>,
+  "createdAt": Any<Date>,
+  "id": Any<String>,
+  "skillIds": Any<Array>,
+  "slug": "new-title",
+  "title": "New Title",
+  "updatedAt": Any<Date>,
+}
+`;

@@ -7,4 +7,5 @@ export enum AppContext {
   CATEGORIES = 'categories',
   SKILLS = 'skills',
   TAGS = 'tags',
+  JOBS = 'jobs',
 }
