@@ -1,4 +1,4 @@
-import { Kysely } from 'kysely';
+import { Kysely, sql } from 'kysely';
 
 import { IDatabaseModels } from '../../models';
 import { TableNames } from '../../table-names';
@@ -19,7 +19,7 @@ export async function up(db: Kysely<IDatabaseModels>): Promise<void> {
   await db.schema.alterTable(tableName2).dropConstraint(contextConstrant2).execute();
   await db.schema.alterTable(tableName2).dropColumn('context').execute();
 
-  await db.schema.alterTable(tableName1).addUniqueConstraint(newConstrant1, ['name', 'parentId']).execute();
+  await sql.raw(`CREATE UNIQUE INDEX ${newConstrant1} ON ${tableName1} (name, COALESCE(parent_id, -1))`).execute(db);
 }
 
 export async function down(db: Kysely<IDatabaseModels>): Promise<void> {
@@ -37,5 +37,5 @@ export async function down(db: Kysely<IDatabaseModels>): Promise<void> {
     .execute();
   await db.schema.alterTable(tableName2).addUniqueConstraint(contextConstrant2, ['name', 'context']).execute();
 
-  await db.schema.alterTable(tableName1).dropConstraint(newConstrant1).execute();
+  await sql.raw(`DROP INDEX ${newConstrant1}`).execute(db);
 }

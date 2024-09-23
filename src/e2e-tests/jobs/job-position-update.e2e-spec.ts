@@ -67,15 +67,11 @@ describe('JobsControllerV1 -> update (e2e)', () => {
       await skillBuilder.build();
 
       skillBuilder2 = await SkillSeedBuilder.create(trx);
-      skillBuilder2
-        .withCategory({
-          name: 'IT',
-          description: 'IT category',
-        })
-        .withSkill({
-          name: 'HR',
-          description: 'Researcher',
-        });
+      skillBuilder2.withSkill({
+        categoryId: skillBuilder.categoryDao.id,
+        name: 'HR',
+        description: 'Researcher',
+      });
       await skillBuilder2.build();
 
       const entity = JobPositionFixtureFactory.create({

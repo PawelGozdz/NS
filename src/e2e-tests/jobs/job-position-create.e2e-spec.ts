@@ -62,15 +62,11 @@ describe('JobsControllerV1 -> create (e2e)', () => {
       await skillBuilder.build();
 
       skillBuilder2 = await SkillSeedBuilder.create(trx);
-      skillBuilder2
-        .withCategory({
-          name: 'IT',
-          description: 'IT category',
-        })
-        .withSkill({
-          name: 'HR',
-          description: 'Researcher',
-        });
+      skillBuilder2.withSkill({
+        categoryId: skillBuilder.categoryDao.id,
+        name: 'HR',
+        description: 'Researcher',
+      });
       await skillBuilder2.build();
     });
   });
@@ -122,8 +118,8 @@ describe('JobsControllerV1 -> create (e2e)', () => {
 
         const categoryBuilder = await CategorySeedBuilder.create(dbConnection);
         categoryBuilder.withCategory({
-          name: 'IT',
-          description: 'IT category',
+          name: 'HR',
+          description: 'HR category',
         });
         await categoryBuilder.build();
 
@@ -177,8 +173,8 @@ describe('JobsControllerV1 -> create (e2e)', () => {
 
         const categoryBuilder = await CategorySeedBuilder.create(dbConnection);
         categoryBuilder.withCategory({
-          name: 'IT',
-          description: 'IT category',
+          name: 'Agro',
+          description: 'Agro category',
         });
         await categoryBuilder.build();
 
