@@ -9,6 +9,7 @@ import { CqrsModule } from '@libs/cqrs';
 
 import { CategoriesControllerV1 } from './features';
 import { JobPositionsControllerV1, JobUserProfilesControllerV1, SkillsControllerV1 } from './jobs';
+import { CompaniesControllerV1 } from './organizations';
 import { AuthJwtControllerV1, UsersControllerV1 } from './user-management';
 
 const interceptors = [
@@ -55,6 +56,7 @@ const controllersV1 = [
   JobUserProfilesControllerV1,
   SkillsControllerV1,
   JobPositionsControllerV1,
+  CompaniesControllerV1,
 ];
 
 @Module({

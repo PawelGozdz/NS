@@ -7,7 +7,8 @@ import { IDatabaseModels, TableNames, TestingE2EFunctions, dialect, kyselyPlugin
 
 import { AppModule } from '../../app.module';
 import { getCookies, loginUser } from '../builders/auth-user';
-import { SkillSeedBuilder } from '../builders/skill-builder';
+import { CategorySeedBuilder2 } from '../builders/category-builder2';
+import { SkillSeedBuilder2 } from '../builders/skill-builder2';
 
 type IDdbDaos = IDatabaseModels;
 
@@ -19,7 +20,8 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
   const dbUtils = new TestingE2EFunctions(dbConnection);
   let app: INestApplication;
 
-  const tablesInvolved = [TableNames.SKILLS, TableNames.CATEGORIES];
+  let credentials: [string, string];
+  let categoryBuilder: CategorySeedBuilder2;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -28,6 +30,13 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    await dbConnection.transaction().execute(async (trx) => {
+      await dbUtils.truncateTables([TableNames.CATEGORIES], trx);
+
+      categoryBuilder = new CategorySeedBuilder2(trx);
+      await categoryBuilder.insert({ quantity: 25 });
+    });
   });
 
   afterAll(async () => {
@@ -35,20 +44,13 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
     await app.close();
   });
 
-  let credentials: [string, string];
-  let builder: SkillSeedBuilder;
   let dataAssertion: { parentId?: number; name?: string; categoryId?: number };
 
   beforeEach(async () => {
     credentials = getCookies();
 
     await dbConnection.transaction().execute(async (trx) => {
-      await dbUtils.truncateTables(tablesInvolved, trx);
-
-      builder = await SkillSeedBuilder.create(trx);
-      builder.withCategory().withSkill();
-      await builder.build();
-
+      await dbUtils.truncateTables([TableNames.SKILLS], trx);
       await loginUser(trx);
     });
   });
@@ -60,6 +62,8 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
 
         const newName = 'test skill2';
 
+        const categoryId = categoryBuilder.getDaos({ limit: 1, random: true })[0].id;
+
         // Act
         const response = await request(app.getHttpServer())
           .post('/skills')
@@ -68,7 +72,7 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
           .send({
             name: newName,
             description: 'default-skill2',
-            categoryId: builder.categoryDao.id,
+            categoryId,
           });
 
         const inserted = (await dbConnection
@@ -79,13 +83,18 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
 
         // Assert
         expect(response.statusCode).toBe(201);
-        expect(inserted.categoryId).toBe(builder.categoryDao.id);
+        expect(inserted.categoryId).toBe(categoryId);
       });
     });
 
     describe('FAILURE', () => {
       it('should throw 409 if skill with provided name and categoryId exists', async () => {
         // Arrange
+        const builder = new SkillSeedBuilder2(dbConnection);
+
+        await builder.insertWithDependencies([{ builder: categoryBuilder, options: { stretchRandom: true } }], { quantity: 1 });
+
+        const { name, categoryId } = builder.getDaos({ limit: 1, random: true })[0];
 
         // Act
         const response = await request(app.getHttpServer())
@@ -93,20 +102,21 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
           .set(...credentials)
           .set('Content-Type', 'application/json')
           .send({
-            name: builder.skillDao.name,
+            name,
             description: 'default-skill',
-            categoryId: builder.categoryDao.id,
+            categoryId,
           });
 
         // Assert
         expect(response.statusCode).toBe(409);
         expect(response.body.data).toEqual({
-          error: expect.stringContaining(`${builder.categoryDao.id}`),
+          error: expect.stringContaining(`${categoryId}`),
         });
       });
 
       it('should throw error if incorrect categoryId', async () => {
         // Arrange
+        const last = categoryBuilder.getDaos({ last: true, limit: 1 })[0].id;
 
         // Act
         const response = await request(app.getHttpServer())
@@ -116,7 +126,7 @@ describe('SkillsControllerV1 -> create (e2e)', () => {
           .send({
             name: 'new-name',
             description: 'default-skill',
-            categoryId: builder.categoryDao.id + 1,
+            categoryId: last + 1,
           });
 
         // Assert

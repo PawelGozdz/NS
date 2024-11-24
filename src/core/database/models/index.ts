@@ -1,5 +1,6 @@
 import { IAuthUserModel } from './auth-user-model.interface';
 import { ICategoryModel } from './category-model.interface';
+import { ICompanyModel } from './company-model.interface';
 import { IEventLogModel } from './eventlog-model.interface';
 import { IJobModel } from './job-model.interface';
 import { IJobPositionModel } from './job-position-model.interface';
@@ -13,6 +14,7 @@ import { IUserModel } from './user-model.interface';
 
 export * from './auth-user-model.interface';
 export * from './category-model.interface';
+export * from './company-model.interface';
 export * from './eventlog-model.interface';
 export * from './job-model.interface';
 export * from './job-position-model.interface';
@@ -37,4 +39,5 @@ export type IDatabaseModels = {
   jobPositions: IJobPositionModel;
   jobProposals: IJobProposalModel;
   jobTemplates: IJobTemplateModel;
+  companies: ICompanyModel;
 };

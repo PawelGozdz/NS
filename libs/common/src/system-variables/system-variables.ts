@@ -36,6 +36,13 @@ export const systemVariables = {
         },
       },
     },
+    companies: {
+      name: {
+        MIN_LENGTH: 2,
+        MAX_LENGTH: 50,
+        example1: 'Evil Corp',
+      },
+    },
     slug: {
       example1: 'software-developer',
     },

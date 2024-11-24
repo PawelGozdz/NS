@@ -67,6 +67,14 @@ describe('Address.create', () => {
       countryCode: CountryCode.Poland,
       postalCode: 'postal code',
     });
-    expect(address).toEqual(new Address('street', '12', 'city', CountryCode.Poland, 'postal code'));
+    expect(address).toEqual(
+      new Address({
+        street: 'street',
+        streetNumber: '12',
+        city: 'city',
+        countryCode: CountryCode.Poland,
+        postalCode: 'postal code',
+      }),
+    );
   });
 });

@@ -27,13 +27,23 @@ export interface IAddress {
 }
 
 export class Address {
-  public constructor(
-    readonly street: string,
-    readonly streetNumber: string | undefined,
-    readonly city: string,
-    readonly countryCode: CountryCode,
-    readonly postalCode: string,
-  ) {}
+  public readonly street: string;
+
+  public readonly streetNumber: string | undefined;
+
+  public readonly city: string;
+
+  public readonly countryCode: CountryCode;
+
+  public readonly postalCode: string;
+
+  public constructor(address: { street: string; streetNumber: string | undefined; city: string; countryCode: CountryCode; postalCode: string }) {
+    this.street = address.street;
+    this.streetNumber = address.streetNumber;
+    this.city = address.city;
+    this.countryCode = address.countryCode;
+    this.postalCode = address.postalCode;
+  }
 
   public static create({ street, streetNumber, city, countryCode, postalCode }: Partial<AddressData>): Address {
     if (!street) {
@@ -56,7 +66,13 @@ export class Address {
       throw new MissingValueError('Address.postalCode');
     }
 
-    return new Address(street.trim(), streetNumber?.trim(), city.trim(), countryCode, postalCode.trim());
+    return new Address({
+      street: street.trim(),
+      streetNumber: streetNumber?.trim(),
+      city: city.trim(),
+      countryCode,
+      postalCode: postalCode.trim(),
+    });
   }
 
   equals(address: Address): boolean {
