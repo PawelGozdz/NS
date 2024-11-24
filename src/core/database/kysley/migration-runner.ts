@@ -32,7 +32,7 @@ async function migrateToLatest() {
     }
   });
 
-  if (!AppUtils.isEmpty(error)) {
+  if (AppUtils.hasValue(error)) {
     console.error('Failed to migrate');
     console.error(error);
     process.exit(1);

@@ -4,12 +4,13 @@ import {
   IsDateString,
   IsDefined,
   IsEmail,
+  IsEnum,
   IsISO8601,
   IsIn,
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsOptional,
-  IsPhoneNumber,
   IsPositive,
   IsString,
   IsUUID,
@@ -35,6 +36,7 @@ export class AddressDto {
   })
   @IsDefined()
   @IsString()
+  @Matches(BasicTextRegexp, { message: "$property Don't use special characters" })
   @Length(systemVariables.dtos.address.street.MIN_LENGTH, systemVariables.dtos.address.street.MAX_LENGTH)
   street: string;
 
@@ -45,8 +47,9 @@ export class AddressDto {
   })
   @IsOptional()
   @IsString()
+  @Matches(/^[a-zA-Z0-9]+(?:[ /][a-zA-Z0-9]+)*$/, { message: "$property Don't use special characters" })
   @Length(systemVariables.dtos.address.streetNumber.MIN_LENGTH, systemVariables.dtos.address.streetNumber.MAX_LENGTH)
-  streetNumber: string;
+  streetNumber?: string;
 
   @ApiProperty({
     example: systemVariables.dtos.address.city.example1,
@@ -54,6 +57,7 @@ export class AddressDto {
   })
   @IsDefined()
   @IsString()
+  @Matches(BasicTextRegexp, { message: "$property Don't use special characters" })
   @Length(systemVariables.dtos.address.city.MIN_LENGTH, systemVariables.dtos.address.city.MAX_LENGTH)
   city: string;
 
@@ -347,9 +351,16 @@ export class GlobalDto extends IntersectionType(SkillIdDto, CategoryIdDto) {
     nullable: true,
   })
   @IsDefined()
-  @IsString()
-  @IsPhoneNumber()
+  @IsNumberString()
   phoneNumber: string;
+
+  @ApiProperty({
+    example: CountryCode.England,
+    nullable: true,
+  })
+  @IsDefined()
+  @IsEnum(CountryCode)
+  countryCode: CountryCode;
 
   @ApiProperty({
     example: systemVariables.dtos.gender.example1,

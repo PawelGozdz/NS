@@ -1,5 +1,6 @@
 export * from './category-global.dto';
 export * from './category-query-params.dto';
+export * from './company-global.dto';
 export * from './global.dto';
 export * from './id.dto';
 export * from './job-global.dto';

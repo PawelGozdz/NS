@@ -68,6 +68,22 @@ const JobPositionRoutes: { root: string; v1: IJobPositionRoutes } = {
   },
 };
 
+interface ICompanyRoutes {
+  create: string;
+  update: string;
+  getMany: string;
+}
+
+const companyRoot = '/companies';
+const CompanyRoutes: { root: string; v1: ICompanyRoutes } = {
+  root: companyRoot,
+  v1: {
+    create: `${companyRoot}`,
+    getMany: `${companyRoot}`,
+    update: `${companyRoot}/:id`,
+  },
+};
+
 interface IUsersRoutes {
   getUsers: string;
   getUser: string;
@@ -109,4 +125,5 @@ export const AppRoutes = {
   SKILLS: SkillRoutes,
   JOB_USER_PROFILES: JobUserProfileRoutes,
   JOB_POSITIONS: JobPositionRoutes,
+  COMPANIES: CompanyRoutes,
 };

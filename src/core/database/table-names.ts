@@ -10,6 +10,9 @@ export enum TableNames {
   JOB_POSITIONS = 'jobPositions',
   JOBS = 'jobs',
 
+  // COMPANIES
+  COMPANIES = 'companies',
+
   // FEATURES
   CATEGORIES = 'categories',
 

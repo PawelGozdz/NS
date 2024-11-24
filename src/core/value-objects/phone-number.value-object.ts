@@ -15,18 +15,25 @@ export interface IPhoneNumber {
 }
 
 export class PhoneNumber {
-  public constructor(
-    readonly number: string,
-    readonly countryCode: CountryCode,
-  ) {}
+  public readonly number: string;
+
+  public readonly countryCode: CountryCode;
+
+  public constructor(phoneNumber: { number: string; countryCode: CountryCode }) {
+    this.number = phoneNumber.number;
+    this.countryCode = phoneNumber.countryCode;
+  }
 
   public static create({ number, countryCode }: PhoneNumberData): PhoneNumber {
-    if (!isValidPhoneNumber(number, { defaultCallingCode: countryCode })) {
+    if (!isValidPhoneNumber(number, countryCode as CountryCodeType)) {
       throw InvalidParameterError.withParameter('number', number);
     }
 
     const phoneNumber = parsePhoneNumber(number, countryCode as CountryCodeType);
-    return new PhoneNumber(phoneNumber.nationalNumber.toString(), countryCode);
+    return new PhoneNumber({
+      number: phoneNumber.nationalNumber.toString(),
+      countryCode: phoneNumber.country as CountryCode,
+    });
   }
 
   formatInternational() {

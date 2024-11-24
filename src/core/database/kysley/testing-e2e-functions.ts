@@ -9,7 +9,7 @@ type IDatabaseDaos = IDatabaseModels;
 export class TestingE2EFunctions {
   constructor(private readonly connection: Kysely<IDatabaseDaos>) {}
 
-  async truncateTables(givenTables?: string[], trx?: Transaction<IDatabaseDaos>) {
+  async truncateTables(givenTables?: string[], trx?: Kysely<IDatabaseDaos> | Transaction<IDatabaseDaos>) {
     const tables = Array.isArray(givenTables) ? givenTables : Object.values(TableNames);
 
     for await (const tableName of tables) {

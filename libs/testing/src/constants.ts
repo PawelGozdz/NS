@@ -106,6 +106,21 @@ const defaultJobPositionTitle = 'Test job position';
 const defaultJobPositionCategoryId = 1;
 const defaultJobPositionSkillIds = [1];
 
+// Copmany
+const defaultCompanyName = 'Test company';
+const defaultCompanyAddress = {
+  city: 'Warsaw',
+  countryCode: 'PL',
+  streetNumber: '1',
+  postalCode: '00-000',
+  street: 'Test',
+};
+const defaultCompanyContactEmail = 'cop@test.com';
+const defaultCompanyContactPhone = {
+  countryCode: 'PL',
+  number: '510510510',
+};
+
 // Context
 const defaultCtx = 'categories';
 
@@ -177,5 +192,11 @@ export const testingDefaults = {
     title: defaultJobPositionTitle,
     categoryId: defaultJobPositionCategoryId,
     skillIds: defaultJobPositionSkillIds,
+  },
+  company: {
+    name: defaultCompanyName,
+    address: defaultCompanyAddress,
+    contactEmail: defaultCompanyContactEmail,
+    contactPhone: defaultCompanyContactPhone,
   },
 };
